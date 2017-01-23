@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.text.*?>
+<?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.media.*?>
 <?import javafx.scene.shape.*?>
@@ -8,7 +9,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="batterymonitorsystem.batteryMonitorLayoutController">
    <children>
       <SplitPane dividerPositions="0.5, 0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -16,7 +17,7 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
+                    <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" onAction="#exit" text="Close" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
@@ -26,7 +27,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About" />
                   </items>
                 </Menu>
               </menus>
@@ -35,7 +36,7 @@
                <children>
                   <Label text="connected" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="10.0">
                      <graphic>
-                        <ProgressIndicator progress="0.0" />
+                        <ProgressIndicator onContextMenuRequested="#showConnected" onMouseClicked="#connect" progress="0.0" />
                      </graphic>
                   </Label>
                   <ProgressBar prefHeight="20.0" prefWidth="500.0" progress="0.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="30.0" />
