@@ -72,4 +72,8 @@ public class batteryModule {
     public double getAverageTemperature() {
         return averageTemperature;
     }
+    
+    public List<batteryCell> getBatteryCells(){
+        return this.module;
+    }
 }
