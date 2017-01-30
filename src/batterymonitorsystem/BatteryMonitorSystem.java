@@ -5,14 +5,19 @@
  */
 package batterymonitorsystem;
 
-import battery.BatteryCell;
 import battery.BatteryModule;
 import battery.BatteryPacket;
 import java.util.Random;
 import javafx.application.Application;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import storage.dbConnector;
 import storage.dbRunnable;
@@ -23,14 +28,14 @@ import storage.dbRunnable;
  */
 public class BatteryMonitorSystem extends Application {
 
+    private BatteryPacket batpack;  
+    Parent root;
+
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
-
+        this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
         Scene scene = new Scene(root);
-
         Random random = new Random();
-
         dbConnector conn = new dbConnector();
 //        
 //        batteryCell testCell = new batteryCell(20.0, 3.5, 1, 10);
@@ -41,10 +46,10 @@ public class BatteryMonitorSystem extends Application {
 //        }
 
         //create random test battery packet & save to db
-        BatteryPacket testPack = new BatteryPacket(10);
-        for (int module = 0; module < 10; module++) {
-            BatteryModule mod = new BatteryModule(module, 10);
-            testPack.addModule(mod);
+        batpack = new BatteryPacket(10);
+        for (int module = 0; module < 9; module++) {
+            BatteryModule mod = new BatteryModule(module, 16);
+            batpack.addModule(mod);
             mod.getBatteryCells().stream().map((cell) -> {
                 cell.setHealth(random.nextInt(10));
                 return cell;
@@ -58,9 +63,11 @@ public class BatteryMonitorSystem extends Application {
                 cell.setVoltage(3 + random.nextFloat());
             });
         }
-        dbRunnable r = new dbRunnable(1, testPack);
+        dbRunnable r = new dbRunnable(1, batpack);
         Thread t = new Thread(r);
         t.start();
+
+        this.load();
 
         stage.setScene(scene);
         stage.show();
@@ -71,6 +78,16 @@ public class BatteryMonitorSystem extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private void load() {
+        Label totalVoltage = (Label) root.lookup("#totalVoltage");
+        System.out.println(totalVoltage);
+        String totVolt = Double.toString(batpack.getTotalVoltage());
+        System.out.println(totVolt);
+        StringProperty totalVolt = new SimpleStringProperty(totVolt);
+        System.out.println(totalVolt);
+        totalVoltage.textProperty().bind(totalVolt);
     }
 
 }

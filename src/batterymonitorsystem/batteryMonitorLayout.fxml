@@ -42,7 +42,7 @@
                   <ProgressBar prefHeight="20.0" prefWidth="500.0" progress="0.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="30.0" />
                   <Label text="Main" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="10.0" />
                   <Label layoutX="126.0" layoutY="42.0" text="0%" AnchorPane.leftAnchor="265.0" AnchorPane.topAnchor="42.0" />
-                  <Label layoutX="753.0" layoutY="30.0" text="300.00 V" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="530.0" AnchorPane.topAnchor="3.0">
+                  <Label id="totalVoltage" layoutX="753.0" layoutY="30.0" text="300.00 V" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="530.0" AnchorPane.topAnchor="3.0">
                      <font>
                         <Font size="54.0" />
                      </font>

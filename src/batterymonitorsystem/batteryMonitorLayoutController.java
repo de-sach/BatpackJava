@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 
 /**
  *
@@ -44,11 +45,21 @@ public class batteryMonitorLayoutController implements Initializable {
         }
     }
     
+    @FXML
+    public Label totalVoltage;
+
+    public Label getTotalVoltage() {
+        return totalVoltage;
+    }
+
+    public void setTotalVoltage(Label totalVoltage) {
+        this.totalVoltage = totalVoltage;
+    }
+    
     
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }    
     
 }

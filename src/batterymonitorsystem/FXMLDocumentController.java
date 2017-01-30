@@ -29,9 +29,20 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void exit(ActionEvent event){
         System.out.println("exiting");
-        System.exit(0);
-        
+        System.exit(0);      
     }
+    
+    @FXML
+    private Label totalVoltage;
+
+    public Label getTotalVoltage() {
+        return totalVoltage;
+    }
+
+    public void setTotalVoltage(Label totalVoltage) {
+        this.totalVoltage = totalVoltage;
+    }
+    
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
