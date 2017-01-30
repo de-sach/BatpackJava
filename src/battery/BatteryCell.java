@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author sach
  */
-public class batteryCell {
+public class BatteryCell {
     private Double temperature;
     private Double voltage;
     private int id;
@@ -24,7 +24,7 @@ public class batteryCell {
     private Instant lastMeasurement;
     
     
-    public batteryCell(double temp, double volt, int id, int health){
+    public BatteryCell(double temp, double volt, int id, int health){
         this.temperature = temp;
         this.voltage = volt;
         this.id = id;

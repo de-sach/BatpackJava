@@ -12,28 +12,28 @@ import java.util.List;
  *
  * @author sach
  */
-public class batteryModule {
-    private List<batteryCell> module;
+public class BatteryModule {
+    private List<BatteryCell> module;
     private int id;
     private int nrOfCells;
     private int status;
     double voltage;
     double averageTemperature;
     
-    public batteryModule(int id, int cellCount){
+    public BatteryModule(int id, int cellCount){
         this.id = id;
         this.nrOfCells = cellCount;
         module = new ArrayList();
         for (int i=0; i<this.nrOfCells;i++){
             //cells are loaded with given base characteristics
-            batteryCell currentCell = new batteryCell(20.0, 3.5, i, 10);
+            BatteryCell currentCell = new BatteryCell(20.0, 3.5, i, 10);
             module.add(currentCell);
         }
     }   
     
     public void updateStatus(){
         int status = 10;
-        for (batteryCell cell:module){
+        for (BatteryCell cell:module){
             if (cell.getHealth()<status){
                 status = cell.getHealth();
             }
@@ -73,7 +73,7 @@ public class batteryModule {
         return averageTemperature;
     }
     
-    public List<batteryCell> getBatteryCells(){
+    public List<BatteryCell> getBatteryCells(){
         return this.module;
     }
 }

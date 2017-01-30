@@ -5,12 +5,15 @@
  */
 package storage;
 
-import battery.batteryCell;
-import com.almworks.sqlite4java.SQLiteConnection;
-import com.almworks.sqlite4java.SQLiteException;
-import com.almworks.sqlite4java.SQLiteStatement;
-import java.io.File;
-import java.io.IOException;
+import battery.BatteryCell;
+import battery.BatteryModule;
+import battery.BatteryPacket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,50 +23,112 @@ import java.util.logging.Logger;
  */
 public class dbConnector {
 
-    private File myDb;
-    private SQLiteConnection dbConnection;
+    private Connection connection;
 
-    public dbConnector() throws SQLiteException, IOException {
-        System.out.println("loading db");
-        this.myDb = new File("./src/storage/batteryMonitor.db");
-        if (!this.myDb.exists()) {
-            boolean created = this.myDb.createNewFile();
-            if (!created) {
-                System.out.println("error in creating db file");
-            }
-            System.out.println("db created");
+    public dbConnector() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.dbConnection = new SQLiteConnection(this.myDb);
-        this.dbConnection.open(true);
-        System.out.println("db loaded");
-        createTable(true);
+        connection = null;
     }
 
-    private void createTable(boolean exists) throws SQLiteException {
+    public void createTable(boolean exists) {
         if (!exists) {
-            SQLiteStatement create = dbConnection.prepare("CREATE TABLE `Cells` (`pk` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'id' INTEGER, `voltage`	REAL,`temperature`REAL, `health` INTEGER);");
             try {
-                while (create.step()) {
-                    System.out.println("executed one step");
+                try {
+                    Class.forName("org.sqlite.JDBC");
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (SQLiteException ex) {
-                Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
+                connection = DriverManager.getConnection("jdbc:sqlite:./src/storage/batteryMonitor.db");
+                Statement statement = connection.createStatement();
+                statement.setQueryTimeout(10);  // set timeout to 30 sec.
+                statement.executeUpdate("drop table if exists cells");
+                statement.executeUpdate("CREATE TABLE `cells` (`pk` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,	`id` INTEGER, `voltage` REAL, `temperature` REAL, `health` INTEGER);");
+            } catch (SQLException e) {
+                // if the error message is "out of memory", 
+                // it probably means no database file is found
+                System.err.println(e.getMessage());
             } finally {
-                create.dispose();
+                try {
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    // connection close failed.
+                    System.err.println(e);
+                }
             }
         }
     }
 
-    public void setParams(batteryCell cell) throws SQLiteException {
-        String sql = "INSERT INTO Cells(id,voltage,temperature,health) values (?,?,?,?)";
-        SQLiteStatement setCell = dbConnection.prepare(sql);
-        setCell.bind(1, cell.getId());
-        setCell.bind(2, cell.getVoltage());
-        setCell.bind(3, cell.getTemperature());
-        setCell.bind(4, cell.getHealth());
-        while (setCell.step()) {
-            System.out.println("adding a cell");
+    public void insertCell(BatteryCell cell) {
+        try {
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            connection = DriverManager.getConnection("jdbc:sqlite:./src/storage/batteryMonitor.db");
+            PreparedStatement setCell = connection.prepareStatement("insert into cells (id,voltage,temperature,health) values (?,?,?,?);");
+            setCell.setInt(1, cell.getId());
+            setCell.setInt(4, cell.getHealth());
+            setCell.setDouble(2, cell.getVoltage());
+            setCell.setDouble(3, cell.getTemperature());
+            setCell.setQueryTimeout(10);
+            setCell.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
-        setCell.dispose();
+
+    }
+
+    public void insertModule(BatteryModule module) {
+        try {
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            connection = DriverManager.getConnection("jdbc:sqlite:./src/storage/batteryMonitor.db");
+            for (BatteryCell cell : module.getBatteryCells()) {
+                PreparedStatement setCell = connection.prepareStatement("insert into cells (id,voltage,temperature,health) values (?,?,?,?);");
+                setCell.setInt(1, cell.getId());
+                setCell.setInt(4, cell.getHealth());
+                setCell.setDouble(2, cell.getVoltage());
+                setCell.setDouble(3, cell.getTemperature());
+                setCell.setQueryTimeout(10);
+                setCell.execute();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void insertBatpack(BatteryPacket packet) {
+        try {
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            connection = DriverManager.getConnection("jdbc:sqlite:./src/storage/batteryMonitor.db");
+            for (BatteryModule module : packet.getModules()) {
+                for (BatteryCell cell : module.getBatteryCells()) {
+                    PreparedStatement setCell = connection.prepareStatement("insert into cells (id,voltage,temperature,health) values (?,?,?,?);");
+                    setCell.setInt(1, cell.getId());
+                    setCell.setInt(4, cell.getHealth());
+                    setCell.setDouble(2, cell.getVoltage());
+                    setCell.setDouble(3, cell.getTemperature());
+                    setCell.setQueryTimeout(10);
+                    setCell.execute();
+                    
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
