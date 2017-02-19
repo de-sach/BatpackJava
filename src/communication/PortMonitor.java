@@ -26,21 +26,48 @@ import java.util.List;
  * @author Peter
  */
 public class PortMonitor {
+
     List<SerialPort> serialPorts;
-    public PortMonitor(){
-        serialPorts=new ArrayList<>();
+
+    public PortMonitor() {
+        serialPorts = new ArrayList<>();
         this.addAllSerialPorts();
     }
-    
-    private void addAllSerialPorts(){
+
+    private void addAllSerialPorts() {
         Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-        while(portEnum.hasMoreElements()){
+        while (portEnum.hasMoreElements()) {
             System.out.println("port found");
             CommPortIdentifier portId = portEnum.nextElement();
-            if(portId.getPortType()==CommPortIdentifier.PORT_SERIAL){
+            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
                 SerialPort sp = new SerialPort(portId);
                 System.out.println("new serial port added");
             }
+        }
+    }
+
+    public void listPorts() {
+        java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+        while (portEnum.hasMoreElements()) {
+            CommPortIdentifier portIdentifier = portEnum.nextElement();
+            System.out.println(portIdentifier.getName() + " - " + getPortTypeName(portIdentifier.getPortType()));
+        }
+    }
+
+    static String getPortTypeName(int portType) {
+        switch (portType) {
+            case CommPortIdentifier.PORT_I2C:
+                return "I2C";
+            case CommPortIdentifier.PORT_PARALLEL:
+                return "Parallel";
+            case CommPortIdentifier.PORT_RAW:
+                return "Raw";
+            case CommPortIdentifier.PORT_RS485:
+                return "RS485";
+            case CommPortIdentifier.PORT_SERIAL:
+                return "Serial";
+            default:
+                return "unknown type";
         }
     }
 }

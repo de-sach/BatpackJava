@@ -7,6 +7,7 @@ package batterymonitorsystem;
 
 import battery.BatteryModule;
 import battery.BatteryPacket;
+import communication.PortMonitor;
 import java.util.Random;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -71,6 +72,8 @@ public class BatteryMonitorSystem extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        PortMonitor monitor = new PortMonitor();
+        monitor.listPorts();
         launch(args);
     }
 
