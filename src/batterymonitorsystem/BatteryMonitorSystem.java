@@ -81,13 +81,13 @@ public class BatteryMonitorSystem extends Application {
     }
 
     private void load() {
-        Label totalVoltage = (Label) root.lookup("#totalVoltage");
-        System.out.println(totalVoltage);
-        String totVolt = Double.toString(batpack.getTotalVoltage());
-        System.out.println(totVolt);
-        StringProperty totalVolt = new SimpleStringProperty(totVolt);
-        System.out.println(totalVolt);
-        totalVoltage.textProperty().bind(totalVolt);
+//        Label totalVoltage = (Label) root.lookup("#totalVoltage");
+//        System.out.println(totalVoltage);
+//        String totVolt = Double.toString(batpack.getTotalVoltage());
+//        System.out.println(totVolt);
+//        StringProperty totalVolt = new SimpleStringProperty(totVolt);
+//        System.out.println(totalVolt);
+//        totalVoltage.textProperty().bind(totalVolt);
     }
 
 }
