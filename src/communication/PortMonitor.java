@@ -42,6 +42,20 @@ public class PortMonitor implements Runnable {
         serialPorts = new ArrayList<>();
     }
 
+    @Override
+    public void run() {
+        listPorts();
+        System.out.println("Running monitor thread");
+        addAllSerialPorts();
+        System.out.println("added serial ports");
+        try {
+            batpackPort = connectBatpack();
+            System.out.println("batteryPack Connected");
+        } catch (PortInUseException | UnsupportedCommOperationException ex) {
+            Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     private void addAllSerialPorts() {
         Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
         while (portEnum.hasMoreElements()) {
@@ -79,22 +93,9 @@ public class PortMonitor implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        System.out.println("Running monitor thread");
-        addAllSerialPorts();
-        System.out.println("added serial ports");
-        try {
-            batpackPort = connectBatpack();
-            System.out.println("batteryPack Connected");
-        } catch (PortInUseException | UnsupportedCommOperationException ex) {
-            Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     private MySerialPort connectBatpack() throws PortInUseException, UnsupportedCommOperationException {
         MySerialPort batpack;
-        batpack = new MySerialPort(serialPorts.get(0).getCommId());
+        batpack = null;
         for (MySerialPort port : serialPorts) {
             CommPort commport = port.getCommId().open("testMessages.txt", 2000);
             if (commport instanceof SerialPort) {
@@ -110,6 +111,7 @@ public class PortMonitor implements Runnable {
                             String message = new String(readBuffer, 0, len);
                             System.out.println(message);
                             if (message.equals("CB\n")) {//Connected BatteryPack, just a quick ID
+                                System.out.println("batpack found");
                                 batpack = port;
                             }
                         }
