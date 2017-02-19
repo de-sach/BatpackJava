@@ -22,8 +22,18 @@ import gnu.io.CommPortIdentifier;
  *
  * @author Peter
  */
-public class SerialPort {
-    public SerialPort(CommPortIdentifier comm){
+public class MySerialPort {
+    private CommPortIdentifier commId;
+
+    public CommPortIdentifier getCommId() {
+        return commId;
+    }
+
+    public void setCommId(CommPortIdentifier commId) {
+        this.commId = commId;
+    }
+    
+    public MySerialPort(CommPortIdentifier comm){
         assert (comm.getPortType()==CommPortIdentifier.PORT_SERIAL);
         
     }
