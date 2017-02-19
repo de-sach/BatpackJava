@@ -17,8 +17,6 @@
 package storage;
 
 import battery.BatteryPacket;
-import battery.BatteryCell;
-import battery.BatteryModule;
 import com.almworks.sqlite4java.SQLiteException;
 import java.io.IOException;
 
