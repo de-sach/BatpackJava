@@ -72,8 +72,10 @@ public class BatteryMonitorSystem extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        PortMonitor monitor = new PortMonitor();
-        monitor.listPorts();
+        PortMonitor portMonitor = new PortMonitor();
+//        monitor.listPorts();        
+        Thread monitorThread = new Thread(portMonitor);
+        monitorThread.start();
         launch(args);
     }
 

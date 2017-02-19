@@ -25,13 +25,11 @@ import java.util.List;
  *
  * @author Peter
  */
-public class PortMonitor {
-
+public class PortMonitor implements Runnable {
     List<SerialPort> serialPorts;
 
     public PortMonitor() {
         serialPorts = new ArrayList<>();
-        this.addAllSerialPorts();
     }
 
     private void addAllSerialPorts() {
@@ -69,5 +67,12 @@ public class PortMonitor {
             default:
                 return "unknown type";
         }
+    }
+    
+    @Override
+    public void run(){
+        System.out.println("Running monitor thread");
+        addAllSerialPorts();
+        System.out.println("added serial ports");
     }
 }
