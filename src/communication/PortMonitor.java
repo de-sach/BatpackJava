@@ -171,7 +171,9 @@ public class PortMonitor implements Runnable {
     }
 
     private BatteryPacket createBatpack(CommPortIdentifier batteryPackCommportIdentifier) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //ask batpack for nr of modules;
+        BatteryPacket bp = new BatteryPacket(9);
+        return bp;
     }
 
     private void addAllPorts() {

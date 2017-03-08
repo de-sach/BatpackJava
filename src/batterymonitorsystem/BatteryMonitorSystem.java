@@ -18,8 +18,11 @@ import storage.dbConnector;
 import storage.dbRunnable;
 
 /**
- *
- * @author sach
+ * @Company: Formula Electric Belgium
+ * @Author: sach
+ * @Project: Umicore Nova
+ * @Part: BMS pc
+ * @Created: Januari 2017
  */
 public class BatteryMonitorSystem extends Application {
 
