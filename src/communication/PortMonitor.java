@@ -16,6 +16,7 @@
  */
 package communication;
 
+import battery.BatteryPacket;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
@@ -24,7 +25,6 @@ import gnu.io.UnsupportedCommOperationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,48 +36,34 @@ import java.util.logging.Logger;
 public class PortMonitor implements Runnable {
 
     List<CommPortIdentifier> commPorts;
-    List<SerialPort> serialPorts;
     SerialPort batpackPort;
+    private int baudrate;
+    private String BATPACK_IDENTIFIER = new String("C0_4129\r\n");
+
+    public int getBaudrate() {
+        return baudrate;
+    }
+
+    public void setBaudrate(int baudrate) {
+        this.baudrate = baudrate;
+    }
 
     public PortMonitor() {
         commPorts = new ArrayList<>();
-        serialPorts = new ArrayList<>();
     }
 
     @Override
     public void run() {
-        try {
-            listPorts();
-            System.out.println("Running monitor thread");
-            addAllSerialPorts();
-            for (SerialPort sp : serialPorts) {
-                System.out.println("serial: " + sp);
-            }
-            CommPortIdentifier bpp = commPorts.get(0);
-            tryRead(bpp, 500000);
-        } catch (UnsupportedCommOperationException | IOException | PortInUseException ex) {
-            Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
-    private void addAllSerialPorts() {
-        Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-        while (portEnum.hasMoreElements()) {
-            System.out.println("port found");
-            CommPortIdentifier portId = portEnum.nextElement();
-            commPorts.add(portId);
-            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                String portName = portId.getName();
-                System.out.println("new serial port found " + portName);
-                try {
-                    SerialPort sp = (SerialPort) portId.open("CommUtil", 50);
-                    sp.close();
-                    serialPorts.add(sp);
-                } catch (PortInUseException ex) {
-                    Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
+        listPorts();
+        System.out.println("Running monitor thread");
+        addAllPorts();
+        //sloppy read
+//            CommPortIdentifier bpp = commPorts.get(0);
+//            tryRead(bpp, 500000);
+//            
+        BatteryPacket bp = findBatpack();
+
     }
 
     public void listPorts() {
@@ -109,17 +95,90 @@ public class PortMonitor implements Runnable {
         CommPort cp = cpi.open("test.txt", baudRate);
         SerialPort sp = (SerialPort) cp;
         sp.setSerialPortParams(baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_2, SerialPort.PARITY_ODD);
-        
+
         InputStream in = sp.getInputStream();
         byte[] buffer = new byte[1024];
         int len = -1;
         String message;
         while ((len = in.read(buffer)) > -1) {
             message = new String(buffer, 0, len);
-            if (message!=null || !message.equals("")) {
+            if (message != null || !message.equals("")) {
                 System.out.println(message);
             }
 
+        }
+    }
+
+    private BatteryPacket findBatpack() {
+        this.setBaudrate(500000);
+        BatteryPacket batpack = null;
+        CommPortIdentifier batteryPackCommportIdentifier = checkAllCommports();
+        if (batteryPackCommportIdentifier != null) {
+            System.out.println("batpack ID found");
+            batpack = createBatpack(batteryPackCommportIdentifier);
+        }
+        return batpack;
+    }
+
+    private CommPortIdentifier checkAllCommports() {
+        CommPortIdentifier batpackId = null;
+        for (CommPortIdentifier cpi : commPorts) {
+            try {
+                CommPort cp = cpi.open("test.txt", this.getBaudrate());
+                if (cpi.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                    SerialPort sp = (SerialPort) cp;
+                    System.out.println("serial port found");
+                    try {
+                        sp.setSerialPortParams(this.getBaudrate(), SerialPort.DATABITS_8, SerialPort.STOPBITS_2, SerialPort.PARITY_ODD);
+                        InputStream in = sp.getInputStream();
+                        byte[] buffer = new byte[62500];//1s of data in buffer max
+                        int len = -1;
+                        String message;
+                        boolean found;
+                        found = false;
+                        System.out.println("starting read");
+                        int begin = 0;
+                        len = in.read(buffer);
+                        for (int i = begin; i < 10; i++) {
+                            if ((char) buffer[i] == '\r' && (char) buffer[i + 1] == '\n') {
+                                System.out.println("for loop char "+ (char) buffer[i]);
+                                begin = i + 2;
+                                System.out.println("first index "+ begin);
+                            }
+                        }
+                        while ((len = in.read(buffer)) > -1 && !found) {
+                            System.out.println((char) buffer[0]);
+
+                            message = new String(buffer, begin, 9);
+                            if (message != null || !message.equals("")) {
+                                System.out.println("message = " + message);
+                                if (message.equals(BATPACK_IDENTIFIER)) {
+                                    found = true;
+                                    batpackId = cpi;
+                                }
+                            }
+                        }
+                    } catch (UnsupportedCommOperationException | IOException ex) {
+                        Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                cp.close();
+            } catch (PortInUseException ex) {
+                Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return batpackId;
+    }
+
+    private BatteryPacket createBatpack(CommPortIdentifier batteryPackCommportIdentifier) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void addAllPorts() {
+        java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+        while (portEnum.hasMoreElements()) {
+            CommPortIdentifier portIdentifier = portEnum.nextElement();
+            commPorts.add(portIdentifier);
         }
     }
 
