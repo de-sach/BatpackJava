@@ -35,23 +35,27 @@ import java.util.logging.Logger;
  */
 public class PortMonitor implements Runnable {
 
-    List<MySerialPort> serialPorts;
-    MySerialPort batpackPort;
+    List<CommPortIdentifier> commPorts;
+    List<SerialPort> serialPorts;
+    SerialPort batpackPort;
 
     public PortMonitor() {
+        commPorts = new ArrayList<>();
         serialPorts = new ArrayList<>();
     }
 
     @Override
     public void run() {
-        listPorts();
-        System.out.println("Running monitor thread");
-        addAllSerialPorts();
-        System.out.println("added serial ports");
         try {
-            batpackPort = connectBatpack();
-            System.out.println("batteryPack Connected");
-        } catch (PortInUseException | UnsupportedCommOperationException ex) {
+            listPorts();
+            System.out.println("Running monitor thread");
+            addAllSerialPorts();
+            for (SerialPort sp : serialPorts) {
+                System.out.println("serial: " + sp);
+            }
+            CommPortIdentifier bpp = commPorts.get(0);
+            tryRead(bpp, 500000);
+        } catch (UnsupportedCommOperationException | IOException | PortInUseException ex) {
             Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -61,9 +65,17 @@ public class PortMonitor implements Runnable {
         while (portEnum.hasMoreElements()) {
             System.out.println("port found");
             CommPortIdentifier portId = portEnum.nextElement();
+            commPorts.add(portId);
             if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                MySerialPort sp = new MySerialPort(portId);
-                System.out.println("new serial port added");
+                String portName = portId.getName();
+                System.out.println("new serial port found " + portName);
+                try {
+                    SerialPort sp = (SerialPort) portId.open("CommUtil", 50);
+                    sp.close();
+                    serialPorts.add(sp);
+                } catch (PortInUseException ex) {
+                    Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
@@ -93,42 +105,22 @@ public class PortMonitor implements Runnable {
         }
     }
 
-    private MySerialPort connectBatpack() throws PortInUseException, UnsupportedCommOperationException {
-        MySerialPort batpack;
-        batpack = null;
-        for (MySerialPort port : serialPorts) {
-            CommPort commport = port.getCommId().open("testMessages.txt", 2000);
-            if (commport instanceof SerialPort) {
-                InputStream in = null;
-                try {
-                    SerialPort sp = (SerialPort) commport;
-                    sp.setSerialPortParams(57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-                    in = sp.getInputStream();
-                    byte[] readBuffer = new byte[1024];
-                    int len = -1;
-                    try {
-                        while ((len = in.read(readBuffer)) > -1) {
-                            String message = new String(readBuffer, 0, len);
-                            System.out.println(message);
-                            if (message.equals("CB\n")) {//Connected BatteryPack, just a quick ID
-                                System.out.println("batpack found");
-                                batpack = port;
-                            }
-                        }
-                    } catch (IOException ex) {
-                        Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
-                } finally {
-                    try {
-                        in.close();
-                    } catch (IOException ex) {
-                        Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+    private void tryRead(CommPortIdentifier cpi, int baudRate) throws UnsupportedCommOperationException, IOException, PortInUseException {
+        CommPort cp = cpi.open("test.txt", baudRate);
+        SerialPort sp = (SerialPort) cp;
+        sp.setSerialPortParams(baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_2, SerialPort.PARITY_ODD);
+        
+        InputStream in = sp.getInputStream();
+        byte[] buffer = new byte[1024];
+        int len = -1;
+        String message;
+        while ((len = in.read(buffer)) > -1) {
+            message = new String(buffer, 0, len);
+            if (message!=null || !message.equals("")) {
+                System.out.println(message);
             }
+
         }
-        return batpack;
     }
+
 }
