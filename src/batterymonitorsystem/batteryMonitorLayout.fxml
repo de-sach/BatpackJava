@@ -75,6 +75,7 @@
                                                             <Font size="30.0" />
                                                          </font>
                                                       </Label>
+                                                      <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
                                                 <Group fx:id="Module2">
@@ -87,6 +88,7 @@
                                                             <Font size="30.0" />
                                                          </font>
                                                       </Label>
+<Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
                                                 <Group fx:id="Module3">
@@ -98,7 +100,7 @@
                                                          <font>
                                                             <Font size="30.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
                                              </children>
@@ -114,7 +116,7 @@
                                                          <font>
                                                             <Font size="30.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
                                                 <Group fx:id="Module5">
@@ -126,7 +128,7 @@
                                                          <font>
                                                             <Font size="30.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
                                                 <Group fx:id="Module6">
@@ -138,7 +140,7 @@
                                                          <font>
                                                             <Font size="30.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
                                              </children>
@@ -154,7 +156,7 @@
                                                          <font>
                                                             <Font size="30.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
                                                 <Group fx:id="Module8">
@@ -166,7 +168,7 @@
                                                          <font>
                                                             <Font size="30.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
                                                 <Group fx:id="Module9">
@@ -178,7 +180,7 @@
                                                          <font>
                                                             <Font size="30.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
                                              </children>
@@ -196,17 +198,12 @@
                            <content>
                               <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                  <children>
-                                    <MenuButton layoutY="-1.0" mnemonicParsing="false" text="select module" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                      <items>
-                                        <MenuItem mnemonicParsing="false" text="Action 1" />
-                                        <MenuItem mnemonicParsing="false" text="Action 2" />
-                                      </items>
-                                    </MenuButton>
+                                    <MenuButton fx:id="moduleChooser" layoutY="-1.0" mnemonicParsing="false" text="select module" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     <VBox prefHeight="200.0" prefWidth="100.0" spacing="55.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
                                        <children>
                                           <HBox nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                                              <children>
-                                                <Group>
+                                                <Group fx:id="cell1">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -216,9 +213,10 @@
                                                             <Font size="24.0" />
                                                          </font>
                                                       </Label>
+                                                      <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell2">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -227,10 +225,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell3">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -239,10 +237,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell4">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -251,10 +249,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell5">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -263,10 +261,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell6">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -275,10 +273,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell7">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -287,10 +285,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell8">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -299,14 +297,14 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
                                              </children>
                                           </HBox>
                                           <HBox nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                                              <children>
-                                                <Group>
+                                                <Group fx:id="cell9">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -315,10 +313,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell10">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -327,10 +325,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell11">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -339,10 +337,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell12">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -351,10 +349,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell13">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -363,10 +361,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell14">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -375,10 +373,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell15">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -387,10 +385,10 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
-                                                <Group>
+                                                <Group fx:id="cell16">
                                                    <children>
                                                       <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
                                                       <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
@@ -399,7 +397,7 @@
                                                          <font>
                                                             <Font size="24.0" />
                                                          </font>
-                                                      </Label>
+                                                      </Label><Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
                                                    </children>
                                                 </Group>
                                              </children>
