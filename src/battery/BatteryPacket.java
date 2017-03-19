@@ -16,6 +16,7 @@
  */
 package battery;
 
+import static battery.doubleHelper.round;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,40 +25,50 @@ import java.util.List;
  * @author sach
  */
 public class BatteryPacket {
+
     private int moduleCount;
     private double totalVoltage;
     private List<BatteryModule> modules;
     private double averageTemperature;
-    
-    public BatteryPacket(int moduleCount){
-        this.moduleCount=moduleCount;
+
+    public BatteryPacket(int moduleCount) {
+        this.moduleCount = moduleCount;
         this.modules = new ArrayList();
-        
+
     }
-    
-   public void updateTotalVoltage(){
-       double totalVoltage=0.0;
-       for (BatteryModule module:modules){
-           totalVoltage+=module.getVoltage();
-       }
-       this.totalVoltage=totalVoltage;
-   }
-   
-   public void updateAvgTemp(){
-       double avgTemp = 0;
-       for(BatteryModule module:modules){
-           avgTemp += module.getAverageTemperature();
-       }
-       avgTemp=avgTemp/(modules.size());
-       this.averageTemperature=avgTemp;       
-   }
+
+    public void updateTotalVoltage() {
+        double totalVoltage = 0.0;
+        for (BatteryModule module : modules) {
+            totalVoltage += module.getVoltage();
+        }
+        this.totalVoltage = totalVoltage;
+    }
+
+    public void updateAvgTemp() {
+        double avgTemp = 0;
+        for (BatteryModule module : modules) {
+            avgTemp += module.getAverageTemperature();
+        }
+        avgTemp = avgTemp / (modules.size());
+        this.averageTemperature = avgTemp;
+    }
 
     public int getModuleCount() {
         return moduleCount;
     }
 
     public double getTotalVoltage() {
+        updateTotalVoltage();
         return totalVoltage;
+    }
+
+    public String getTotalVoltageAsString() {
+        updateTotalVoltage();
+        String totalVoltageAsString;
+        totalVoltageAsString = Double.toString(round(totalVoltage,2));
+        totalVoltageAsString += " V";
+        return totalVoltageAsString;
     }
 
     public List<BatteryModule> getModules() {
@@ -67,8 +78,20 @@ public class BatteryPacket {
     public double getAverageTemperature() {
         return averageTemperature;
     }
-   
-    public void addModule(BatteryModule module){
+
+    public void addModule(BatteryModule module) {
         modules.add(module);
     }
+
+     public String getAverageTemperatureAsString() {
+        updateAvgTemp();
+        String averageTemperatureAsString;
+        averageTemperatureAsString = Double.toString(round(averageTemperature,2));
+        averageTemperatureAsString+= " °C";
+        return averageTemperatureAsString;
+    }
+    
+   
+
+   
 }

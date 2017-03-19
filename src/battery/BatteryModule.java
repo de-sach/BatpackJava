@@ -5,8 +5,10 @@
  */
 package battery;
 
+import static battery.doubleHelper.round;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  *
@@ -50,6 +52,7 @@ public class BatteryModule {
     public void updateTemperature(){
         double avgTemp=0.0;
         avgTemp = module.stream().map((cell) -> cell.getTemperature()).reduce(avgTemp, (accumulator, _item) -> accumulator + _item);
+        avgTemp = avgTemp/this.getNrOfCells();
         this.averageTemperature=avgTemp;
     }
 
@@ -66,14 +69,32 @@ public class BatteryModule {
     }
 
     public double getVoltage() {
+        updateVoltage();
         return voltage;
     }
 
     public double getAverageTemperature() {
+        updateTemperature();
         return averageTemperature;
     }
     
     public List<BatteryCell> getBatteryCells(){
         return this.module;
+    }
+
+    public String getVoltageAsString() {
+        updateVoltage();
+        String totalVoltageAsString;
+        totalVoltageAsString = Double.toString(round(this.voltage,2));
+        totalVoltageAsString += " V";
+        return totalVoltageAsString;
+    }
+    
+     public String getAverageTemperatureAsString() {
+        updateTemperature();
+        String averageTemperatureAsString;
+        averageTemperatureAsString = Double.toString(round(averageTemperature,2));
+        averageTemperatureAsString+= " °C";
+        return averageTemperatureAsString;
     }
 }

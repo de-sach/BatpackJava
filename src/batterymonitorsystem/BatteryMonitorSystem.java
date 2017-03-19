@@ -26,15 +26,13 @@ import storage.dbRunnable;
  */
 public class BatteryMonitorSystem extends Application {
 
-    private BatteryPacket batpack;  
+    private static BatteryPacket batpack;
     Parent root;
 
     @Override
     public void start(Stage stage) throws Exception {
-        this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
-        Scene scene = new Scene(root);
+//        this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
         Random random = new Random();
-        dbConnector conn = new dbConnector();
 //        
 //        batteryCell testCell = new batteryCell(20.0, 3.5, 1, 10);
 //        batteryModule testModule = new batteryModule(1, 15);
@@ -42,9 +40,8 @@ public class BatteryMonitorSystem extends Application {
 //        for (batteryCell cell:testModule.getBatteryCells()){
 //            conn.setParams(cell);
 //        }
-
         //create random test battery packet & save to db
-        batpack = new BatteryPacket(10);
+        batpack = new BatteryPacket(9);
         for (int module = 0; module < 9; module++) {
             BatteryModule mod = new BatteryModule(module, 16);
             batpack.addModule(mod);
@@ -63,6 +60,14 @@ public class BatteryMonitorSystem extends Application {
         }
         dbRunnable r = new dbRunnable(1, batpack);
         Thread t = new Thread(r);
+        System.out.println(batpack.getTotalVoltage());
+        System.out.println(batpack.getTotalVoltageAsString());
+        System.out.println(batpack);
+
+        this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
+        Scene scene = new Scene(root);
+
+        dbConnector conn = new dbConnector();
         t.start();
 
         this.load();
@@ -76,20 +81,16 @@ public class BatteryMonitorSystem extends Application {
      */
     public static void main(String[] args) {
         PortMonitor portMonitor = new PortMonitor();
-//        monitor.listPorts();        
         Thread monitorThread = new Thread(portMonitor);
         monitorThread.start();
         launch(args);
     }
 
     private void load() {
-//        Label totalVoltage = (Label) root.lookup("#totalVoltage");
-//        System.out.println(totalVoltage);
-//        String totVolt = Double.toString(batpack.getTotalVoltage());
-//        System.out.println(totVolt);
-//        StringProperty totalVolt = new SimpleStringProperty(totVolt);
-//        System.out.println(totalVolt);
-//        totalVoltage.textProperty().bind(totalVolt);
+    }
+
+    public static BatteryPacket getBatpack() {
+        return BatteryMonitorSystem.batpack;
     }
 
 }
