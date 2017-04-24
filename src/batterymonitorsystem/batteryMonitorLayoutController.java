@@ -12,15 +12,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuButtonBuilder;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TitledPane;
@@ -177,7 +176,10 @@ public class batteryMonitorLayoutController implements Initializable {
 
     @FXML
     private MenuButton moduleChooser;
-
+    
+    @FXML
+    private Accordion accordion;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.batpack = BatteryMonitorSystem.getBatpack();
@@ -211,9 +213,24 @@ public class batteryMonitorLayoutController implements Initializable {
         batteryCells.add(cell14);
         batteryCells.add(cell15);
         batteryCells.add(cell16);
+        
+        bindModuleClick();
+        
         updateTotalVoltage();
         updateModules();
+        accordion.setExpandedPane(batpackOverview);
+        
+        
     }
+    
+    public void bindModuleClick(){
+        for (int i = 0; i < batteryModules.size();i++){
+            selectedModule=i;
+            batteryModules.get(i).setOnMouseClicked(openModule);
+        }
+    }
+    
+    
 
     private void updateTotalVoltage() {
         if (this.batpack != null) {
@@ -302,4 +319,16 @@ public class batteryMonitorLayoutController implements Initializable {
         progressBar.setProgress(progress);
         temperature.setText(cell.getTemperatureAsString());
     }
+    
+    EventHandler openModule = (EventHandler<MouseEvent>) (MouseEvent event) -> {
+        for(int i =0; i<batteryModules.size();i++){
+            if(batteryModules.get(i).getChildren().contains(event.getSource())||batteryModules.get(i).equals(event.getSource())){
+                setSelectedModule(i);
+            }
+        }
+        updateCells(getSelectedModule());
+        accordion.setExpandedPane(ModuleOverview);
+        moduleChooser.setText("module "+ (getSelectedModule()+1));
+    };
+    
 }
