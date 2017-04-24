@@ -5,10 +5,12 @@
  */
 package batterymonitorsystem;
 
-import battery.BatteryModule;
 import battery.BatteryPacket;
 import communication.PortMonitor;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,7 +30,7 @@ public class BatteryMonitorSystem extends Application {
 
     private static BatteryPacket batpack;
     Parent root;
-
+    
     @Override
     public void start(Stage stage) throws Exception {
 //        this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
@@ -41,7 +43,7 @@ public class BatteryMonitorSystem extends Application {
 //            conn.setParams(cell);
 //        }
         //create random test battery packet & save to db
-        batpack = new BatteryPacket(9);
+        /*batpack = new BatteryPacket(9);
         for (int module = 0; module < 9; module++) {
             BatteryModule mod = new BatteryModule(module, 16);
             batpack.addModule(mod);
@@ -58,6 +60,7 @@ public class BatteryMonitorSystem extends Application {
                 cell.setVoltage(3 + random.nextFloat());
             });
         }
+        */
         dbRunnable r = new dbRunnable(1, batpack);
         Thread t = new Thread(r);
         System.out.println(batpack.getTotalVoltage());
@@ -80,10 +83,20 @@ public class BatteryMonitorSystem extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        PortMonitor portMonitor = new PortMonitor();
+        final CountDownLatch latch = new CountDownLatch(1);
+        PortMonitor portMonitor = new PortMonitor(latch);
+        
         Thread monitorThread = new Thread(portMonitor);
         monitorThread.start();
+        try {
+            latch.await();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        batpack = portMonitor.getBatteryPack();
+        System.out.println(batpack.getModuleCount());
         launch(args);
+        
     }
 
     private void load() {
