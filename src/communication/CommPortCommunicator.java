@@ -112,7 +112,7 @@ public class CommPortCommunicator implements Runnable {
     }
     
     void resendMessage(){
-        if (lastMessage.length()>5);
+        if (lastMessage.length()>7);
         this.outMessage =lastMessage;
     }
 }

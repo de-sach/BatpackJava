@@ -406,7 +406,7 @@ public class PortMonitor implements Runnable {
 
     private void handleMessage(String message) {
         assert (message.length() == 8);
-        System.out.println("handeling message: " + message);
+        //System.out.println("handeling message: " + message);
         message = message.trim();
         switch (message) {
             case "Timeout":

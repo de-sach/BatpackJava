@@ -152,19 +152,22 @@ class MessageParser {
         switch (part) {
             case "T":
                 //String[] split = message.split("_");
-
+                this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1, message.split("_")[0].length()));
+                int moduleNr = this.cellIndex/16;
+                double temp = Double.parseDouble(message.split("_")[1])/1000;
+                this.batpack.getModules().get(moduleNr).getBatteryCells().get(cellIndex%16).setTemperature(temp);
                 break;
             case "M":
-                System.out.println("parsing M");
+                //System.out.println("parsing M");
                 String[] split = message.split("_");
                 this.nrOfModules = Integer.parseInt(split[split.length - 1]);
                 break;
             case "V":
-                System.out.println("parsing V");
+                //System.out.println("parsing V");
                 this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1, message.split("_")[0].length()));
-                System.out.println("cellindex: "+cellIndex);
-                int moduleIndex = this.cellIndex /16;
-                System.out.println("moduleIndex: "+moduleIndex);
+                //System.out.println("cellindex: "+cellIndex);
+                int moduleIndex = this.cellIndex / 16;
+                //System.out.println("moduleIndex: "+moduleIndex);
                 int cellInModule = this.cellIndex % 16;
                 BatteryCell cell = new BatteryCell(0, 0, cellInModule, 0);
                 if (moduleIndex == this.batpack.getModuleCount()) {
@@ -181,6 +184,7 @@ class MessageParser {
                 System.out.println("unnknown command");
                 status = 1;
         }
+        /*
         System.out.println("batpack: " + this.batpack);
         if (this.batpack != null) {
             System.out.println("nr of modules: " + this.batpack.getModuleCount());
@@ -190,6 +194,7 @@ class MessageParser {
                 }
             }
         }
+        */
         return status;
     }
 
@@ -199,10 +204,10 @@ class MessageParser {
 
     boolean getBatpackReady() {
         boolean ready = false;
-        if (this.batpack!=null){
-            if(this.batpack.getModuleCount()==9){
-                if(this.batpack.getModules().get(8).getNrOfCells()==15){
-                    ready=true;
+        if (this.batpack != null) {
+            if (this.batpack.getModuleCount() == 9) {
+                if (this.batpack.getModules().get(8).getNrOfCells() == 15) {
+                    ready = true;
                 }
             }
         }
