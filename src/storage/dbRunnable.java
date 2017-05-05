@@ -16,11 +16,13 @@
  */
 package storage;
 
-import battery.BatteryPacket;
 import battery.BatteryCell;
 import battery.BatteryModule;
+import battery.BatteryPacket;
 import com.almworks.sqlite4java.SQLiteException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -46,11 +48,19 @@ public class dbRunnable implements Runnable {
     public void run() {
         System.out.println("db thread is running");
         //what the thread should do
+
 //        for (BatteryModule module : batpack.getModules()) {
 //            for (BatteryCell cell : module.getBatteryCells()) {
 //                dbcon.insertCell(cell);
 //            }
 //        }
-        dbcon.insertBatpack(batpack);
+        while (true) {
+            try {
+                dbcon.insertBatpack(batpack);
+                Thread.sleep(10000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(dbRunnable.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }

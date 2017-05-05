@@ -5,38 +5,36 @@
  */
 package batterymonitorsystem;
 
-import battery.BatteryModule;
 import battery.BatteryPacket;
+import communication.PortMonitor;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import storage.dbConnector;
 import storage.dbRunnable;
 
 /**
- *
- * @author sach
+ * @Company: Formula Electric Belgium
+ * @Author: sach
+ * @Project: Umicore Nova
+ * @Part: BMS pc
+ * @Created: Januari 2017
  */
 public class BatteryMonitorSystem extends Application {
 
-    private BatteryPacket batpack;  
+    private static BatteryPacket batpack;
     Parent root;
-
+    
     @Override
     public void start(Stage stage) throws Exception {
-        this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
-        Scene scene = new Scene(root);
+//        this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
         Random random = new Random();
-        dbConnector conn = new dbConnector();
 //        
 //        batteryCell testCell = new batteryCell(20.0, 3.5, 1, 10);
 //        batteryModule testModule = new batteryModule(1, 15);
@@ -44,9 +42,8 @@ public class BatteryMonitorSystem extends Application {
 //        for (batteryCell cell:testModule.getBatteryCells()){
 //            conn.setParams(cell);
 //        }
-
         //create random test battery packet & save to db
-        batpack = new BatteryPacket(10);
+        /*batpack = new BatteryPacket(9);
         for (int module = 0; module < 9; module++) {
             BatteryModule mod = new BatteryModule(module, 16);
             batpack.addModule(mod);
@@ -63,8 +60,17 @@ public class BatteryMonitorSystem extends Application {
                 cell.setVoltage(3 + random.nextFloat());
             });
         }
+        */
         dbRunnable r = new dbRunnable(1, batpack);
         Thread t = new Thread(r);
+        System.out.println(batpack.getTotalVoltage());
+        System.out.println(batpack.getTotalVoltageAsString());
+        System.out.println(batpack);
+
+        this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
+        Scene scene = new Scene(root);
+
+        dbConnector conn = new dbConnector();
         t.start();
 
         this.load();
@@ -77,17 +83,28 @@ public class BatteryMonitorSystem extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        final CountDownLatch latch = new CountDownLatch(1);
+        PortMonitor portMonitor = new PortMonitor(latch);
+        portMonitor.setBaudrate(500000);
+        Thread monitorThread = new Thread(portMonitor);
+        monitorThread.start();
+        try {
+            latch.await();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        batpack = portMonitor.getBatteryPack();
+        
+        System.out.println(batpack.getModuleCount());
         launch(args);
+        
     }
 
     private void load() {
-//        Label totalVoltage = (Label) root.lookup("#totalVoltage");
-//        System.out.println(totalVoltage);
-//        String totVolt = Double.toString(batpack.getTotalVoltage());
-//        System.out.println(totVolt);
-//        StringProperty totalVolt = new SimpleStringProperty(totVolt);
-//        System.out.println(totalVolt);
-//        totalVoltage.textProperty().bind(totalVolt);
+    }
+
+    public static BatteryPacket getBatpack() {
+        return BatteryMonitorSystem.batpack;
     }
 
 }

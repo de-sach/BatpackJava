@@ -5,6 +5,7 @@
  */
 package battery;
 
+import static battery.doubleHelper.round;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,5 +69,19 @@ public class BatteryCell {
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    public String getVoltageAsString() {
+        String totalVoltageAsString;
+        totalVoltageAsString = Double.toString(round(this.voltage,2));
+        totalVoltageAsString += " V";
+        return totalVoltageAsString;
+    }
+
+    public String getTemperatureAsString() {
+        String tempAsString;
+        tempAsString = Double.toString(round(this.temperature,2));
+        tempAsString += "°C";
+        return tempAsString;
     }
 }
