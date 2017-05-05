@@ -97,4 +97,9 @@ public class BatteryModule {
         averageTemperatureAsString+= " °C";
         return averageTemperatureAsString;
     }
+
+    public void addCell(BatteryCell cell) {
+        this.nrOfCells++;
+        this.module.add(cell);
+    }
 }

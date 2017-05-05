@@ -80,6 +80,7 @@ public class BatteryPacket {
     }
 
     public void addModule(BatteryModule module) {
+        moduleCount++;
         modules.add(module);
     }
 
