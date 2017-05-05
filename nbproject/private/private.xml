@@ -3,9 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/P:/Documents/Formula_Electric/BatteryMonitor/BatteryMonitorSystem/src/communication/PortMonitor.java</file>
+            <file>file:/P:/Documents/Formula_Electric/BatteryMonitor/BatteryMonitorSystem/src/battery/BatteryPacket.java</file>
             <file>file:/P:/Documents/Formula_Electric/BatteryMonitor/BatteryMonitorSystem/src/batterymonitorsystem/BatteryMonitorSystem.java</file>
-            <file>file:/P:/Documents/Formula_Electric/BatteryMonitor/BatteryMonitorSystem/src/communication/CommPortCommunicator.java</file>
         </group>
     </open-files>
 </project-private>

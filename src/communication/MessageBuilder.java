@@ -37,17 +37,17 @@ public class MessageBuilder {
     
     private String buildMessage(int type, int identifier){
         switch (type){
-            case 0: //get all voltages
+            case 0: //get all 
                 this.message+="A_0000";
                 break;
-            case 1: //get Module voltage
+            case 1: //get Module 
                 this.message+="M_";
                 for(int i=(int) (4-Math.floor(Math.log10(identifier)+1));i>0;i--){
                     this.message+="0";
                 }
                 this.message+=identifier;
                 break;
-            case 2: //get cell voltage
+            case 2: //get cell 
                 this.message+="C_";
                 for(int i=(int) (4-Math.floor(Math.log10(identifier)+1));i>0;i--){
                     this.message+="0";

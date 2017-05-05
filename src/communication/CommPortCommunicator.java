@@ -40,8 +40,7 @@ public class CommPortCommunicator implements Runnable {
     private final int par;
     private final int stb;
     private final CommPortIdentifier cpi;
-    private List<String> messageList;
-    private String message;
+    private final List<String> messageList;
     private String outMessage;
     private String lastMessage;
     private String received;
@@ -65,15 +64,15 @@ public class CommPortCommunicator implements Runnable {
         try {
             byte[] readbuffer = new byte[5000];
             byte[] writebuffer = new byte[5000];
-            char[] messagebuffer = new char[5000];
-            this.message = new String();
+            char[] messagebuffer;
+            int len;
 
             CommPort cp = this.cpi.open("", this.br);
             SerialPort sp = (SerialPort) cp;
             sp.setSerialPortParams(this.br, this.db, this.stb, this.par);
-            int len = -1;
+
             while (true) {
-                
+
                 InputStream in = cp.getInputStream();
                 OutputStream out = cp.getOutputStream();
                 len = in.read(readbuffer);
@@ -81,14 +80,16 @@ public class CommPortCommunicator implements Runnable {
                 if (len > 0) {
                     String[] messages = received.split("\r\n");
                     for (int i = 0; i < messages.length; i++) {
-                        if(i>1){
+                        //assure that messages sent out by me aren't returned to me
+                        if (i > 1) {
                             messageList.remove(messages[0]);
                         }
+                        //remove spaces
                         if (messages[i].trim().length() > 2) {
                             messageList.add(messages[i].trim());
                         }
                     }
-                    
+
                 }
                 if (outMessage.length() == 10) {
                     messagebuffer = outMessage.toCharArray();
@@ -99,6 +100,7 @@ public class CommPortCommunicator implements Runnable {
                     lastMessage = outMessage;
                     this.outMessage = "";
                 }
+                //necessary to make sure all threads can be executed.
                 Thread.sleep(100);
             }
         } catch (PortInUseException | UnsupportedCommOperationException | IOException | InterruptedException ex) {
@@ -110,9 +112,9 @@ public class CommPortCommunicator implements Runnable {
     void sendMessage(String message) {
         this.outMessage = message;
     }
-    
-    void resendMessage(){
-        if (lastMessage.length()>7);
-        this.outMessage =lastMessage;
+
+    void resendMessage() {
+        if (lastMessage.length() > 7);
+        this.outMessage = lastMessage;
     }
 }

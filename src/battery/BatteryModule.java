@@ -21,6 +21,11 @@ public class BatteryModule {
     private int status;
     double voltage;
     double averageTemperature;
+    private boolean balance;
+
+    public boolean isBalance() {
+        return balance;
+    }
     
     public BatteryModule(int id, int cellCount){
         this.id = id;
@@ -101,5 +106,9 @@ public class BatteryModule {
     public void addCell(BatteryCell cell) {
         this.nrOfCells++;
         this.module.add(cell);
+    }
+
+    public void setBalancing(boolean balance) {
+        this.balance = balance;
     }
 }

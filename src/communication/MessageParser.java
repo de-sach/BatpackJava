@@ -36,110 +36,6 @@ class MessageParser {
 
     }
 
-    int parseModuleOverview(char[] receiveBuffer) {
-        int numberOfModules = 0;
-        int maxNumberOfChars = receiveBuffer.length; //10 char's per message & 144 cells && endmessage;
-        System.out.println(Arrays.toString(receiveBuffer));
-        char[] buffer;
-        int index = 0;
-        while (index < maxNumberOfChars) {
-            buffer = Arrays.copyOfRange(receiveBuffer, index, index + 10);
-            index += 10;
-            if (isValid(buffer)) {
-                numberOfModules = parseNumber(buffer);
-            }
-        }
-        return numberOfModules;
-    }
-
-    int parseCellOverview(char[] receiveBuffer) {
-        int numberOfCells = 0;
-        int maxNumberOfChars = receiveBuffer.length; //10 char's per message & 144 cells && endmessage;
-        System.out.println(Arrays.toString(receiveBuffer));
-        char[] buffer;
-        int index = 0;
-        boolean valid = true;
-        while (index < maxNumberOfChars && valid) {
-            buffer = Arrays.copyOfRange(receiveBuffer, index, index + 10);
-            index += 10;
-            if (isValid(buffer)) {
-                numberOfCells = parseNumber(buffer);
-            } else {
-                valid = false;
-            }
-        }
-        return numberOfCells;
-    }
-
-    void parseAllVoltages(char[] receiveBuffer, BatteryPacket batpack) {
-        int maxNumberOfChars = receiveBuffer.length; //10 char's per message & 144 cells && endmessage;
-        System.out.println(Arrays.toString(receiveBuffer));
-        char[] buffer;
-        int index = 0;
-        boolean valid = true;
-        while (index < maxNumberOfChars && valid) {
-            buffer = Arrays.copyOfRange(receiveBuffer, index, index + 10);
-            index += 10;
-            if (isValid(buffer)) {
-                int cellid = parseID(buffer);
-                int module_id = (int) Math.floor(cellid / batpack.getModules().get(0).getNrOfCells());
-                int cellInModule = (int) Math.floor(cellid % batpack.getModules().get(module_id).getNrOfCells());
-                BatteryCell cell = batpack.getModules().get(module_id).getBatteryCells().get(cellInModule);
-                cell.setVoltage(parseVoltage(buffer));
-            } else {
-                valid = false;
-            }
-        }
-    }
-
-    void parseAllTemperatures(char[] receiveBuffer, BatteryPacket batpack) {
-        int maxNumberOfChars = receiveBuffer.length; //10 char's per message & 144 cells && endmessage;
-        System.out.println(Arrays.toString(receiveBuffer));
-        char[] buffer;
-        int index = 0;
-        boolean valid = true;
-        while (index < maxNumberOfChars && valid) {
-            buffer = Arrays.copyOfRange(receiveBuffer, index, index + 10);
-            index += 10;
-            if (isValid(buffer)) {
-                int cellid = parseID(buffer);
-                int module_id = (int) Math.floor(cellid / batpack.getModules().get(0).getNrOfCells());
-                int cellInModule = (int) Math.floor(cellid % batpack.getModules().get(module_id).getNrOfCells());
-                BatteryCell cell = batpack.getModules().get(module_id).getBatteryCells().get(cellInModule);
-                cell.setTemperature(parseTemperature(buffer));
-            } else {
-                valid = false;
-            }
-        }
-    }
-
-    void parseAllBalancing(char[] receiveBuffer, BatteryPacket batpack) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private boolean isValid(char[] buffer) {
-        if (buffer[8] == '\r' && buffer[9] == '\n') {
-            return true;
-        }
-        return false;
-    }
-
-    private int parseNumber(char[] buffer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private int parseVoltage(char[] buffer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private int parseID(char[] buffer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private double parseTemperature(char[] buffer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     int parseMessage(String message) {
         int status = 0;
         String part = new String();
@@ -153,9 +49,9 @@ class MessageParser {
             case "T":
                 //String[] split = message.split("_");
                 this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1, message.split("_")[0].length()));
-                int moduleNr = this.cellIndex/16;
-                double temp = Double.parseDouble(message.split("_")[1])/1000;
-                this.batpack.getModules().get(moduleNr).getBatteryCells().get(cellIndex%16).setTemperature(temp);
+                int moduleNr = this.cellIndex / 16;
+                double temp = Double.parseDouble(message.split("_")[1]) / 1000;
+                this.batpack.getModules().get(moduleNr).getBatteryCells().get(cellIndex % 16).setTemperature(temp);
                 break;
             case "M":
                 //System.out.println("parsing M");
@@ -178,8 +74,14 @@ class MessageParser {
                 }
                 module.addCell(cell);
                 break;
-            case "E":
-                break;
+            case "B":
+                this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1,message.split("_")[0].length()));
+                int modulePos = this.cellIndex/16;
+                boolean balance = false;
+                if(Integer.parseInt(message.split("_")[1])==1){
+                    balance = true;
+                }
+                this.batpack.getModules().get(modulePos).setBalancing(balance);
             default:
                 System.out.println("unnknown command");
                 status = 1;
@@ -194,7 +96,7 @@ class MessageParser {
                 }
             }
         }
-        */
+         */
         return status;
     }
 
