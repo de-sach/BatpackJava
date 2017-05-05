@@ -178,6 +178,7 @@ public class PortMonitor implements Runnable {
     }
 
     public void refreshAll() {
+        assert(cpc!=null&&builder!=null);
         try {
             Thread.sleep(100);
             cpc.sendMessage(builder.buildBatpackMessage());

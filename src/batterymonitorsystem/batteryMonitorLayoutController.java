@@ -12,6 +12,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.animation.TimelineBuilder;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -26,6 +32,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 /**
  *
@@ -176,10 +183,10 @@ public class batteryMonitorLayoutController implements Initializable {
 
     @FXML
     private MenuButton moduleChooser;
-    
+
     @FXML
     private Accordion accordion;
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.batpack = BatteryMonitorSystem.getBatpack();
@@ -213,24 +220,23 @@ public class batteryMonitorLayoutController implements Initializable {
         batteryCells.add(cell14);
         batteryCells.add(cell15);
         batteryCells.add(cell16);
-        
+
         bindModuleClick();
-        
+
         updateTotalVoltage();
         updateModules();
+
+        bindUpdates();
+
         accordion.setExpandedPane(batpackOverview);
-        
-        
     }
-    
-    public void bindModuleClick(){
-        for (int i = 0; i < batteryModules.size();i++){
-            selectedModule=i;
+
+    public void bindModuleClick() {
+        for (int i = 0; i < batteryModules.size(); i++) {
+            selectedModule = i;
             batteryModules.get(i).setOnMouseClicked(openModule);
         }
     }
-    
-    
 
     private void updateTotalVoltage() {
         if (this.batpack != null) {
@@ -247,6 +253,7 @@ public class batteryMonitorLayoutController implements Initializable {
     }
 
     private void updateModules() {
+        System.out.println("updating modules");
         if (this.batpack != null) {
             if (this.batpack.getModuleCount() > 9) {
                 System.out.println("batpack not compatible with 2017 layout");
@@ -277,16 +284,15 @@ public class batteryMonitorLayoutController implements Initializable {
         averageTemperature.setText(module.getAverageTemperatureAsString());
     }
 
-
     private void buildMenuItem() {
-        for (int i=0; i<batteryModules.size();i++) {
+        for (int i = 0; i < batteryModules.size(); i++) {
             Group module = batteryModules.get(i);
             String labelText = ((Label) module.getChildren().get(3)).getText();
             MenuItem menuItem = new MenuItem(labelText);
             menuItem.setId(Integer.toString(i));
             EventHandler<ActionEvent> updateCells;
-            updateCells=(event) -> {
-                MenuItem menu = (MenuItem)event.getSource();
+            updateCells = (event) -> {
+                MenuItem menu = (MenuItem) event.getSource();
                 int id = Integer.parseInt(menu.getId());
                 updateCells(id);
             };
@@ -299,36 +305,44 @@ public class batteryMonitorLayoutController implements Initializable {
 
     private void updateCells(int id) {
         BatteryModule module = this.batpack.getModules().get(id);
-        for(int i=0;i<module.getNrOfCells();i++){
-            updateCell(this.batteryCells.get(i),module.getBatteryCells().get(i));
+        for (int i = 0; i < module.getNrOfCells(); i++) {
+            updateCell(this.batteryCells.get(i), module.getBatteryCells().get(i));
         }
     }
 
     private void updateCell(Group cellDisp, BatteryCell cell) {
         //disp: V, %, progressbar, name
-        Label voltage = (Label)cellDisp.getChildren().get(0);
-        Label percentage = (Label)cellDisp.getChildren().get(1);
-        ProgressBar progressBar = (ProgressBar)cellDisp.getChildren().get(2);
-        Label temperature = (Label)cellDisp.getChildren().get(4);
-        
+        Label voltage = (Label) cellDisp.getChildren().get(0);
+        Label percentage = (Label) cellDisp.getChildren().get(1);
+        ProgressBar progressBar = (ProgressBar) cellDisp.getChildren().get(2);
+        Label temperature = (Label) cellDisp.getChildren().get(4);
+
         double progress = (cell.getVoltage() / 4.17);
         int percent = (int) (progress * 100);
-        
+
         voltage.setText(cell.getVoltageAsString());
-        percentage.setText(percent+" %");
+        percentage.setText(percent + " %");
         progressBar.setProgress(progress);
         temperature.setText(cell.getTemperatureAsString());
     }
-    
+
     EventHandler openModule = (EventHandler<MouseEvent>) (MouseEvent event) -> {
-        for(int i =0; i<batteryModules.size();i++){
-            if(batteryModules.get(i).getChildren().contains(event.getSource())||batteryModules.get(i).equals(event.getSource())){
+        for (int i = 0; i < batteryModules.size(); i++) {
+            if (batteryModules.get(i).getChildren().contains(event.getSource()) || batteryModules.get(i).equals(event.getSource())) {
                 setSelectedModule(i);
             }
         }
         updateCells(getSelectedModule());
         accordion.setExpandedPane(ModuleOverview);
-        moduleChooser.setText("module "+ (getSelectedModule()+1));
+        moduleChooser.setText("module " + (getSelectedModule() + 1));
     };
-    
+
+    private void bindUpdates() {
+        final KeyFrame oneFrame = new KeyFrame(Duration.seconds(5), (ActionEvent evt) -> {
+            updateModules();
+        });
+        Timeline timer = TimelineBuilder.create().cycleCount(Animation.INDEFINITE).keyFrames(oneFrame).build();
+        timer.playFromStart();
+    }
+
 }

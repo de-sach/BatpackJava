@@ -16,13 +16,9 @@
  */
 package storage;
 
-import battery.BatteryCell;
-import battery.BatteryModule;
 import battery.BatteryPacket;
 import com.almworks.sqlite4java.SQLiteException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -30,37 +26,23 @@ import java.util.logging.Logger;
  */
 public class dbRunnable implements Runnable {
 
-    private Thread t;
-    private int id;
-    private BatteryPacket batpack;
-    private dbConnector dbcon;
-
-    public dbRunnable(int id, BatteryPacket packet) throws SQLiteException, IOException {
-        this.id = id;
+    private final BatteryPacket batpack;
+    private final dbConnector dbcon;
+    
+    public dbRunnable(BatteryPacket packet) throws SQLiteException, IOException {
         this.batpack = packet;
         dbcon = new dbConnector();
         dbcon.createTable(false);
         System.out.println("size: " + packet.getModuleCount());
-
     }
 
     @Override
     public void run() {
         System.out.println("db thread is running");
-        //what the thread should do
-
-//        for (BatteryModule module : batpack.getModules()) {
-//            for (BatteryCell cell : module.getBatteryCells()) {
-//                dbcon.insertCell(cell);
-//            }
-//        }
-        while (true) {
-            try {
-                dbcon.insertBatpack(batpack);
-                Thread.sleep(10000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(dbRunnable.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
+    
+    public void storeBatpack(){
+        dbcon.insertBatpack(batpack);
+    }
+    
 }

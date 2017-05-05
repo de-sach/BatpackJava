@@ -53,15 +53,19 @@ public class BatteryMonitorSystem implements Runnable{
             }
             batpack = portMonitor.getBatteryPack();
             //SETUP Storage
-            BatteryMonitorSystem.database = new dbRunnable(1, batpack);
+            BatteryMonitorSystem.database = new dbRunnable(batpack);
             Thread databaseThread = new Thread(BatteryMonitorSystem.database);
             databaseThread.start();
             //MAIN CONTROL LOOP
             while(true){
+                //communication
                 System.out.println("Refreshing data");
                 portMonitor.refreshAll();
                 Thread.sleep(5000);
                 batpack = portMonitor.getBatteryPack();
+                //storage
+                database.storeBatpack();
+                
             }
             
         } catch (SQLiteException | IOException | InterruptedException ex) {
