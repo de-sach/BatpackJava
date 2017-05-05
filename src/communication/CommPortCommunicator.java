@@ -45,6 +45,8 @@ public class CommPortCommunicator implements Runnable {
     private List<String> messageList;
     private String message;
     private String outMessage;
+    private String lastMessage;
+    private String received;
 
     public List<String> getMessageList() {
         return messageList;
@@ -62,72 +64,110 @@ public class CommPortCommunicator implements Runnable {
 
     @Override
     public void run() {
-        byte[] readbuffer = new byte[5000];
-        byte[] writebuffer = new byte[5000];
-        char[] messagebuffer = new char[5000];
-        this.message = new String();
         try {
+            byte[] readbuffer = new byte[5000];
+            byte[] writebuffer = new byte[5000];
+            char[] messagebuffer = new char[5000];
+            this.message = new String();
 
             CommPort cp = this.cpi.open("", this.br);
             SerialPort sp = (SerialPort) cp;
             sp.setSerialPortParams(this.br, this.db, this.stb, this.par);
             int len = -1;
-            while (len < 0) {
+            while (true) {
+                
                 InputStream in = cp.getInputStream();
                 OutputStream out = cp.getOutputStream();
                 len = in.read(readbuffer);
-
-                System.out.println("read");
-                int beginPos = 0;
-                while (len > 8) {
-                    System.out.println("len: "+len);
-                    System.out.println(new String(readbuffer).toCharArray());
-                    while (message.length() < 8) {
-                        for (int i = 0; i < 8; i++) {
-                            message += (char) readbuffer[i];
+                received = new String(readbuffer);
+                if (len > 0) {
+                    String[] messages = received.split("\r\n");
+                    for (int i = 0; i < messages.length; i++) {
+                        if(i>1){
+                            messageList.remove(messages[0]);
+                        }
+                        if (messages[i].trim().length() > 2) {
+                            //System.out.println((messages[i].trim()));
+                            messageList.add(messages[i].trim());
                         }
                     }
-                    messageList.add(message);
-                    System.out.println("message list size = " + messageList.size());
-                    message = "";
-
-                    System.out.println("message length: " + outMessage.length());
-                    if (outMessage.length() == 10) {
-                        System.out.println("outMessage= "+outMessage);
-                        messagebuffer = outMessage.toCharArray();
-                        for (int i = 0; i < 10; i++) {
-                            writebuffer[i] = (byte) messagebuffer[i];
-                        }
-                        out.write(writebuffer, 0, 10);
-                        outMessage="";
-                    }
-
-                    len -= 10;
+                    
                 }
-                Thread.sleep(200);
-                System.out.println("message length: " + outMessage.length());
+                //System.out.println("message list size: "+messageList.size());
+                //System.out.println("message length: " + outMessage.length());
                 if (outMessage.length() == 10) {
-                    System.out.println("outmessage = "+outMessage);
+                    //System.out.println("outmessage = " + outMessage);
                     messagebuffer = outMessage.toCharArray();
                     for (int i = 0; i < 10; i++) {
                         writebuffer[i] = (byte) messagebuffer[i];
                     }
                     out.write(writebuffer, 0, 10);
-                    this.outMessage="";
+                    lastMessage = outMessage;
+                    this.outMessage = "";
+                }
+                Thread.sleep(100);
+
+                /*
+                System.out.println("read");
+                int beginPos = 0;
+                while (len > 8) {
+                System.out.println("len: "+len);
+                System.out.println(new String(readbuffer).toCharArray());
+                while (message.length() < 8) {
+                for (int i = 0; i < 8; i++) {
+                message += (char) readbuffer[i];
+                }
+                }
+                messageList.add(message);
+                System.out.println("message list size = " + messageList.size());
+                message = "";
+                
+                System.out.println("message length: " + outMessage.length());
+                if (outMessage.length() == 10) {
+                System.out.println("outMessage= "+outMessage);
+                messagebuffer = outMessage.toCharArray();
+                for (int i = 0; i < 10; i++) {
+                writebuffer[i] = (byte) messagebuffer[i];
+                }
+                out.write(writebuffer, 0, 10);
+                outMessage="";
+                }
+                
+                len -= 10;
+                }
+                Thread.sleep(200);
+                System.out.println("message length: " + outMessage.length());
+                if (outMessage.length() == 10) {
+                System.out.println("outmessage = "+outMessage);
+                messagebuffer = outMessage.toCharArray();
+                for (int i = 0; i < 10; i++) {
+                writebuffer[i] = (byte) messagebuffer[i];
+                }
+                out.write(writebuffer, 0, 10);
+                this.outMessage="";
                 }
                 len = -1;
+                 */
             }
-
-        } catch (PortInUseException | IOException | UnsupportedCommOperationException ex) {
-            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
+        } catch (PortInUseException | UnsupportedCommOperationException | IOException | InterruptedException ex) {
             Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
     void sendMessage(String message) {
+        //System.out.println("receiving message");
         this.outMessage = message;
+    }
+    
+    void resendMessage(){
+        //System.out.println("resending message");
+        if (lastMessage.length()>5);
+        this.outMessage =lastMessage;
+    }
+
+    boolean getBatpackReady() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
