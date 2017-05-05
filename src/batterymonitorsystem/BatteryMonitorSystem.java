@@ -85,7 +85,7 @@ public class BatteryMonitorSystem extends Application {
     public static void main(String[] args) {
         final CountDownLatch latch = new CountDownLatch(1);
         PortMonitor portMonitor = new PortMonitor(latch);
-        
+        portMonitor.setBaudrate(500000);
         Thread monitorThread = new Thread(portMonitor);
         monitorThread.start();
         try {
@@ -94,6 +94,7 @@ public class BatteryMonitorSystem extends Application {
             Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
         }
         batpack = portMonitor.getBatteryPack();
+        
         System.out.println(batpack.getModuleCount());
         launch(args);
         
