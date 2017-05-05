@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,7 +78,9 @@ public class CommPortCommunicator implements Runnable {
                 OutputStream out = cp.getOutputStream();
                 len = in.read(readbuffer);
                 received = new String(readbuffer);
+                
                 if (len > 0) {
+                    System.out.println("received: "+received);
                     String[] messages = received.split("\r\n");
                     for (int i = 0; i < messages.length; i++) {
                         //assure that messages sent out by me aren't returned to me
