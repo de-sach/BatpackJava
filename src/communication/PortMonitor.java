@@ -43,12 +43,19 @@ public class PortMonitor implements Runnable {
     SerialPort batpackPort;
     private int baudrate;
     private BatteryPacket batteryPack;
-
+    private CommPortCommunicator cpc;
     private String BATPACK_IDENTIFIER = new String("C0_4129\r\n");
     private CountDownLatch latch;
+    private List<String> messageList;
+    private MessageBuilder builder;
+    private MessageParser parser;
 
     public PortMonitor(CountDownLatch latch) {
+
         commPorts = new ArrayList<>();
+        this.builder = new MessageBuilder();
+        this.parser = new MessageParser();
+        /*
         this.batteryPack = new BatteryPacket(9);
         for (int module = 0; module < 9; module++) {
             BatteryModule mod = new BatteryModule(module, 16);
@@ -69,6 +76,7 @@ public class PortMonitor implements Runnable {
         }
         this.latch = latch;
         latch.countDown();
+         */
     }
 
     public int getBaudrate() {
@@ -86,15 +94,35 @@ public class PortMonitor implements Runnable {
         addAllPorts();
         if (commPorts.size() <= 0) {
             System.out.println("no comm port found");
+        } else {
+            this.cpc = new CommPortCommunicator(this.commPorts.get(0), this.getBaudrate(), SerialPort.DATABITS_8, SerialPort.PARITY_NONE, SerialPort.STOPBITS_1);
+            Thread commThread = new Thread(cpc);
+            commThread.start();
+            while (true) {
+                try {
+                    Thread.sleep(10);
+                    //System.out.println(cpc.getMessageList().size());
+                    if (cpc.getMessageList().size() > 0) {
+                        this.messageList = cpc.getMessageList();
+                        //System.out.println("portmonitor " + this.messageList.get(0));
+                        this.handleMessage(this.messageList.get(0));
+                        this.messageList.remove(0);
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+            //BatteryPacket bp = getAllInfo();
         }
-        //sloppy read
+////        sloppy read
 //            CommPortIdentifier bpp = commPorts.get(0);
 //        try {
 //            tryRead(bpp, 500000);
 //        } catch (UnsupportedCommOperationException | IOException | PortInUseException ex) {
 //            Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-        BatteryPacket bp = getAllInfo();
+//        BatteryPacket bp = getAllInfo();
 
     }
 
@@ -155,11 +183,13 @@ public class PortMonitor implements Runnable {
     private CommPortIdentifier checkAllCommports() {
         CommPortIdentifier batpackId = null;
         for (CommPortIdentifier cpi : commPorts) {
+            System.out.println("cpi: " + cpi);
             try {
                 CommPort cp = cpi.open("BatteryMonitor", this.getBaudrate());
                 if (cpi.getPortType() == CommPortIdentifier.PORT_SERIAL) {
                     SerialPort sp = (SerialPort) cp;
                     System.out.println("serial port found");
+                    /*
                     try {
                         sp.setSerialPortParams(this.getBaudrate(), SerialPort.DATABITS_8, SerialPort.STOPBITS_2, SerialPort.PARITY_ODD);
                         InputStream in = sp.getInputStream();
@@ -169,33 +199,44 @@ public class PortMonitor implements Runnable {
                         boolean found;
                         found = false;
                         System.out.println("starting read");
-                        int begin = 0;
-                        len = in.read(buffer);
-                        for (int i = begin; i < 10; i++) {
-                            if ((char) buffer[i] == '\r' && (char) buffer[i + 1] == '\n') {
-                                System.out.println("for loop char " + (char) buffer[i]);
-                                begin = i + 2;
-                                System.out.println("first index " + begin);
-                            }
-                        }
-                        while ((len = in.read(buffer)) > -1 && !found) {
-                            System.out.println((char) buffer[0]);
 
-                            message = new String(buffer, begin, 9);
-                            if (message != null || !message.equals("")) {
+                        len = in.read(buffer);
+                        if (len < 0) {
+                            System.out.println("message error");
+                        } else if (len == 0) {
+                            System.out.println("message length 0");
+                        } else {
+                            System.out.println("valid message length");
+
+                            int begin = 0;
+                            for (int i = begin; i < 10; i++) {
+                                if ((char) buffer[i] == '\r' && (char) buffer[i + 1] == '\n') {
+                                    System.out.println("for loop char " + (char) buffer[i]);
+                                    begin = i + 2;
+                                    System.out.println("first index " + begin);
+                                }
+                            }
+                            while ((len = in.read(buffer)) > -1 && !found) {
+                                System.out.println((char) buffer[0]);
+
+                                message = new String(buffer, begin, 9);
+                                if (message != null || !message.equals("")) {
 //                                System.out.println("message = " + message);
 //                                if (message.equals(BATPACK_IDENTIFIER)) {
 //                                    found = true;
 //                                    batpackId = cpi;
 //                                }
-                                batpackId = cpi;
+                                    batpackId = cpi;
+                                }
                             }
                         }
                     } catch (UnsupportedCommOperationException | IOException ex) {
                         Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    }*/
+
                 }
                 cp.close();
+                batpackId = cpi;
             } catch (PortInUseException ex) {
                 Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -219,9 +260,11 @@ public class PortMonitor implements Runnable {
     }
 
     private void commPortSend(String message) throws PortInUseException {
+        System.out.println("function CommPortSend");
+        System.out.println("message = " + message);
         char[] messageBuffer = message.toCharArray();
         CommPortIdentifier batteryPackCommportIdentifier = checkAllCommports();
-        CommPort cp = batteryPackCommportIdentifier.open("BatteryMonitor", this.getBaudrate());
+        CommPort cp = batteryPackCommportIdentifier.open("", this.getBaudrate());
         if (batteryPackCommportIdentifier.getPortType() == CommPortIdentifier.PORT_SERIAL) {
             try {
                 SerialPort sp = (SerialPort) cp;
@@ -235,6 +278,7 @@ public class PortMonitor implements Runnable {
                 Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        cp.close();
     }
 
     private BatteryPacket getAllInfo() {
@@ -247,11 +291,13 @@ public class PortMonitor implements Runnable {
             System.out.println("getting batpack");
             System.out.println(messages.buildBatpackMessage());
             commPortSend(messages.buildBatpackMessage());
+            System.out.println("after commPortSend");
             receiveBuffer = commPortReceive(1, receiveBuffer);
             int numberOfModules = parser.parseModuleOverview(receiveBuffer);
 
             System.out.println("getting modules");
             commPortSend(messages.buildModuleMessage());
+            System.out.println("after commPortSend");
             receiveBuffer = commPortReceive(1, receiveBuffer);
             int numberOfCells = parser.parseCellOverview(receiveBuffer);
 
@@ -286,20 +332,37 @@ public class PortMonitor implements Runnable {
 
     private char[] commPortReceive(int i, char[] receiveBuffer) {
         try {
-            byte[] buffer = new byte[receiveBuffer.length + 10];
+            byte[] buffer = new byte[2000];
             CommPortIdentifier batteryPackCommportIdentifier = checkAllCommports();
-            CommPort cp = batteryPackCommportIdentifier.open("BatteryMonitor", this.getBaudrate());
+            CommPort cp = batteryPackCommportIdentifier.open("", this.getBaudrate());
             if (batteryPackCommportIdentifier.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 
                 SerialPort sp = (SerialPort) cp;
                 System.out.println("serial port found");
-                sp.setSerialPortParams(this.getBaudrate(), SerialPort.DATABITS_8, SerialPort.STOPBITS_2, SerialPort.PARITY_ODD);
+                sp.setSerialPortParams(this.getBaudrate(), SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
                 InputStream in = sp.getInputStream();
                 int len = -1;
+
                 System.out.println("starting read");
                 int begin = 0;
                 len = in.read(buffer);
-                for (int index = begin; index < 10; index++) {
+
+                if (len < 0) {
+                    System.out.println("message error");
+                } else if (len == 0) {
+                    System.out.println("message length 0");
+                } else {
+                    System.out.println("valid message length: " + len);
+                }
+                String message;
+                char[] messageBuffer = new char[2000];
+                for (int j = 0; j < 2000; j++) {
+                    messageBuffer[j] = (char) buffer[j];
+                }
+                message = String.copyValueOf(messageBuffer);
+                System.out.println(message);
+                /*
+                for (int index = begin; index < len; index++) {
                     if ((char) receiveBuffer[index] == '\r' && (char) receiveBuffer[index + 1] == '\n') {
                         System.out.println("for loop char " + (char) receiveBuffer[index]);
                         begin = index + 2;
@@ -310,10 +373,14 @@ public class PortMonitor implements Runnable {
                 for (int index = begin; index < (i * 10); index++) {
                     receiveBuffer[index] = (char) buffer[index];
                 }
+                 */
             }
+            cp.close();
+
         } catch (PortInUseException | UnsupportedCommOperationException | IOException ex) {
             Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return receiveBuffer;
     }
 
@@ -323,6 +390,23 @@ public class PortMonitor implements Runnable {
 
     public void setBatteryPack(BatteryPacket batteryPack) {
         this.batteryPack = batteryPack;
+    }
+
+    private void handleMessage(String message) {
+        assert (message.length() == 8);
+        System.out.println("handeling message: " + message);
+        message = message.trim();
+        switch (message) {
+            case "Timeout":
+                break;
+            case "SETUP_OK":
+                cpc.sendMessage(builder.buildBatpackMessage());
+                break;
+            default:
+                //parser.parseMessage(message);
+                break;
+        }
+
     }
 
 }

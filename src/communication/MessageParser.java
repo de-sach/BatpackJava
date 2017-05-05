@@ -129,5 +129,21 @@ class MessageParser {
     private double parseTemperature(char[] buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    void parseMessage(String message) {
+        String part = new String();
+        part = message.substring(0,1);
+        System.out.println("part is: "+part);
+        switch (part){
+            case "A":
+                break;
+            case "M":
+                break;
+            case "C":
+                break;
+            default:
+                System.out.println("unnknown command");
+        }
+    }
     
 }
