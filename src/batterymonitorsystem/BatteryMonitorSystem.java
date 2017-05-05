@@ -30,6 +30,7 @@ public class BatteryMonitorSystem extends Application {
 
     private static BatteryPacket batpack;
     Parent root;
+    private static PortMonitor portMonitor;
     
     @Override
     public void start(Stage stage) throws Exception {
@@ -84,7 +85,7 @@ public class BatteryMonitorSystem extends Application {
      */
     public static void main(String[] args) {
         final CountDownLatch latch = new CountDownLatch(1);
-        PortMonitor portMonitor = new PortMonitor(latch);
+        BatteryMonitorSystem.portMonitor = new PortMonitor(latch);
         portMonitor.setBaudrate(500000);
         Thread monitorThread = new Thread(portMonitor);
         monitorThread.start();
@@ -97,7 +98,7 @@ public class BatteryMonitorSystem extends Application {
         
         System.out.println(batpack.getModuleCount());
         launch(args);
-        
+        System.exit(0);
     }
 
     private void load() {
