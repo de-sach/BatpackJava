@@ -21,12 +21,10 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,16 +85,12 @@ public class CommPortCommunicator implements Runnable {
                             messageList.remove(messages[0]);
                         }
                         if (messages[i].trim().length() > 2) {
-                            //System.out.println((messages[i].trim()));
                             messageList.add(messages[i].trim());
                         }
                     }
                     
                 }
-                //System.out.println("message list size: "+messageList.size());
-                //System.out.println("message length: " + outMessage.length());
                 if (outMessage.length() == 10) {
-                    //System.out.println("outmessage = " + outMessage);
                     messagebuffer = outMessage.toCharArray();
                     for (int i = 0; i < 10; i++) {
                         writebuffer[i] = (byte) messagebuffer[i];
@@ -106,48 +100,6 @@ public class CommPortCommunicator implements Runnable {
                     this.outMessage = "";
                 }
                 Thread.sleep(100);
-
-                /*
-                System.out.println("read");
-                int beginPos = 0;
-                while (len > 8) {
-                System.out.println("len: "+len);
-                System.out.println(new String(readbuffer).toCharArray());
-                while (message.length() < 8) {
-                for (int i = 0; i < 8; i++) {
-                message += (char) readbuffer[i];
-                }
-                }
-                messageList.add(message);
-                System.out.println("message list size = " + messageList.size());
-                message = "";
-                
-                System.out.println("message length: " + outMessage.length());
-                if (outMessage.length() == 10) {
-                System.out.println("outMessage= "+outMessage);
-                messagebuffer = outMessage.toCharArray();
-                for (int i = 0; i < 10; i++) {
-                writebuffer[i] = (byte) messagebuffer[i];
-                }
-                out.write(writebuffer, 0, 10);
-                outMessage="";
-                }
-                
-                len -= 10;
-                }
-                Thread.sleep(200);
-                System.out.println("message length: " + outMessage.length());
-                if (outMessage.length() == 10) {
-                System.out.println("outmessage = "+outMessage);
-                messagebuffer = outMessage.toCharArray();
-                for (int i = 0; i < 10; i++) {
-                writebuffer[i] = (byte) messagebuffer[i];
-                }
-                out.write(writebuffer, 0, 10);
-                this.outMessage="";
-                }
-                len = -1;
-                 */
             }
         } catch (PortInUseException | UnsupportedCommOperationException | IOException | InterruptedException ex) {
             Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
@@ -156,18 +108,11 @@ public class CommPortCommunicator implements Runnable {
     }
 
     void sendMessage(String message) {
-        //System.out.println("receiving message");
         this.outMessage = message;
     }
     
     void resendMessage(){
-        //System.out.println("resending message");
         if (lastMessage.length()>5);
         this.outMessage =lastMessage;
     }
-
-    boolean getBatpackReady() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }

@@ -33,11 +33,7 @@ public class MessageBuilder {
         return this.message;
     }
     
-    public String buildModuleMessage(){
-        this.message = "C_0_0000";
-        this.message = finishMessage(this.message);
-        return this.message;
-    }
+    
     
     private String buildMessage(int type, int identifier){
         switch (type){
