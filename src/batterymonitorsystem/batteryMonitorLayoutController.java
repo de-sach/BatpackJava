@@ -12,8 +12,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -32,6 +30,8 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
 /**
@@ -186,6 +186,9 @@ public class batteryMonitorLayoutController implements Initializable {
 
     @FXML
     private Accordion accordion;
+    
+    @FXML
+    private Circle connectedIndicator;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -222,6 +225,7 @@ public class batteryMonitorLayoutController implements Initializable {
         batteryCells.add(cell16);
 
         bindModuleClick();
+        checkConnection();
 
         updateTotalVoltage();
         updateModules();
@@ -294,6 +298,7 @@ public class batteryMonitorLayoutController implements Initializable {
             updateCells = (event) -> {
                 MenuItem menu = (MenuItem) event.getSource();
                 int id = Integer.parseInt(menu.getId());
+                moduleChooser.setText("module " + (id + 1));
                 updateCells(id);
             };
             menuItem.setOnAction(updateCells);
@@ -339,10 +344,20 @@ public class batteryMonitorLayoutController implements Initializable {
 
     private void bindUpdates() {
         final KeyFrame oneFrame = new KeyFrame(Duration.seconds(5), (ActionEvent evt) -> {
+            this.batpack=BatteryMonitorSystem.getBatpack();
+            checkConnection();
             updateModules();
+            
         });
         Timeline timer = TimelineBuilder.create().cycleCount(Animation.INDEFINITE).keyFrames(oneFrame).build();
         timer.playFromStart();
+    }
+
+    private void checkConnection() {
+        if(BatteryMonitorSystem.getConnected()){
+            Color c = Color.DEEPSKYBLUE;
+            connectedIndicator.setFill(c);
+        }
     }
 
 }
