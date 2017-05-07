@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,19 +45,23 @@ public class CommPortCommunicator implements Runnable {
     private String outMessage;
     private String lastMessage;
     private String received;
+    private final ThreadEvent ready;
+    private final ConcurrentLinkedQueue<String> communicationqueue;
 
-    public List<String> getMessageList() {
-        return messageList;
+    public ConcurrentLinkedQueue<String> getMessageQueue() {
+        return communicationqueue;
     }
 
-    CommPortCommunicator(CommPortIdentifier cpi, int baudrate, int DATABITS_8, int PARITY_NONE, int STOPBITS_1) {
+    CommPortCommunicator(CommPortIdentifier cpi, int baudrate, int DATABITS_8, int PARITY_NONE, int STOPBITS_1, ThreadEvent ready) {
         this.cpi = cpi;
         this.br = baudrate;
         this.db = DATABITS_8;
         this.par = PARITY_NONE;
         this.stb = STOPBITS_1;
-        messageList = new ArrayList<>();
+        this.messageList = new ArrayList<>();
+        this.communicationqueue = new ConcurrentLinkedQueue<>();
         this.outMessage = new String();
+        this.ready = ready;
     }
 
     @Override
@@ -78,10 +82,11 @@ public class CommPortCommunicator implements Runnable {
                 OutputStream out = cp.getOutputStream();
                 len = in.read(readbuffer);
                 received = new String(readbuffer);
-                
+
                 if (len > 0) {
-                    System.out.println("received: "+received);
+                    //System.out.println("received: "+received);
                     String[] messages = received.split("\r\n");
+
                     for (int i = 0; i < messages.length; i++) {
                         //assure that messages sent out by me aren't returned to me
                         if (i > 1) {
@@ -91,8 +96,27 @@ public class CommPortCommunicator implements Runnable {
                         if (messages[i].trim().length() > 2) {
                             messageList.add(messages[i].trim());
                         }
+
+                        communicationqueue.add(messages[i].trim());
                     }
 
+                    System.out.println("message List length:" + communicationqueue.size());
+
+                }
+
+                //Notify @ messages
+                if (messageList.size() > 0) {
+                    //new message arrived
+                    if (messageList.get(messageList.size() - 1).equals("End")) {
+                        messageList.remove(messageList.size() - 1);
+                        synchronized (this.ready) {
+                            this.ready.notify();
+                            System.out.println("cpc" + messageList);
+                        }
+                        while(messageList.size()>0){
+                            messageList.remove(0);
+                        }
+                    }
                 }
                 if (outMessage.length() == 10) {
                     messagebuffer = outMessage.toCharArray();
@@ -103,10 +127,9 @@ public class CommPortCommunicator implements Runnable {
                     lastMessage = outMessage;
                     this.outMessage = "";
                 }
-                //necessary to make sure all threads can be executed.
-                Thread.sleep(100);
+                
             }
-        } catch (PortInUseException | UnsupportedCommOperationException | IOException | InterruptedException ex) {
+        } catch (PortInUseException | UnsupportedCommOperationException | IOException ex) {
             Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
 

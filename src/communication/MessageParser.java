@@ -28,8 +28,9 @@ import java.util.Arrays;
 class MessageParser {
 
     private BatteryPacket batpack;
-    private int nrOfModules;
+    private int nrOfModules = 9;
     private int cellIndex;
+    private int moduleIndex;
 
     public MessageParser(BatteryPacket batpack) {
         this.batpack = new BatteryPacket(0);
@@ -41,52 +42,87 @@ class MessageParser {
         String part = new String();
         BatteryModule module;
         part = message.substring(0, 1);
-        System.out.println("part is: " + part);
+        //System.out.println("part is: " + part);
         if (message.equals("End")) {
             return status;
         }
-        switch (part) {
-            case "T":
-                //String[] split = message.split("_");
-                this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1, message.split("_")[0].length()));
-                int moduleNr = this.cellIndex / 16;
-                double temp = Double.parseDouble(message.split("_")[1]) / 1000;
-                this.batpack.getModules().get(moduleNr).getBatteryCells().get(cellIndex % 16).setTemperature(temp);
-                break;
-            case "M":
-                //System.out.println("parsing M");
-                String[] split = message.split("_");
-                this.nrOfModules = Integer.parseInt(split[split.length - 1]);
-                break;
-            case "V":
-                //System.out.println("parsing V");
-                this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1, message.split("_")[0].length()));
-                //System.out.println("cellindex: "+cellIndex);
-                int moduleIndex = this.cellIndex / 16;
-                //System.out.println("moduleIndex: "+moduleIndex);
+        if (checkMessage(message)) {
+
+            if (part.equals("M")) {
+                if (message.split("_").length == 2) {
+                    //System.out.println("parsing M");
+                    String[] split = message.split("_");
+                    this.nrOfModules = Integer.parseInt(split[split.length - 1]);
+                }
+            } else {
+
+                BatteryCell cell;
+
+                this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1, message.split("_")[0].length()))-1;
                 int cellInModule = this.cellIndex % 16;
-                BatteryCell cell = new BatteryCell(0, 0, cellInModule, 0);
+                this.moduleIndex = this.cellIndex / 16;
+
+                System.out.println("cell, cell in module and module: " + cellIndex + "---" + cellInModule + "---" + moduleIndex);
+
                 if (moduleIndex == this.batpack.getModuleCount()) {
                     module = new BatteryModule(moduleIndex, 0);
                     batpack.addModule(module);
+                    System.out.println("added module");
+                    cell = new BatteryCell(0, 0, cellInModule, 0);
+                    module.addCell(cell);
                 } else {
                     module = this.batpack.getModules().get(moduleIndex);
+                    if (cellInModule == module.getNrOfCells()) {
+                        cell = new BatteryCell(0, 0, cellInModule, 0);
+                        module.addCell(cell);
+                    } else {
+                        cell = this.batpack.getModules().get(moduleIndex).getBatteryCells().get(cellInModule);
+                    }
                 }
-                module.addCell(cell);
-                break;
-            case "B":
-                this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1,message.split("_")[0].length()));
-                int modulePos = this.cellIndex/16;
-                boolean balance = false;
-                if(Integer.parseInt(message.split("_")[1])==1){
-                    balance = true;
+
+                switch (part) {
+                    case "T":
+                        //String[] split = message.split("_");
+                        if (message.split("_").length == 2) {
+                            double temp = Double.parseDouble(message.split("_")[1]) / 1000;
+                            cell.setTemperature(temp);
+                            break;
+                        }
+                    case "M":
+                        if (message.split("_").length == 2) {
+                            //System.out.println("parsing M");
+                            String[] split = message.split("_");
+                            this.nrOfModules = Integer.parseInt(split[split.length - 1]);
+                            break;
+                        }
+                    case "V":
+                        if (message.split("_").length == 2) {
+                            //System.out.println("parsing V");
+                            double voltage = Double.parseDouble(message.split("_")[1]) / 1000;
+                            //System.out.println("cellindex: "+cellIndex);
+                            this.moduleIndex = this.cellIndex / 16;
+                            //System.out.println("moduleIndex: "+moduleIndex);
+                            assert (this.batpack != null);
+                            assert (this.batpack.getModuleCount() != 0 && !this.batpack.getModules().isEmpty());
+                            assert (this.batpack.getModules().get(moduleIndex) != null && this.batpack.getModules().get(cellIndex % 16) != null);
+                            cell.setVoltage(voltage);
+                            break;
+                        }
+                    case "B":
+                        if (message.split("_").length == 2) {
+
+                            boolean balance = false;
+                            if (Integer.parseInt(message.split("_")[1]) == 1) {
+                                balance = true;
+                            }
+                            this.batpack.getModules().get(moduleIndex).setBalancing(balance);
+                        }
+                    default:
+                        System.out.println("unnknown command");
+                        status = 1;
                 }
-                this.batpack.getModules().get(modulePos).setBalancing(balance);
-            default:
-                System.out.println("unnknown command");
-                status = 1;
-        }
-        /*
+            }
+            /*
         System.out.println("batpack: " + this.batpack);
         if (this.batpack != null) {
             System.out.println("nr of modules: " + this.batpack.getModuleCount());
@@ -96,7 +132,11 @@ class MessageParser {
                 }
             }
         }
-         */
+             */
+        } else {
+            status = 1;
+        }
+
         return status;
     }
 
@@ -105,15 +145,31 @@ class MessageParser {
     }
 
     boolean getBatpackReady() {
+        System.out.println("Checking batpack");
         boolean ready = false;
         if (this.batpack != null) {
+            System.out.println(this.batpack.getModuleCount());
             if (this.batpack.getModuleCount() == 9) {
-                if (this.batpack.getModules().get(8).getNrOfCells() == 15) {
+                System.out.println("9 modules found");
+                System.out.println(this.batpack.getModules().get(8).getNrOfCells());
+                if (this.batpack.getModules().get(8).getNrOfCells() == 16) {
                     ready = true;
                 }
             }
         }
         return ready;
+    }
+
+    private boolean checkMessage(String message) {
+        if (message.split("_").length == 2 || message.split("_").length == 3) {
+            if (message.substring(0, 1).matches("[A-Z]+")&&message.substring(1,2).matches("[1-9]+")) {
+                if (message.split("_")[1].matches("[0-9]+")) {
+                    System.out.println("message accepted: " + message);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

@@ -118,7 +118,7 @@ public class batteryMonitorLayoutController implements Initializable {
     //MENUBAR
     @FXML
     private void exit(ActionEvent event) {
-        System.out.println("exiting");
+        //System.out.println("exiting");
         System.exit(0);
     }
 
@@ -129,7 +129,7 @@ public class batteryMonitorLayoutController implements Initializable {
 
     @FXML
     private void connect(MouseEvent event) {
-        System.out.println("test connect");
+        //System.out.println("test connect");
         updateTotalVoltage();
     }
 
@@ -257,7 +257,7 @@ public class batteryMonitorLayoutController implements Initializable {
     }
 
     private void updateModules() {
-        System.out.println("updating modules");
+        //System.out.println("updating modules");
         if (this.batpack != null) {
             if (this.batpack.getModuleCount() > 9) {
                 System.out.println("batpack not compatible with 2017 layout");
@@ -272,7 +272,7 @@ public class batteryMonitorLayoutController implements Initializable {
     }
 
     private void updateModule(Group group, BatteryModule module) {
-        System.out.println(group.getChildren());
+        //System.out.println(group.getChildren());
         //voltage, percentage, progressbar, name(is ok)
         Label moduleVolt = (Label) group.getChildren().get(0);
         Label modulePercent = (Label) group.getChildren().get(1);
@@ -345,6 +345,7 @@ public class batteryMonitorLayoutController implements Initializable {
     private void bindUpdates() {
         final KeyFrame oneFrame = new KeyFrame(Duration.seconds(5), (ActionEvent evt) -> {
             this.batpack=BatteryMonitorSystem.getBatpack();
+            System.out.println("layout: battery pack module 5 cell 5 voltage: "+batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
             checkConnection();
             updateModules();
             

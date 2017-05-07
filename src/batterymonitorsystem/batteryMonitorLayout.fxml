@@ -34,11 +34,7 @@
             </MenuBar>
           <AnchorPane maxHeight="90.0" maxWidth="1.7976931348623157E308" minHeight="90.0" minWidth="0.0" prefHeight="90.0" prefWidth="1176.0">
                <children>
-                  <Label fx:id="connected" text="connected" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="10.0">
-                     <graphic>
-                        <ProgressIndicator onMouseClicked="#connect" progress="0.0" />
-                     </graphic>
-                  </Label>
+                  <Label fx:id="connected" layoutX="1048.0" layoutY="12.0" text="connected" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0" />
                   <ProgressBar fx:id="totalVoltageProgress" prefHeight="20.0" prefWidth="500.0" progress="0.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
                   <Label fx:id="totalVoltagePercentage" layoutX="126.0" layoutY="42.0" text="0%" AnchorPane.leftAnchor="265.0" AnchorPane.topAnchor="42.0" />
                   <Label id="totalVoltage" fx:id="totalVoltage" layoutX="753.0" layoutY="30.0" text="300.00 V" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="530.0" AnchorPane.topAnchor="3.0">
@@ -51,6 +47,7 @@
                         <Font size="54.0" />
                      </font>
                   </Label>
+                  <Circle fx:id="connectedIndicator" layoutX="1177.0" layoutY="88.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
