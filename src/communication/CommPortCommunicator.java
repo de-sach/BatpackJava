@@ -16,11 +16,7 @@
  */
 package communication;
 
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.UnsupportedCommOperationException;
+import com.fazecast.jSerialComm.SerialPort;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,14 +36,12 @@ public class CommPortCommunicator implements Runnable {
     private final int db;
     private final int par;
     private final int stb;
-    private final CommPortIdentifier cpi;
     private final List<String> messageList;
     private String outMessage;
     private String lastMessage;
     private String received;
     private final ThreadEvent ready;
     private final ConcurrentLinkedQueue<String> communicationqueue;
-    private CommPort cp;
     private SerialPort sp;
     private boolean connected;
 
@@ -59,8 +53,8 @@ public class CommPortCommunicator implements Runnable {
         return communicationqueue;
     }
 
-    CommPortCommunicator(CommPortIdentifier cpi, int baudrate, int DATABITS_8, int PARITY_NONE, int STOPBITS_1, ThreadEvent ready) {
-        this.cpi = cpi;
+    CommPortCommunicator(SerialPort sp, int baudrate, int DATABITS_8, int PARITY_NONE, int STOPBITS_1, ThreadEvent ready) {
+        this.sp = sp;
         this.br = baudrate;
         this.db = DATABITS_8;
         this.par = PARITY_NONE;
@@ -70,102 +64,102 @@ public class CommPortCommunicator implements Runnable {
         this.outMessage = new String();
         this.ready = ready;
         this.connected = false;
-        System.out.println("contructed communicator");
     }
 
     @Override
     public void run() {
         try {
+            //try {
             byte[] readbuffer = new byte[5000];
             byte[] writebuffer = new byte[5000];
             char[] messagebuffer;
             int len = -5;
 
             this.connected = true;
-            cp = this.cpi.open("", this.br);
-            sp = (SerialPort) cp;
-            sp.setSerialPortParams(this.br, this.db, this.stb, this.par);
 
-            while (true) {
-                InputStream in = cp.getInputStream();
-                OutputStream out = cp.getOutputStream();
-                if (connected) {
-                    len = in.read(readbuffer);
+            sp.setComPortParameters(br, db, stb, par);
+            sp.openPort();
+            if (sp.getInputStream() == null) {
+                System.out.println("inputstream is NULL");
 
-                    received = new String(readbuffer);
-
-                    if (len > 0) {
-                        //System.out.println("received: "+received);
-                        String[] messages = received.split("\r\n");
-
-                        for (int i = 0; i < messages.length; i++) {
-                            //assure that messages sent out by me aren't returned to me
-                            if (i > 1) {
-                                messageList.remove(messages[0]);
+            } else {
+                try (InputStream in = sp.getInputStream()) {
+                    OutputStream out = sp.getOutputStream();
+                    boolean messageDone = false;
+                    while (!messageDone) {
+                        try {
+                            if (sp.isOpen()) {
+                                len = in.read(readbuffer);
                             }
-                            //remove spaces
-                            if (messages[i].trim().length() > 2) {
-                                messageList.add(messages[i].trim());
-                            }
+                            if (len > 0) {
+                                received = new String(readbuffer);
+                                received = received.trim();
+                                //System.out.println(received);
+                                String[] messages = received.split("\r\n");
+                                for (int i = 0; i < messages.length; i++) {
+                                    //assure that messages sent out by me aren't returned to me
+                                    if (i > 1) {
+                                        messageList.remove(messages[0]);
+                                    }
+                                    //remove spaces
+                                    if (messages[i].trim().length() > 2) {
+                                        messageList.add(messages[i].trim());
+                                    }
 
-                            communicationqueue.add(messages[i].trim());
+                                    communicationqueue.add(messages[i].trim());
+
+                                }
+
+                                System.out.println("message List length:" + communicationqueue.size());
+
+                                //Notify @ messages
+                                if (messageList.size() > 0) {
+                                    //new message arrived
+                                    if (messageList.get(messageList.size() - 1).equals("End")) {
+                                        messageList.remove(messageList.size() - 1);
+                                        synchronized (this.ready) {
+                                            this.ready.notify();
+                                            System.out.println("cpc" + messageList);
+                                        }
+
+                                    }
+                                }
+                                while (messageList.size() > 0) {
+                                    messageList.remove(0);
+                                }
+
+                                if (outMessage.length() == 10) {
+                                    messagebuffer = outMessage.toCharArray();
+                                    for (int i = 0; i < 10; i++) {
+                                        writebuffer[i] = (byte) messagebuffer[i];
+                                    }
+                                    if (connected) {
+                                        if (sp.isOpen()) {
+                                            out.write(writebuffer, 0, 10);
+                                            System.out.println("sent message " + outMessage);
+                                        }
+                                    }
+                                    lastMessage = outMessage;
+                                    this.outMessage = "";
+                                }
+
+                            }
+                        } catch (IOException ex) {
+                            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
+                            messageDone = true;
                         }
-
-                        System.out.println("message List length:" + communicationqueue.size());
-
+                        if (!sp.isOpen()) {
+                            connected = false;
+                            System.out.println("sp closed in loop");
+                            messageDone = true;
+                        }
                     }
-
-                    //Notify @ messages
-                    if (messageList.size() > 0) {
-                        //new message arrived
-                        if (messageList.get(messageList.size() - 1).equals("End")) {
-                            messageList.remove(messageList.size() - 1);
-                            synchronized (this.ready) {
-                                this.ready.notify();
-                                System.out.println("cpc" + messageList);
-                            }
-                            while (messageList.size() > 0) {
-                                messageList.remove(0);
-                            }
-                        }
-                    }
-                    if (outMessage.length() == 10) {
-                        messagebuffer = outMessage.toCharArray();
-                        for (int i = 0; i < 10; i++) {
-                            writebuffer[i] = (byte) messagebuffer[i];
-                        }
-                        if (connected) {
-                            out.write(writebuffer, 0, 10);
-                        }
-                        lastMessage = outMessage;
-                        this.outMessage = "";
-                    }
-                } else {
-                    System.out.println("trying to read while not connected");
                 }
             }
-
+            System.out.println("end of loop");
         } catch (IOException ex) {
-            //Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println(ex);
-            System.out.println("connection lost");
-            if (this.sp != null) {
-                sp.removeEventListener();
-                disconnect();
-                this.connected = false;
-                System.out.println("connected: " + this.connected);
-                for (int i = 0; i < 3; i++) {
-                    synchronized (this.ready) {
-                        this.ready.notifyAll();
-                    }
-                }
-            }
-        } catch (PortInUseException ex) {
-            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnsupportedCommOperationException ex) {
             Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     void sendMessage(String message) {
@@ -177,19 +171,15 @@ public class CommPortCommunicator implements Runnable {
         this.outMessage = lastMessage;
     }
 
-    void closeConnection() {
-        if (this.cp != null) {
-            this.cp.close();
-        }
-    }
-
-    private void disconnect() {
+    void closePort() {
         try {
-            OutputStream out = sp.getOutputStream();
-            out.flush();
-            out.close();
-            sp.close();
+            if (sp.isOpen()) {
+                this.sp.getInputStream().close();
+                this.sp.getOutputStream().close();
+                this.sp.closePort();
+            }
         } catch (IOException ex) {
+            System.out.println("error at closing");
             Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

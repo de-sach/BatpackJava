@@ -17,14 +17,13 @@
 package communication;
 
 import battery.BatteryPacket;
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import com.fazecast.jSerialComm.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  *
@@ -32,9 +31,12 @@ import java.util.logging.Logger;
  */
 public class PortMonitor implements Runnable {
 
-    List<CommPortIdentifier> commPorts;
+    private SerialPort[] commPorts;
     SerialPort batpackPort;
     private int baudrate;
+    private final int databits;
+    private final int stopbits;
+    private final int pariteit;
     private BatteryPacket batteryPack;
     private CommPortCommunicator cpc;
     private final CountDownLatch latch;
@@ -46,13 +48,15 @@ public class PortMonitor implements Runnable {
     private final ThreadEvent resultsReady;
 
     public PortMonitor(CountDownLatch latch) {
-
-        commPorts = new ArrayList<>();
         this.builder = new MessageBuilder();
         this.parser = new MessageParser(batteryPack);
         this.latch = latch;
         this.ready = false;
         this.resultsReady = new ThreadEvent();
+        this.baudrate = 500000;
+        this.databits = 8;
+        this.stopbits = SerialPort.ONE_STOP_BIT;
+        this.pariteit = SerialPort.NO_PARITY;
     }
 
     public int getBaudrate() {
@@ -65,12 +69,9 @@ public class PortMonitor implements Runnable {
 
     @Override
     public void run() {
-        //listPorts();
-        //System.out.println("Running monitor thread");
-        while (true) {
+        while (!ready) {
             addAllPorts();
-            System.out.println("commports size =" + commPorts.size());
-            if (commPorts.size() <= 0) {
+            if (commPorts.length <= 0) {
                 System.out.println("no comm port found");
                 try {
                     Thread.sleep(2000);
@@ -80,80 +81,40 @@ public class PortMonitor implements Runnable {
                 }
             } else {
                 System.out.println("commport found");
-                //startComm();
-                this.cpc = new CommPortCommunicator(this.commPorts.get(0), this.getBaudrate(), SerialPort.DATABITS_8, SerialPort.PARITY_NONE, SerialPort.STOPBITS_1, resultsReady);
-                this.connected = cpc.isConnected();
-                Thread commThread = new Thread(cpc);
-                commThread.start();
-                do {
-                    System.out.println(connected);
-                    this.messageList = cpc.getMessageQueue();
-                    refreshAll();
+                if (commPorts[0] != null) {
+                    this.cpc = new CommPortCommunicator(this.commPorts[0], baudrate, databits, pariteit, stopbits, resultsReady);
+                    Thread commThread = new Thread(cpc);
+                    commThread.start();
                     this.connected = cpc.isConnected();
-                    if (this.connected) {
-                        this.ready = parser.getBatpackReady();
+                    do {
+                        System.out.println(connected);
+                        this.messageList = cpc.getMessageQueue();
+                        refreshAll();
                         this.connected = cpc.isConnected();
-                        if (this.ready) {
-                            this.batteryPack = parser.getBatpack();
-                            latch.countDown();
+                        if (this.connected) {
+                            this.ready = parser.getBatpackReady();
+                            this.connected = cpc.isConnected();
+                            if (this.ready) {
+                                this.batteryPack = parser.getBatpack();
+                                latch.countDown();
+                                this.connected = cpc.isConnected();
+                            }
+                        } else {
+                            this.ready = false;
                             this.connected = cpc.isConnected();
                         }
-                    } else {
-                        this.ready = false;
-                        this.connected = cpc.isConnected();
-                    }
-                    System.out.println("this.connected = " + this.connected);
-                } while (this.ready == false && this.connected);
-                System.out.println("outside while " + this.connected);
-                if (!cpc.isConnected()) {
-                    cpc.closeConnection();
-                    try {
-                        cpc.closeConnection();
-                        commThread.join();
-                        cpc = null;
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    System.out.println(commThread.getState());
+                        System.out.println("this.connected = " + this.connected);
+                    } while (this.ready == false && this.connected);
+                } else {
+                    System.out.println("commport is null");
                 }
             }
-
         }
+        System.out.println("__________________________SETUP_DONE______________________");
     }
-
-    public void listPorts() {
-        java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-        while (portEnum.hasMoreElements()) {
-            CommPortIdentifier portIdentifier = portEnum.nextElement();
-            //System.out.println(portIdentifier.getName() + " - " + getPortTypeName(portIdentifier.getPortType()));
-        }
-    }
-
-    static String getPortTypeName(int portType) {
-        switch (portType) {
-            case CommPortIdentifier.PORT_I2C:
-                return "I2C";
-            case CommPortIdentifier.PORT_PARALLEL:
-                return "Parallel";
-            case CommPortIdentifier.PORT_RAW:
-                return "Raw";
-            case CommPortIdentifier.PORT_RS485:
-                return "RS485";
-            case CommPortIdentifier.PORT_SERIAL:
-                return "Serial";
-            default:
-                return "unknown type";
-        }
-    }
-
+    
     private void addAllPorts() {
-        commPorts.clear();
-        java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-        while (portEnum.hasMoreElements()) {
-            CommPortIdentifier portIdentifier = portEnum.nextElement();
-            //System.out.println("port id " + portIdentifier);
-            commPorts.add(portIdentifier);
-        }
+        commPorts = SerialPort.getCommPorts();
     }
 
     public BatteryPacket getBatteryPack() {
@@ -164,23 +125,9 @@ public class PortMonitor implements Runnable {
         this.batteryPack = batteryPack;
     }
 
-    private void handleMessage(String message) {
-
-        switch (message) {
-            case "Timeout":
-                break;
-            default:
-                parser.parseMessage(message);
-                if (parser.parseMessage(message) == 1) {
-                    cpc.resendMessage();
-                }
-                break;
-        }
-
-    }
-
-    public void refreshAll() {
+        public void refreshAll() {
         try {
+            cpc.sendMessage(builder.buildBatpackMessage());
             synchronized (this.resultsReady) {
                 this.resultsReady.notify();
             }
@@ -191,7 +138,7 @@ public class PortMonitor implements Runnable {
                 cpc.sendMessage(builder.buildBatpackMessage());
                 synchronized (this.resultsReady) {
                     System.out.println("waiting");
-                    this.resultsReady.wait(500);
+                    this.resultsReady.wait(100);
                     //System.out.println("batpack free");
                     this.messageList = cpc.getMessageQueue();
                     System.out.println(messageList);
@@ -204,7 +151,7 @@ public class PortMonitor implements Runnable {
             this.connected = cpc.isConnected();
             if (connected) {
                 synchronized (this.resultsReady) {
-                    this.resultsReady.wait(500);
+                    this.resultsReady.wait(100);
                     //System.out.println("voltage free");
                     this.messageList = cpc.getMessageQueue();
                     while (!this.messageList.isEmpty()) {
@@ -216,7 +163,7 @@ public class PortMonitor implements Runnable {
             this.connected = cpc.isConnected();
             if (connected) {
                 synchronized (this.resultsReady) {
-                    this.resultsReady.wait(500);
+                    this.resultsReady.wait(100);
                     //System.out.println("temp free");
                     this.messageList = cpc.getMessageQueue();
                     while (!this.messageList.isEmpty()) {
@@ -249,4 +196,31 @@ public class PortMonitor implements Runnable {
 //            this.resultsReady.notify();
 //        }
 //    }
+    private void testRead() throws IOException {
+        SerialPort sp = commPorts[0];
+        sp.setComPortParameters(baudrate, databits, stopbits, pariteit);
+        sp.openPort();
+        InputStream in = sp.getInputStream();
+        byte[] buffer = new byte[1000];
+        boolean end = false;
+        String message = "";
+        while (!end) {
+            int len = in.read(buffer);
+            if (len > 0) {
+                message = new String(buffer);
+                System.out.println(message);
+            }
+            len = 0;
+            String messages[];
+            messages = message.split("\r\n");
+            for (int i = 0; i < messages.length; i++) {
+                if (messages[i].equals("END")) {
+                    end = true;
+                }
+            }
+        }
+        in.close();
+        sp.closePort();
+        System.out.println("done reading");
+    }
 }
