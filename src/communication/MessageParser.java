@@ -55,7 +55,6 @@ class MessageParser {
                     this.nrOfModules = Integer.parseInt(split[split.length - 1]);
                 }
             } else {
-
                 BatteryCell cell;
 
                 this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1, message.split("_")[0].length()))-1;
@@ -64,7 +63,7 @@ class MessageParser {
 
                 System.out.println("cell, cell in module and module: " + cellIndex + "---" + cellInModule + "---" + moduleIndex);
 
-                if (moduleIndex == this.batpack.getModuleCount()) {
+                if (moduleIndex >= this.batpack.getModuleCount()) {
                     module = new BatteryModule(moduleIndex, 0);
                     batpack.addModule(module);
                     System.out.println("added module");
@@ -72,11 +71,11 @@ class MessageParser {
                     module.addCell(cell);
                 } else {
                     module = this.batpack.getModules().get(moduleIndex);
-                    if (cellInModule == module.getNrOfCells()) {
+                    if (cellInModule >= module.getNrOfCells()) {
                         cell = new BatteryCell(0, 0, cellInModule, 0);
                         module.addCell(cell);
                     } else {
-                        cell = this.batpack.getModules().get(moduleIndex).getBatteryCells().get(cellInModule);
+                        cell = module.getBatteryCells().get(cellInModule);
                     }
                 }
 

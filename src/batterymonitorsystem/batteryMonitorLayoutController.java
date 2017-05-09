@@ -358,6 +358,9 @@ public class batteryMonitorLayoutController implements Initializable {
         if(BatteryMonitorSystem.getConnected()){
             Color c = Color.DEEPSKYBLUE;
             connectedIndicator.setFill(c);
+        } else{
+            Color c = Color.SLATEBLUE;
+            connectedIndicator.setFill(c);
         }
     }
 

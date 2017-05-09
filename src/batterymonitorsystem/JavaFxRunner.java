@@ -39,12 +39,13 @@ public class JavaFxRunner extends Application {
         JavaFxRunner.monitorSystem = new BatteryMonitorSystem(latch);
         Thread monitorThread = new Thread(JavaFxRunner.monitorSystem);
         monitorThread.start();
-
-        latch.await();
-
-        this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+//
+//        latch.await();
+//
+//        this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
+//        Scene scene = new Scene(root);
+//        stage.setScene(scene);
+//        stage.show();
+        System.out.println("bms fxml runner done");
     }
 }

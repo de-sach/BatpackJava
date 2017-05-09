@@ -42,6 +42,7 @@ public class PortMonitor implements Runnable {
     private final MessageBuilder builder;
     private final MessageParser parser;
     private boolean ready;
+    private boolean connected;
     private final ThreadEvent resultsReady;
 
     public PortMonitor(CountDownLatch latch) {
@@ -64,25 +65,60 @@ public class PortMonitor implements Runnable {
 
     @Override
     public void run() {
-        listPorts();
-        System.out.println("Running monitor thread");
-        addAllPorts();
-
-        if (commPorts.size() <= 0) {
-            System.out.println("no comm port found");
-        } else {
-            this.cpc = new CommPortCommunicator(this.commPorts.get(0), this.getBaudrate(), SerialPort.DATABITS_8, SerialPort.PARITY_NONE, SerialPort.STOPBITS_1, resultsReady);
-            Thread commThread = new Thread(cpc);
-            commThread.start();
-            //startComm();
-            while (this.ready == false) {
-                this.messageList = cpc.getMessageQueue();
-                refreshAll();
-                this.ready = parser.getBatpackReady();
-                this.batteryPack = parser.getBatpack();
+        //listPorts();
+        //System.out.println("Running monitor thread");
+        while (true) {
+            addAllPorts();
+            System.out.println("commports size =" + commPorts.size());
+            if (commPorts.size() <= 0) {
+                System.out.println("no comm port found");
+                try {
+                    Thread.sleep(2000);
+                    System.out.println("trying to connect");
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                System.out.println("commport found");
+                //startComm();
+                this.cpc = new CommPortCommunicator(this.commPorts.get(0), this.getBaudrate(), SerialPort.DATABITS_8, SerialPort.PARITY_NONE, SerialPort.STOPBITS_1, resultsReady);
+                this.connected = cpc.isConnected();
+                Thread commThread = new Thread(cpc);
+                commThread.start();
+                do {
+                    System.out.println(connected);
+                    this.messageList = cpc.getMessageQueue();
+                    refreshAll();
+                    this.connected = cpc.isConnected();
+                    if (this.connected) {
+                        this.ready = parser.getBatpackReady();
+                        this.connected = cpc.isConnected();
+                        if (this.ready) {
+                            this.batteryPack = parser.getBatpack();
+                            latch.countDown();
+                            this.connected = cpc.isConnected();
+                        }
+                    } else {
+                        this.ready = false;
+                        this.connected = cpc.isConnected();
+                    }
+                    System.out.println("this.connected = " + this.connected);
+                } while (this.ready == false && this.connected);
+                System.out.println("outside while " + this.connected);
+                if (!cpc.isConnected()) {
+                    cpc.closeConnection();
+                    try {
+                        cpc.closeConnection();
+                        commThread.join();
+                        cpc = null;
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    System.out.println(commThread.getState());
+                }
             }
+
         }
-        latch.countDown();
     }
 
     public void listPorts() {
@@ -111,6 +147,7 @@ public class PortMonitor implements Runnable {
     }
 
     private void addAllPorts() {
+        commPorts.clear();
         java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
         while (portEnum.hasMoreElements()) {
             CommPortIdentifier portIdentifier = portEnum.nextElement();
@@ -149,36 +186,42 @@ public class PortMonitor implements Runnable {
             }
             System.out.println("ref" + messageList);
             assert (cpc != null && builder != null);
-            cpc.sendMessage(builder.buildBatpackMessage());
-
-            synchronized (this.resultsReady) {
-                System.out.println("waiting");
-                this.resultsReady.wait();
-                //System.out.println("batpack free");
-                this.messageList = cpc.getMessageQueue();
-                System.out.println(messageList);
-                while (!this.messageList.isEmpty()) {
-                    messageLoop(this.messageList.element());
+            this.connected = cpc.isConnected();
+            if (connected) {
+                cpc.sendMessage(builder.buildBatpackMessage());
+                synchronized (this.resultsReady) {
+                    System.out.println("waiting");
+                    this.resultsReady.wait(500);
+                    //System.out.println("batpack free");
+                    this.messageList = cpc.getMessageQueue();
+                    System.out.println(messageList);
+                    while (!this.messageList.isEmpty()) {
+                        messageLoop(this.messageList.element());
+                    }
+                    cpc.sendMessage(builder.buildVoltageMessage(0, 0));
                 }
-                cpc.sendMessage(builder.buildVoltageMessage(0, 0));
             }
-
-            synchronized (this.resultsReady) {
-                this.resultsReady.wait();
-                //System.out.println("voltage free");
-                this.messageList = cpc.getMessageQueue();
-                while (!this.messageList.isEmpty()) {
-                    messageLoop(this.messageList.element());
+            this.connected = cpc.isConnected();
+            if (connected) {
+                synchronized (this.resultsReady) {
+                    this.resultsReady.wait(500);
+                    //System.out.println("voltage free");
+                    this.messageList = cpc.getMessageQueue();
+                    while (!this.messageList.isEmpty()) {
+                        messageLoop(this.messageList.element());
+                    }
+                    cpc.sendMessage(builder.buildTemperatureMessage(0, 0));
                 }
-                cpc.sendMessage(builder.buildTemperatureMessage(0, 0));
             }
-
-            synchronized (this.resultsReady) {
-                this.resultsReady.wait();
-                //System.out.println("temp free");
-                this.messageList = cpc.getMessageQueue();
-                while (!this.messageList.isEmpty()) {
-                    messageLoop(this.messageList.element());
+            this.connected = cpc.isConnected();
+            if (connected) {
+                synchronized (this.resultsReady) {
+                    this.resultsReady.wait(500);
+                    //System.out.println("temp free");
+                    this.messageList = cpc.getMessageQueue();
+                    while (!this.messageList.isEmpty()) {
+                        messageLoop(this.messageList.element());
+                    }
                 }
             }
 

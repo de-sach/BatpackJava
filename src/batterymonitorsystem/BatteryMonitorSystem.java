@@ -79,7 +79,11 @@ public class BatteryMonitorSystem implements Runnable{
                 
             }
             
-        } catch (SQLiteException | IOException | InterruptedException ex) {
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
+          } catch (SQLiteException ex) {
+            Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
