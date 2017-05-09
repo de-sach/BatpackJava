@@ -77,16 +77,15 @@ public class CommPortCommunicator implements Runnable {
 
             this.connected = true;
 
-            sp.setComPortParameters(br, db, stb, par);
-            sp.openPort();
-            if (sp.getInputStream() == null) {
-                System.out.println("inputstream is NULL");
-
-            } else {
-                try (InputStream in = sp.getInputStream()) {
-                    OutputStream out = sp.getOutputStream();
-                    boolean messageDone = false;
-                    while (!messageDone) {
+            boolean messageDone = false;
+            while (true) {
+                sp.setComPortParameters(br, db, stb, par);
+                sp.openPort();
+                if (sp.getInputStream() == null) {
+                    System.out.println("inputstream is NULL");
+                } else {
+                    try (InputStream in = sp.getInputStream()) {
+                        OutputStream out = sp.getOutputStream();
                         try {
                             if (sp.isOpen()) {
                                 len = in.read(readbuffer);
@@ -156,7 +155,7 @@ public class CommPortCommunicator implements Runnable {
                     }
                 }
             }
-            System.out.println("end of loop");
+            
         } catch (IOException ex) {
             Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -71,6 +71,7 @@ public class PortMonitor implements Runnable {
     public void run() {
         while (!ready) {
             addAllPorts();
+
             if (commPorts.length <= 0) {
                 System.out.println("no comm port found");
                 try {
@@ -87,6 +88,7 @@ public class PortMonitor implements Runnable {
                     commThread.start();
                     this.connected = cpc.isConnected();
                     do {
+                        this.connected = cpc.isConnected();
                         System.out.println(connected);
                         this.messageList = cpc.getMessageQueue();
                         refreshAll();
@@ -112,7 +114,7 @@ public class PortMonitor implements Runnable {
         }
         System.out.println("__________________________SETUP_DONE______________________");
     }
-    
+
     private void addAllPorts() {
         commPorts = SerialPort.getCommPorts();
     }
@@ -125,7 +127,7 @@ public class PortMonitor implements Runnable {
         this.batteryPack = batteryPack;
     }
 
-        public void refreshAll() {
+    public void refreshAll() {
         try {
             cpc.sendMessage(builder.buildBatpackMessage());
             synchronized (this.resultsReady) {
