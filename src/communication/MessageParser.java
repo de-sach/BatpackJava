@@ -19,6 +19,7 @@ package communication;
 import battery.BatteryCell;
 import battery.BatteryModule;
 import battery.BatteryPacket;
+import java.time.Instant;
 import java.util.Arrays;
 
 /**
@@ -78,6 +79,7 @@ class MessageParser {
                         cell = module.getBatteryCells().get(cellInModule);
                     }
                 }
+                cell.setLastMeasurement(Instant.now());
 
                 switch (part) {
                     case "T":

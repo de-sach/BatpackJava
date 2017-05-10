@@ -84,4 +84,12 @@ public class BatteryCell {
         tempAsString += "°C";
         return tempAsString;
     }
+
+    public void setLastMeasurement(Instant now) {
+        this.lastMeasurement = now;
+    }
+    
+    public Instant getLastMeasurement(){
+        return this.lastMeasurement;
+    }
 }

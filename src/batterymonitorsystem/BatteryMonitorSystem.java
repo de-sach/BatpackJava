@@ -70,7 +70,7 @@ public class BatteryMonitorSystem implements Runnable{
             while(true){
                 //communication
                 System.out.println("Refreshing data");
-                portMonitor.refreshAll();
+                portMonitor.refreshBatpack();
                 connected = portMonitor.isConnected();
                 Thread.sleep(100);
                 batpack = portMonitor.getBatteryPack();
