@@ -57,6 +57,9 @@ public class PortMonitor implements Runnable {
         this.databits = 8;
         this.stopbits = SerialPort.ONE_STOP_BIT;
         this.pariteit = SerialPort.NO_PARITY;
+        this.cpc = new CommPortCommunicator(baudrate, databits, pariteit, stopbits, resultsReady);
+        Thread commThread = new Thread(cpc);
+        commThread.start();
     }
 
     public int getBaudrate() {
@@ -83,9 +86,7 @@ public class PortMonitor implements Runnable {
             } else {
                 System.out.println("commport found");
                 if (commPorts[0] != null) {
-                    this.cpc = new CommPortCommunicator(this.commPorts[0], baudrate, databits, pariteit, stopbits, resultsReady);
-                    Thread commThread = new Thread(cpc);
-                    commThread.start();
+                    this.cpc.updateCommPort(this.commPorts[0]);
                     this.connected = cpc.isConnected();
                     do {
                         this.connected = cpc.isConnected();

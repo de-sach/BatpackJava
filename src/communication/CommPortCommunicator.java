@@ -53,8 +53,7 @@ public class CommPortCommunicator implements Runnable {
         return communicationqueue;
     }
 
-    CommPortCommunicator(SerialPort sp, int baudrate, int DATABITS_8, int PARITY_NONE, int STOPBITS_1, ThreadEvent ready) {
-        this.sp = sp;
+    CommPortCommunicator(int baudrate, int DATABITS_8, int PARITY_NONE, int STOPBITS_1, ThreadEvent ready) {
         this.br = baudrate;
         this.db = DATABITS_8;
         this.par = PARITY_NONE;
@@ -76,14 +75,20 @@ public class CommPortCommunicator implements Runnable {
             int len = -5;
 
             this.connected = true;
+            while (this.sp == null) {
+                System.out.println("serial port not connected");
+                Thread.sleep(100);
+            }
 
-            boolean messageDone = false;
             while (true) {
                 sp.setComPortParameters(br, db, stb, par);
                 sp.openPort();
+                System.out.println("sp:" + sp);
                 if (sp.getInputStream() == null) {
                     System.out.println("inputstream is NULL");
+                    sp.closePort();
                 } else {
+                    this.connected = true;
                     try (InputStream in = sp.getInputStream()) {
                         OutputStream out = sp.getOutputStream();
                         try {
@@ -145,18 +150,19 @@ public class CommPortCommunicator implements Runnable {
                             }
                         } catch (IOException ex) {
                             Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
-                            messageDone = true;
+
                         }
                         if (!sp.isOpen()) {
                             connected = false;
                             System.out.println("sp closed in loop");
-                            messageDone = true;
                         }
                     }
                 }
             }
-            
+
         } catch (IOException ex) {
+            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -181,5 +187,9 @@ public class CommPortCommunicator implements Runnable {
             System.out.println("error at closing");
             Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    void updateCommPort(SerialPort commPort) {
+        this.sp = commPort;
     }
 }
