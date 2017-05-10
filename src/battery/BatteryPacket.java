@@ -30,7 +30,7 @@ public class BatteryPacket {
     private double totalVoltage;
     private List<BatteryModule> modules;
     private double averageTemperature;
-
+    
     public BatteryPacket(int moduleCount) {
         this.moduleCount = moduleCount;
         this.modules = new ArrayList();

@@ -71,6 +71,7 @@ public class BatteryMonitorSystem implements Runnable{
                 //communication
                 System.out.println("Refreshing data");
                 portMonitor.refreshAll();
+                connected = portMonitor.isConnected();
                 Thread.sleep(100);
                 batpack = portMonitor.getBatteryPack();
                 System.out.println("BMS: battery pack module 5 cell 5 voltage: "+batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());

@@ -45,6 +45,7 @@ public class PortMonitor implements Runnable {
     private final MessageParser parser;
     private boolean ready;
     private boolean connected;
+
     private final ThreadEvent resultsReady;
 
     public PortMonitor(CountDownLatch latch) {
@@ -64,6 +65,10 @@ public class PortMonitor implements Runnable {
 
     public int getBaudrate() {
         return baudrate;
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 
     public void setBaudrate(int baudrate) {
