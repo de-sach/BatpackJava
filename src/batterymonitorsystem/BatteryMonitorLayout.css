@@ -1,0 +1,105 @@
+/*
+Copyright (C) 2017 Peter
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/* 
+    Created on : 21-mei-2017, 18:25:24
+    Author     : Peter
+*/
+
+
+
+SplitPane{
+    -fx-background-color: whitesmoke;
+}
+
+.split-pane-divider{
+    -fx-border-color: whitesmoke;
+    -fx-background-color: whitesmoke;
+}
+
+AnchorPane{
+    -fx-background-color: whitesmoke;
+    -fx-text-fill: black;
+}
+
+MenuBar{
+    -fx-background-color: whitesmoke;
+}
+
+MenuBar .label{
+    -fx-text-fill: black;
+}
+
+.menu:showing{
+    -fx-background-color: #3f7f47;
+}
+
+.menu-item .label{
+    -fx-text-fill: black;
+}
+
+.menu-item:focused{
+    -fx-background-color: #3f7f47;
+}
+
+.menu-item:focused .label{
+    -fx-text-fill:  black;
+}
+
+.context-menu{
+    -fx-background-color: whitesmoke;
+    -fx-border-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
+}
+
+Label{
+    -fx-text-fill: black;
+}
+
+Circle{
+    -fx-fill: #3f7f47;
+}
+
+.progress-bar> .track{
+    -fx-text-box-border: whitesmoke;
+    -fx-control-inner-background:whitesmoke;
+    -fx-border-color: whitesmoke;
+}
+
+.progress-bar .bar{
+    -fx-background-color: #3f7f47;
+}
+
+.titled-pane .title{
+    -fx-background-color: #3f7f47;
+    -fx-text-fill: black;
+}
+
+
+MenuButton{
+    -fx-background-color: #3f7f47
+}
+MenuButton .title{
+    -fx-text-fill:whitesmoke;
+}
+
+.accordion .title > .arrow-button .arrow{
+    visibility:hidden;
+}
+
+Button{
+    -fx-background-color: whitesmoke;
+    -fx-text-fill: black;
+}

@@ -1,0 +1,4 @@
+.animated-gradient {
+    -gradient-base: red ;
+    -fx-fill:  linear-gradient(to right, -gradient-base, black);
+}

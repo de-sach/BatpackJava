@@ -8,10 +8,16 @@ package batterymonitorsystem;
 import battery.BatteryCell;
 import battery.BatteryModule;
 import battery.BatteryPacket;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -23,15 +29,19 @@ import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
@@ -44,6 +54,8 @@ public class batteryMonitorLayoutController implements Initializable {
     private List<Group> batteryModules;
     private List<Group> batteryCells;
     private int selectedModule;
+    private static double xOffset;
+    private static double yOffset;
 
     public int getSelectedModule() {
         return selectedModule;
@@ -52,6 +64,13 @@ public class batteryMonitorLayoutController implements Initializable {
     public void setSelectedModule(int selectedModule) {
         this.selectedModule = selectedModule;
     }
+
+    //MENUBAR
+    @FXML
+    private AnchorPane menuPane;
+
+    @FXML
+    private MenuBar menuBar;
 
     //HEADER
     @FXML
@@ -68,7 +87,9 @@ public class batteryMonitorLayoutController implements Initializable {
 
     @FXML
     private Label totalTemperature;
-
+    
+    @FXML
+    private ImageView formulaLogo;
     //ACCORDEON
     @FXML
     private TitledPane batpackOverview;
@@ -132,7 +153,8 @@ public class batteryMonitorLayoutController implements Initializable {
         //System.out.println("test connect");
         updateTotalVoltage();
     }
-
+    
+        
     @FXML
     private Group cell1;
 
@@ -186,7 +208,7 @@ public class batteryMonitorLayoutController implements Initializable {
 
     @FXML
     private Accordion accordion;
-    
+
     @FXML
     private Circle connectedIndicator;
 
@@ -226,6 +248,10 @@ public class batteryMonitorLayoutController implements Initializable {
 
         bindModuleClick();
         checkConnection();
+
+        bindWindowDrag();
+        
+        bindWebsite();
 
         updateTotalVoltage();
         updateModules();
@@ -309,9 +335,11 @@ public class batteryMonitorLayoutController implements Initializable {
     }
 
     private void updateCells(int id) {
-        BatteryModule module = this.batpack.getModules().get(id);
-        for (int i = 0; i < module.getNrOfCells(); i++) {
-            updateCell(this.batteryCells.get(i), module.getBatteryCells().get(i));
+        if (this.batpack != null) {
+            BatteryModule module = this.batpack.getModules().get(id);
+            for (int i = 0; i < module.getNrOfCells(); i++) {
+                updateCell(this.batteryCells.get(i), module.getBatteryCells().get(i));
+            }
         }
     }
 
@@ -344,24 +372,49 @@ public class batteryMonitorLayoutController implements Initializable {
 
     private void bindUpdates() {
         final KeyFrame oneFrame = new KeyFrame(Duration.seconds(5), (ActionEvent evt) -> {
-            this.batpack=BatteryMonitorSystem.getBatpack();
-            System.out.println("layout: battery pack module 5 cell 5 voltage: "+batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
-            checkConnection();
-            updateModules();
-            
+            if (this.batpack != null) {
+                this.batpack = BatteryMonitorSystem.getBatpack();
+                System.out.println("layout: battery pack module 5 cell 5 voltage: " + batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
+                checkConnection();
+                updateModules();
+            }
+
         });
         Timeline timer = TimelineBuilder.create().cycleCount(Animation.INDEFINITE).keyFrames(oneFrame).build();
         timer.playFromStart();
     }
 
     private void checkConnection() {
-        if(BatteryMonitorSystem.getConnected()){
+        if (BatteryMonitorSystem.getConnected()) {
             Color c = Color.DEEPSKYBLUE;
             connectedIndicator.setFill(c);
-        } else{
+        } else {
             Color c = Color.SLATEBLUE;
             connectedIndicator.setFill(c);
         }
+    }
+
+    private void bindWindowDrag() {
+        menuBar.setOnMousePressed((MouseEvent event) -> {
+            Stage stage = (Stage) menuPane.getScene().getWindow();
+            xOffset = stage.getX() - event.getScreenX();
+            yOffset = stage.getY() - event.getScreenY();
+        });
+        menuBar.setOnMouseDragged((MouseEvent event) -> {
+            Stage stage = (Stage) menuPane.getScene().getWindow();
+            stage.setX(event.getScreenX() + xOffset);
+            stage.setY(event.getScreenY() + yOffset);
+        });
+    }
+
+    private void bindWebsite() {
+        formulaLogo.setOnMouseClicked((event) -> {
+            try {
+                Desktop.getDesktop().browse(new URI("http://www.formulaelectric.be"));
+            } catch (IOException | URISyntaxException ex) {
+                Logger.getLogger(batteryMonitorLayoutController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
     }
 
 }
