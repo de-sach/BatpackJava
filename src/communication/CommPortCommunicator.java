@@ -69,16 +69,56 @@ public class CommPortCommunicator implements Runnable {
     public void run() {
         try {
             //try {
-
             this.connected = true;
             while (this.sp == null) {
                 System.out.println("serial port not connected");
-                Thread.sleep(100);
+                Thread.sleep(200);
             }
-            while (true) {
-                startCommLoop();
+            startCommLoop();
+        } catch (InterruptedException ex) {
+            System.out.println("run interrupted");
+            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    void sendMessage(String message) {
+        this.outMessage = message;
+        //System.out.println("message: " +message);
+    }
+
+    void resendMessage() {
+        this.lastMessage = "";
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    void closePort() {
+        try {
+            if (sp.isOpen()) {
+                this.sp.getInputStream().close();
+                this.sp.getOutputStream().close();
+                this.sp.closePort();
             }
-            /*while (true) {
+        } catch (IOException ex) {
+            System.out.println("error at closing");
+            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    void updateCommPort(SerialPort commPort) {
+        this.sp = commPort;
+    }
+
+    private void startCommLoop() {
+        byte[] readbuffer = new byte[5000];
+        byte[] writebuffer = new byte[5000];
+        char[] messagebuffer;
+        int len = -5;
+        if (sp != null) {
+            while (!Thread.interrupted()&&this.connected) {
                 sp.setComPortParameters(br, db, stb, par);
                 sp.openPort();
                 //System.out.println("sp:" + sp);
@@ -146,138 +186,22 @@ public class CommPortCommunicator implements Runnable {
                                 lastMessage = outMessage;
                             }
                         } catch (IOException ex) {
-                            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
+                            this.sp = null;
+                            this.connected = false;
+                            break;
+                            //Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
 
                         }
                         if (!sp.isOpen()) {
                             connected = false;
                             System.out.println("sp closed in loop");
                         }
-                    }
-                }
-            }*/
-
-        } catch (InterruptedException ex) {
-            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    void sendMessage(String message) {
-        this.outMessage = message;
-        //System.out.println("message: " +message);
-    }
-
-    void resendMessage() {
-        this.lastMessage = "";
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    void closePort() {
-        try {
-            if (sp.isOpen()) {
-                this.sp.getInputStream().close();
-                this.sp.getOutputStream().close();
-                this.sp.closePort();
-            }
-        } catch (IOException ex) {
-            System.out.println("error at closing");
-            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    void updateCommPort(SerialPort commPort) {
-        this.sp = commPort;
-    }
-
-    private void startCommLoop() {
-        byte[] readbuffer = new byte[5000];
-        byte[] writebuffer = new byte[5000];
-        char[] messagebuffer;
-        int len = -5;
-        while (true) {
-            sp.setComPortParameters(br, db, stb, par);
-            sp.openPort();
-            //System.out.println("sp:" + sp);
-            if (sp.getInputStream() == null) {
-                System.out.println("inputstream is NULL");
-                sp.closePort();
-                this.connected = false;
-            } else {
-                this.connected = true;
-                try (InputStream in = sp.getInputStream()) {
-                    OutputStream out = sp.getOutputStream();
-                    try {
-                        if (sp.isOpen()) {
-                            len = in.read(readbuffer);
-                        }
-                        if (len > 0) {
-                            received = new String(readbuffer);
-                            received = received.trim();
-                            System.out.println(received);
-                            String[] messages = received.split("\r\n");
-                            for (int i = 0; i < messages.length; i++) {
-                                //assure that messages sent out by me aren't returned to me
-                                if (i > 1) {
-                                    messageList.remove(messages[0]);
-                                }
-                                //remove spaces
-                                if (messages[i].trim().length() > 2) {
-                                    messageList.add(messages[i].trim());
-                                }
-
-                                communicationqueue.add(messages[i].trim());
-
-                            }
-
-                            System.out.println("message List length:" + communicationqueue.size());
-
-                            //Notify @ messages
-                            if (messageList.size() > 0) {
-                                //new message arrived
-                                if (messageList.get(messageList.size() - 1).equals("End")) {
-                                    messageList.remove(messageList.size() - 1);
-                                    synchronized (this.ready) {
-                                        this.ready.notify();
-                                        System.out.println("cpc" + messageList);
-                                    }
-
-                                }
-                            }
-                            while (messageList.size() > 0) {
-                                messageList.remove(0);
-                            }
-
-                        }
-                        if (!outMessage.equals(lastMessage)) {
-                            messagebuffer = outMessage.toCharArray();
-                            for (int i = 0; i < 10; i++) {
-                                writebuffer[i] = (byte) messagebuffer[i];
-                            }
-                            if (connected) {
-                                if (sp.isOpen() && sp.getOutputStream() != null && sp.getInputStream() != null) {
-                                    out.write(writebuffer, 0, 10);
-                                    System.out.println("sent message " + outMessage);
-                                }
-                            }
-                            lastMessage = outMessage;
-                        }
                     } catch (IOException ex) {
-                        break;
-                        //Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
-
+                        Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (!sp.isOpen()) {
-                        connected = false;
-                        System.out.println("sp closed in loop");
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
+        connected = false;
     }
 }
