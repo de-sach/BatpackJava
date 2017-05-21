@@ -34,6 +34,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -154,6 +155,17 @@ public class batteryMonitorLayoutController implements Initializable {
         updateTotalVoltage();
     }
     
+    @FXML
+    private void minimize(ActionEvent event){
+        Stage stage = (Stage) menuPane.getScene().getWindow();
+        stage.setIconified(true);
+    }
+    
+    @FXML
+    private void maximize(ActionEvent event){
+        Stage stage = (Stage) menuPane.getScene().getWindow();
+        stage.setMaximized(true);
+    }
         
     @FXML
     private Group cell1;
@@ -246,6 +258,8 @@ public class batteryMonitorLayoutController implements Initializable {
         batteryCells.add(cell15);
         batteryCells.add(cell16);
 
+        setIcon();
+        
         bindModuleClick();
         checkConnection();
 
@@ -415,6 +429,10 @@ public class batteryMonitorLayoutController implements Initializable {
                 Logger.getLogger(batteryMonitorLayoutController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+    }
+
+    private void setIcon() {
+        
     }
 
 }

@@ -25,6 +25,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -76,6 +77,7 @@ public class JavaFxRunner extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("BatteryMonitorLayout.css").toExternalForm());
         stage.initStyle(StageStyle.UNDECORATED);
+        stage.getIcons().add(new Image("file:../../resources/IconFB.png"));
         stage.setTitle("BMS MONITOR UMICORE NOVA");
         stage.setScene(scene);
         stage.show();

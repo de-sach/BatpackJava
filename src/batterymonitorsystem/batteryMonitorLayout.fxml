@@ -37,7 +37,8 @@
                               </Menu>
                           </menus>
                       </MenuBar>
-                  <Button mnemonicParsing="false" onAction="#exit" text="-" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
+                  <Button mnemonicParsing="false" onAction="#minimize" text="-" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0" />
+                  <Button mnemonicParsing="false" onAction="#maximize" text="□" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
                   <Button layoutX="1154.0" mnemonicParsing="false" onAction="#exit" text="x" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1176.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
