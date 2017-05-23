@@ -31,7 +31,7 @@ import storage.dbRunnable;
  */
 public class BatteryMonitorSystem implements Runnable {
 
-    private static BatteryPacket batpack;
+    static BatteryPacket batpack;
     private static PortMonitor portMonitor;
     private static dbRunnable database;
     private static boolean connected;
