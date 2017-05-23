@@ -68,6 +68,7 @@ public class dbConnector {
             try {
                 Class.forName("org.sqlite.JDBC");
             } catch (ClassNotFoundException ex) {
+                System.out.println("jdbc connector not found");
                 Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
             }
             connection = DriverManager.getConnection("jdbc:sqlite:./src/storage/batteryMonitor.db");
