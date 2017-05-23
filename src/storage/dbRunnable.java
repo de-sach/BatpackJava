@@ -17,8 +17,8 @@
 package storage;
 
 import battery.BatteryPacket;
-import com.almworks.sqlite4java.SQLiteException;
 import java.io.IOException;
+import org.sqlite.SQLiteException;
 
 /**
  *
