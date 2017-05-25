@@ -13,12 +13,17 @@ Documentation
 package batterymonitorsystem;
 
 import battery.BatteryPacket;
+<<<<<<< HEAD
 import communication.MessageBuilder;
+=======
+
+>>>>>>> Testing
 import communication.PortMonitor;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.sqlite.SQLiteException;
 import storage.dbRunnable;
 
 /**
@@ -30,7 +35,7 @@ import storage.dbRunnable;
  */
 public class BatteryMonitorSystem implements Runnable {
 
-    private static BatteryPacket batpack;
+    static BatteryPacket batpack;
     private static PortMonitor portMonitor;
     private static dbRunnable database;
     private static boolean connected;
@@ -65,27 +70,29 @@ public class BatteryMonitorSystem implements Runnable {
             }
             connected = true;
             batpack = portMonitor.getBatteryPack();
-            //SETUP Storage
-            BatteryMonitorSystem.database = new dbRunnable(batpack);
+            try {
+                //SETUP Storage
+                BatteryMonitorSystem.database = new dbRunnable(batpack);
+            } catch (SQLiteException ex) {
+                Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
+            }
             Thread databaseThread = new Thread(BatteryMonitorSystem.database);
             databaseThread.start();
-
             //MAIN CONTROL LOOP
             while (true) {
-
+                //communication
+                System.out.println("Refreshing data");
                 portMonitor.refreshBatpack();
                 connected = portMonitor.isConnected();
-                Thread.sleep(1000);
+                Thread.sleep(100);
                 batpack = portMonitor.getBatteryPack();
-                //System.out.println("BMS: battery pack module 5 cell 5 voltage: " + batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
+                System.out.println("BMS: battery pack module 5 cell 5 voltage: " + batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
                 //storage
                 database.storeBatpack();
 
             }
 
-        } catch (InterruptedException ex) {
-            Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (InterruptedException | IOException ex) {
             Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

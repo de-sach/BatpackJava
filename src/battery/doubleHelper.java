@@ -33,6 +33,13 @@ public class doubleHelper {
     }
     
      //HELPER FUNCTIONS SHOULD HAVE OWN CLASS
+
+    /**
+     * A help class to round the value of a measurement up to 2 decimals usefull to write strings.
+     * @param value
+     * @param places
+     * @return the value rounded up to the number of places requested.
+     */
     public static double round(double value, int places) {
         if (places < 0) {
             throw new IllegalArgumentException();

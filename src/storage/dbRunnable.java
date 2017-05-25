@@ -18,6 +18,7 @@ package storage;
 
 import battery.BatteryPacket;
 import java.io.IOException;
+import org.sqlite.SQLiteException;
 
 /**
  *
