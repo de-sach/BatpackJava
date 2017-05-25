@@ -34,7 +34,6 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TitledPane;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -227,6 +226,9 @@ public class batteryMonitorLayoutController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.batpack = BatteryMonitorSystem.getBatpack();
+        
+        System.out.println("batpack votlage = "+batpack.getTotalVoltageAsString());
+        
         batteryModules = new ArrayList<>();
         batteryModules.add(Module1);
         batteryModules.add(Module2);
@@ -258,6 +260,10 @@ public class batteryMonitorLayoutController implements Initializable {
         batteryCells.add(cell15);
         batteryCells.add(cell16);
 
+        for(int i = batpack.getModuleCount();i<batteryModules.size();i++){
+            batteryModules.get(i).setVisible(false);
+        }
+        
         setIcon();
         
         bindModuleClick();
@@ -329,7 +335,7 @@ public class batteryMonitorLayoutController implements Initializable {
     }
 
     private void buildMenuItem() {
-        for (int i = 0; i < batteryModules.size(); i++) {
+        for (int i = 0; i < this.batpack.getModuleCount(); i++) {
             Group module = batteryModules.get(i);
             String labelText = ((Label) module.getChildren().get(3)).getText();
             MenuItem menuItem = new MenuItem(labelText);
@@ -388,7 +394,7 @@ public class batteryMonitorLayoutController implements Initializable {
         final KeyFrame oneFrame = new KeyFrame(Duration.seconds(5), (ActionEvent evt) -> {
             if (this.batpack != null) {
                 this.batpack = BatteryMonitorSystem.getBatpack();
-                System.out.println("layout: battery pack module 5 cell 5 voltage: " + batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
+                //System.out.println("layout: battery pack module 5 cell 5 voltage: " + batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
                 checkConnection();
                 updateModules();
             }
@@ -400,10 +406,10 @@ public class batteryMonitorLayoutController implements Initializable {
 
     private void checkConnection() {
         if (BatteryMonitorSystem.getConnected()) {
-            Color c = Color.DEEPSKYBLUE;
+            Color c = Color.DARKGREEN;
             connectedIndicator.setFill(c);
         } else {
-            Color c = Color.SLATEBLUE;
+            Color c = Color.RED;
             connectedIndicator.setFill(c);
         }
     }

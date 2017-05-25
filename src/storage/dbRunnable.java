@@ -17,7 +17,6 @@
 package storage;
 
 import battery.BatteryPacket;
-import com.almworks.sqlite4java.SQLiteException;
 import java.io.IOException;
 
 /**
@@ -29,7 +28,7 @@ public class dbRunnable implements Runnable {
     private final BatteryPacket batpack;
     private final dbConnector dbcon;
     
-    public dbRunnable(BatteryPacket packet) throws SQLiteException, IOException {
+    public dbRunnable(BatteryPacket packet) throws IOException {
         this.batpack = packet;
         dbcon = new dbConnector();
         dbcon.createTable(false);

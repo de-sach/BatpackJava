@@ -18,7 +18,6 @@ package batterymonitorsystem;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -41,8 +40,10 @@ public class JavaFxRunner extends Application {
 
     @Override
     public void start(Stage stage) {
-        final CountDownLatch latch = new CountDownLatch(1);
-        boolean loaded = false;
+
+        try {
+            final CountDownLatch latch = new CountDownLatch(1);
+            boolean loaded = false;
 
 //        try {
 //            this.root = FXMLLoader.load(getClass().getResource("SplashScreen.fxml"));
@@ -54,33 +55,29 @@ public class JavaFxRunner extends Application {
 //        loading.getStylesheets().add(getClass().getResource("animated-gradient.css").toExternalForm());
 //        stage.setScene(loading);
 //        stage.show();
-//        
 //
-//        JavaFxRunner.monitorSystem = new BatteryMonitorSystem(latch);
-//        Thread monitorThread = new Thread(JavaFxRunner.monitorSystem);
-//        monitorThread.start();
-//        while (!loaded) {
-//            try {
-//                latch.await(1, TimeUnit.NANOSECONDS);
-//            } catch (InterruptedException ex) {
-//                loaded = true;
-//            }
-//        }
+//
+            JavaFxRunner.monitorSystem = new BatteryMonitorSystem(latch);
+            Thread monitorThread = new Thread(JavaFxRunner.monitorSystem);
+            monitorThread.start();
+            latch.await();
 
 //        stage.hide();
-
-        try {
-            this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
-        } catch (IOException ex) {
+            try {
+                this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
+            } catch (IOException ex) {
+                Logger.getLogger(JavaFxRunner.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("BatteryMonitorLayout.css").toExternalForm());
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.getIcons().add(new Image("file:../../resources/IconFB.png"));
+            stage.setTitle("BMS MONITOR UMICORE NOVA");
+            stage.setScene(scene);
+            stage.show();
+            System.out.println("bms fxml runner done");
+        } catch (InterruptedException ex) {
             Logger.getLogger(JavaFxRunner.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("BatteryMonitorLayout.css").toExternalForm());
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.getIcons().add(new Image("file:../../resources/IconFB.png"));
-        stage.setTitle("BMS MONITOR UMICORE NOVA");
-        stage.setScene(scene);
-        stage.show();
-        System.out.println("bms fxml runner done");
     }
 }

@@ -73,14 +73,14 @@ public class BatteryCell {
 
     public String getVoltageAsString() {
         String totalVoltageAsString;
-        totalVoltageAsString = Double.toString(round(this.voltage,2));
+        totalVoltageAsString = Double.toString(round(this.voltage,4));
         totalVoltageAsString += " V";
         return totalVoltageAsString;
     }
 
     public String getTemperatureAsString() {
         String tempAsString;
-        tempAsString = Double.toString(round(this.temperature,2));
+        tempAsString = Double.toString(round(this.temperature,4));
         tempAsString += "°C";
         return tempAsString;
     }

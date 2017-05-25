@@ -83,7 +83,7 @@ public class CommPortCommunicator implements Runnable {
 
     void sendMessage(String message) {
         this.outMessage = message;
-        //System.out.println("message: " +message);
+        System.out.println("message: " +message);
     }
 
     void resendMessage() {
@@ -200,7 +200,7 @@ public class CommPortCommunicator implements Runnable {
                         Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            }
+            } System.out.println("\n\n\ncommunication done\n\n\n");
         }
         connected = false;
     }

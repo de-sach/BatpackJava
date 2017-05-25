@@ -19,11 +19,11 @@ package communication;
 import battery.BatteryCell;
 import battery.BatteryModule;
 import battery.BatteryPacket;
+import com.fazecast.jSerialComm.SerialPort;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.fazecast.jSerialComm.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
@@ -57,7 +57,7 @@ public class PortMonitor implements Runnable {
         this.latch = latch;
         this.ready = false;
         this.resultsReady = new ThreadEvent();
-        this.baudrate = 500000;
+        this.baudrate = 115200;
         this.databits = 8;
         this.stopbits = SerialPort.ONE_STOP_BIT;
         this.pariteit = SerialPort.NO_PARITY;
@@ -105,6 +105,9 @@ public class PortMonitor implements Runnable {
                 }
             }
         }
+        this.batteryPack = parser.getBatpack();
+        System.out.println("total voltage after init: " + batteryPack.getTotalVoltageAsString());
+        latch.countDown();
         System.out.println("__________________________SETUP_DONE______________________");
     }
 
@@ -128,17 +131,17 @@ public class PortMonitor implements Runnable {
             synchronized (this.resultsReady) {
                 this.resultsReady.notify();
             }
-            System.out.println("ref" + messageList);
+//            System.out.println("ref" + messageList);
             assert (cpc != null && builder != null);
             this.connected = cpc.isConnected();
             if (connected) {
                 cpc.sendMessage(builder.buildBatpackMessage());
                 synchronized (this.resultsReady) {
-                    System.out.println("waiting");
+//                    System.out.println("waiting");
                     this.resultsReady.wait(100);
                     //System.out.println("batpack free");
                     this.messageList = cpc.getMessageQueue();
-                    System.out.println(messageList);
+//                    System.out.println(messageList);
                     while (!this.messageList.isEmpty()) {
                         messageLoop(this.messageList.element());
                     }
@@ -222,34 +225,46 @@ public class PortMonitor implements Runnable {
     }
 
     public void refreshBatpack() {
-        System.out.println("started refresh");
-        for (BatteryModule module : batteryPack.getModules()) {
-            for (BatteryCell cell : module.getBatteryCells()) {
-                Instant now = Instant.now();
-                int type = 2; //cell
-                System.out.println("now: " + now + ", last measured: " + cell.getLastMeasurement());
-                cpc.sendMessage(this.builder.buildVoltageMessage(type, cell.getId()));
-                while (cell.getLastMeasurement().isBefore(now)) {
-                    cpc.resendMessage();
-                    this.messageList = cpc.getMessageQueue();
-                    while (messageList.size() > 0) {
-                        parser.parseMessage(messageList.element());
-                        messageList.remove();
-                    }
-                }
-                now = Instant.now();
-                cpc.sendMessage(this.builder.buildTemperatureMessage(type, cell.getId()));
-                while (cell.getLastMeasurement().isBefore(now)) {
-                    cpc.resendMessage();
-                    this.messageList = cpc.getMessageQueue();
-                    while (messageList.size() > 0) {
-                        parser.parseMessage(messageList.element());
-                        messageList.remove();
-                    }
-                }
+        try {
+            System.out.println("started refresh");
+            cpc.sendMessage(this.builder.buildBatpackMessage());
+            Thread.sleep(100);
+            this.messageList = cpc.getMessageQueue();
+            while (messageList.size() > 0) {
+                parser.parseMessage(messageList.element());
+                messageList.remove();
             }
+            System.out.println("out of refresh");
+//        for (BatteryModule module : batteryPack.getModules()) {
+//            for (BatteryCell cell : module.getBatteryCells()) {
+//                Instant now = Instant.now();
+//                int type = 2; //cell
+//                System.out.println("now: " + now + ", last measured: " + cell.getLastMeasurement());
+//                cpc.sendMessage(this.builder.buildVoltageMessage(type, cell.getId()));
+//                while (cell.getLastMeasurement().isBefore(now)) {
+//                    cpc.resendMessage();
+//                    this.messageList = cpc.getMessageQueue();
+//                    while (messageList.size() > 0) {
+//                        parser.parseMessage(messageList.element());
+//                        messageList.remove();
+//                    }
+//                }
+//                now = Instant.now();
+//                cpc.sendMessage(this.builder.buildTemperatureMessage(type, cell.getId()));
+//                while (cell.getLastMeasurement().isBefore(now)) {
+//                    cpc.resendMessage();
+//                    this.messageList = cpc.getMessageQueue();
+//                    while (messageList.size() > 0) {
+//                        parser.parseMessage(messageList.element());
+//                        messageList.remove();
+//                    }
+//                }
+//            }
+//        }
+//        System.out.println("refresh done");
+        } catch (InterruptedException ex) {
+            Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("refresh done");
     }
 
     private void startCommportCommunicator() {
