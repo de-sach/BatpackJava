@@ -174,7 +174,7 @@ public class PortMonitor implements Runnable {
 
             //cpc.sendMessage(builder.buildBalancingMessage(0, 0));
             this.ready = true;
-            System.out.println("refresh done");
+            //System.out.println("refresh done");
         } catch (InterruptedException ex) {
             Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -225,45 +225,29 @@ public class PortMonitor implements Runnable {
     }
 
     public void refreshBatpack() {
-        try {
-            System.out.println("started refresh");
-            cpc.sendMessage(this.builder.buildBatpackMessage());
-            Thread.sleep(100);
-            this.messageList = cpc.getMessageQueue();
-            while (messageList.size() > 0) {
-                parser.parseMessage(messageList.element());
-                messageList.remove();
+        if (connected) {
+            while (connected) {
+                try {
+                    refreshAll();
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-            System.out.println("out of refresh");
-//        for (BatteryModule module : batteryPack.getModules()) {
-//            for (BatteryCell cell : module.getBatteryCells()) {
-//                Instant now = Instant.now();
-//                int type = 2; //cell
-//                System.out.println("now: " + now + ", last measured: " + cell.getLastMeasurement());
-//                cpc.sendMessage(this.builder.buildVoltageMessage(type, cell.getId()));
-//                while (cell.getLastMeasurement().isBefore(now)) {
-//                    cpc.resendMessage();
-//                    this.messageList = cpc.getMessageQueue();
-//                    while (messageList.size() > 0) {
-//                        parser.parseMessage(messageList.element());
-//                        messageList.remove();
-//                    }
-//                }
-//                now = Instant.now();
-//                cpc.sendMessage(this.builder.buildTemperatureMessage(type, cell.getId()));
-//                while (cell.getLastMeasurement().isBefore(now)) {
-//                    cpc.resendMessage();
-//                    this.messageList = cpc.getMessageQueue();
-//                    while (messageList.size() > 0) {
-//                        parser.parseMessage(messageList.element());
-//                        messageList.remove();
-//                    }
-//                }
-//            }
-//        }
-//        System.out.println("refresh done");
-        } catch (InterruptedException ex) {
-            Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+        } else {
+            addAllPorts();
+            if (commPorts.length <= 0) {
+                System.out.println("no comm port found");
+                try {
+                    Thread.sleep(2000);
+                    System.out.println("trying to connect");
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            } else {
+                startCommportCommunicator();
+            }
         }
     }
 

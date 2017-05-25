@@ -42,17 +42,20 @@ public class MessageBuilder {
                 break;
             case 1: //get Module 
                 this.message+="M_";
-                for(int i=(int) (4-Math.floor(Math.log10(identifier)+1));i>0;i--){
-                    this.message+="0";
-                }
+//                for(int i=(int) (4-Math.floor(Math.log10(identifier)+1));i>0;i--){
+//                    this.message+="0";
+//                }
                 this.message+=identifier;
                 break;
             case 2: //get cell 
                 this.message+="C_";
-                for(int i=(int) (4-Math.floor(Math.log10(identifier)+1));i>0;i--){
-                    this.message+="0";
-                }
+//                for(int i=(int) (4-Math.floor(Math.log10(identifier)+1));i>0;i--){
+//                    this.message+="0";
+//                }
                 this.message+=identifier;
+                break;
+            default:
+                System.out.println("error wrong message");
                 break;
         }
         this.message = finishMessage(this.message);

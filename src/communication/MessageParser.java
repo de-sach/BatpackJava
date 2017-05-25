@@ -88,7 +88,7 @@ class MessageParser {
                         }
                     }
                     cell.setLastMeasurement(Instant.now());
-
+                    System.out.println("last measurement set");
                     switch (part) {
                         case "T":
                             //String[] split = message.split("_");

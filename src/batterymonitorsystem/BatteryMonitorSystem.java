@@ -13,6 +13,7 @@ Documentation
 package batterymonitorsystem;
 
 import battery.BatteryPacket;
+import communication.MessageBuilder;
 import communication.PortMonitor;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
@@ -50,6 +51,8 @@ public class BatteryMonitorSystem implements Runnable {
     @Override
     public void run() {
         try {
+            MessageBuilder test = new MessageBuilder();
+            System.out.println(test.buildVoltageMessage(0, 0));
             //SETUP communication
             BatteryMonitorSystem.portMonitor = new PortMonitor(latch);
             portMonitor.setBaudrate(500000);
@@ -66,13 +69,13 @@ public class BatteryMonitorSystem implements Runnable {
             BatteryMonitorSystem.database = new dbRunnable(batpack);
             Thread databaseThread = new Thread(BatteryMonitorSystem.database);
             databaseThread.start();
+
             //MAIN CONTROL LOOP
             while (true) {
-                //communication
-                System.out.println("Refreshing data");
+
                 portMonitor.refreshBatpack();
                 connected = portMonitor.isConnected();
-                Thread.sleep(10000);
+                Thread.sleep(1000);
                 batpack = portMonitor.getBatteryPack();
                 //System.out.println("BMS: battery pack module 5 cell 5 voltage: " + batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
                 //storage

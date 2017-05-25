@@ -33,7 +33,6 @@ import javafx.stage.StageStyle;
  * BMS pc Created: Januari 2017
  */
 public class JavaFxRunner extends Application {
-
     private Parent root;
 
     private static BatteryMonitorSystem monitorSystem;
