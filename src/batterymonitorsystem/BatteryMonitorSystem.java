@@ -11,13 +11,8 @@ Testing
 Documentation
  */
 package batterymonitorsystem;
-
 import battery.BatteryPacket;
-<<<<<<< HEAD
 import communication.MessageBuilder;
-=======
-
->>>>>>> Testing
 import communication.PortMonitor;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
@@ -70,12 +65,8 @@ public class BatteryMonitorSystem implements Runnable {
             }
             connected = true;
             batpack = portMonitor.getBatteryPack();
-            try {
-                //SETUP Storage
-                BatteryMonitorSystem.database = new dbRunnable(batpack);
-            } catch (SQLiteException ex) {
-                Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //SETUP Storage
+            BatteryMonitorSystem.database = new dbRunnable(batpack);
             Thread databaseThread = new Thread(BatteryMonitorSystem.database);
             databaseThread.start();
             //MAIN CONTROL LOOP
