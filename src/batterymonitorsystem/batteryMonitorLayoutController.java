@@ -14,6 +14,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -56,7 +58,8 @@ public class batteryMonitorLayoutController implements Initializable {
     private int selectedModule;
     private static double xOffset;
     private static double yOffset;
-
+    private Dictionary lookupTable;
+    
     public int getSelectedModule() {
         return selectedModule;
     }
@@ -226,6 +229,7 @@ public class batteryMonitorLayoutController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.batpack = BatteryMonitorSystem.getBatpack();
+        this.lookupTable = BatteryMonitorSystem.getVoltageLookupTable();
         
         System.out.println("batpack votlage = "+batpack.getTotalVoltageAsString());
         
@@ -290,7 +294,7 @@ public class batteryMonitorLayoutController implements Initializable {
 
     private void updateTotalVoltage() {
         if (this.batpack != null) {
-            double progress = (this.batpack.getTotalVoltage() / 600);
+            double progress = ((this.batpack.getTotalVoltage()-432) / 600-432); //only real range (3V * 144 cells)
             int percentage = (int) (progress * 100);
 
             totalVoltageProgress.setProgress(progress);
@@ -325,7 +329,7 @@ public class batteryMonitorLayoutController implements Initializable {
         ProgressBar progress = (ProgressBar) group.getChildren().get(2);
         Label averageTemperature = (Label) group.getChildren().get(4);
 
-        double progressValue = (module.getVoltage() / 66.666);
+        double progressValue = (module.getVoltage()-48 / 66.666-48);
         int percentage = (int) (progressValue * 100);
 
         moduleVolt.setText(module.getVoltageAsString());
@@ -370,12 +374,13 @@ public class batteryMonitorLayoutController implements Initializable {
         ProgressBar progressBar = (ProgressBar) cellDisp.getChildren().get(2);
         Label temperature = (Label) cellDisp.getChildren().get(4);
 
-        double progress = (cell.getVoltage() / 4.17);
-        int percent = (int) (progress * 100);
+        
+        double progress = getProgress(cell.getVoltage());
+        int percent = (int) (progress);
 
         voltage.setText(cell.getVoltageAsString());
         percentage.setText(percent + " %");
-        progressBar.setProgress(progress);
+        progressBar.setProgress(progress/100);
         temperature.setText(cell.getTemperatureAsString());
     }
 
@@ -439,6 +444,31 @@ public class batteryMonitorLayoutController implements Initializable {
 
     private void setIcon() {
         
+    }
+
+    private double getProgress(double voltage) {
+        Integer nearestLowerVolt, nearestHigherVolt;
+        Integer nearestLowerPercent, nearestHigherPercent;
+        double progress;
+        nearestLowerVolt = 2800;
+        nearestHigherVolt = 4200;
+        Enumeration keys = lookupTable.keys();
+        while(keys.hasMoreElements()){
+            Integer key = (Integer) keys.nextElement();
+            if(key<voltage*1000){
+                if(key>nearestLowerVolt){
+                    nearestLowerVolt=key;
+                }
+            }else if(key>voltage*1000){
+                if(key<nearestHigherVolt){
+                    nearestHigherVolt=key;
+                }
+            }
+        }
+        nearestHigherPercent = (Integer) lookupTable.get(nearestHigherVolt);
+        nearestLowerPercent = (Integer) lookupTable.get(nearestLowerVolt);
+        progress = (((voltage*1000)-nearestLowerVolt)/(nearestHigherVolt-nearestLowerVolt)*(nearestHigherPercent-nearestLowerPercent))+nearestLowerPercent;
+        return progress;
     }
 
 }

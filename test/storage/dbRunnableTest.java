@@ -25,8 +25,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.sqlite.SQLiteException;
 
 /**
  *
@@ -41,7 +39,7 @@ public class dbRunnableTest {
         try {
             BatteryPacket packet = new BatteryPacket(9);
             runner = new dbRunnable(packet);
-        } catch (SQLiteException | IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(dbRunnableTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -77,6 +75,14 @@ public class dbRunnableTest {
     @Test
     public void testStoreBatpack() {
         runner.storeBatpack();
+    }
+    
+    /**
+     * Test of getVoltageLookupTable method, of class dbRunnable.
+     */
+    @Test
+    public void testGetVoltageLookupTable(){
+        System.out.println(runner.getVoltageLookupTable());
     }
 
 }

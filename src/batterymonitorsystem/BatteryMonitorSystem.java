@@ -11,14 +11,15 @@ Testing
 Documentation
  */
 package batterymonitorsystem;
+
 import battery.BatteryPacket;
 import communication.MessageBuilder;
 import communication.PortMonitor;
 import java.io.IOException;
+import java.util.Dictionary;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.sqlite.SQLiteException;
 import storage.dbRunnable;
 
 /**
@@ -38,6 +39,23 @@ public class BatteryMonitorSystem implements Runnable {
     static boolean getConnected() {
         return connected;
     }
+
+    static Dictionary getVoltageLookupTable() {
+        Dictionary lookupTable;
+        if (database == null) {
+            try {
+                database = new dbRunnable(batpack);
+                Thread dbThread = new Thread(database);
+                dbThread.start();
+
+            } catch (IOException ex) {
+                Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        lookupTable = database.getVoltageLookupTable();
+        return lookupTable;
+    }
+
     private final CountDownLatch latch;
 
     public static BatteryPacket getBatpack() {

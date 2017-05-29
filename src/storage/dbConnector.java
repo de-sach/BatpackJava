@@ -11,8 +11,11 @@ import battery.BatteryPacket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -131,4 +134,32 @@ public class dbConnector {
             Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public Dictionary getVoltageLookupTable(){
+        Dictionary<Integer,Integer> lookupTable;
+        lookupTable = new Hashtable<>();
+        try {
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            connection = DriverManager.getConnection("jdbc:sqlite:./src/storage/batteryMonitor.db");
+            PreparedStatement ps = connection.prepareStatement("SELECT percentage, voltage FROM voltage_lookup");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                lookupTable.put(rs.getInt("voltage"),rs.getInt("percentage"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return lookupTable;
+    }
+    
 }
