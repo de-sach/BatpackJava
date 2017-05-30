@@ -61,7 +61,7 @@ public class MessageParserTest {
         System.out.println("parseMessage");
         String message = "M_0_0\r\n";
         MessageParser instance = parser;
-        int expResult = 1;
+        int expResult = 0;//0 is succes
         int result = instance.parseMessage(message);
         assertEquals(expResult, result);
     }

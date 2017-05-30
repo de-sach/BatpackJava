@@ -23,7 +23,7 @@ public class BatteryCell {
     private List<Double> voltageProgress;
     private final Instant creation;
     private Instant lastMeasurement;
-    
+    private int stateOfCharge;
     /**
      *
      * @param temp:     temperature of the cell
@@ -146,4 +146,10 @@ public class BatteryCell {
     public Instant getLastMeasurement(){
         return this.lastMeasurement;
     }
+     public int getStateOfCharge() {
+        LiPoSocCalculator soc = new LiPoSocCalculator(this.voltage);
+        this.stateOfCharge = soc.getSoc();
+        return this.stateOfCharge;
+    }
+    
 }
