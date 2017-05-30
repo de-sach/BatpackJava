@@ -33,6 +33,7 @@ import javafx.stage.StageStyle;
  * BMS pc Created: Januari 2017
  */
 public class JavaFxRunner extends Application {
+
     private Parent root;
 
     private static BatteryMonitorSystem monitorSystem;
@@ -40,7 +41,7 @@ public class JavaFxRunner extends Application {
     @Override
     public void start(Stage stage) {
 
-//        try {
+        try {
             final CountDownLatch latch = new CountDownLatch(1);
             boolean loaded = false;
 
@@ -59,10 +60,9 @@ public class JavaFxRunner extends Application {
             JavaFxRunner.monitorSystem = new BatteryMonitorSystem(latch);
             Thread monitorThread = new Thread(JavaFxRunner.monitorSystem);
             monitorThread.start();
-//            latch.await();
+            latch.await();
 
 //        stage.hide();
-         
             try {
                 this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
             } catch (IOException ex) {
@@ -76,8 +76,8 @@ public class JavaFxRunner extends Application {
             stage.setScene(scene);
             stage.show();
             System.out.println("bms fxml runner done");
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(JavaFxRunner.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(JavaFxRunner.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
