@@ -16,9 +16,9 @@
     <children>
         <SplitPane dividerPositions="0.5, 0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
-            <AnchorPane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="25.0" prefWidth="1200.0">
+            <AnchorPane fx:id="menuPane" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="1200.0">
                <children>
-                      <MenuBar fx:id="menuBar" prefHeight="30.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
+                      <MenuBar fx:id="menuBar" prefHeight="30.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="0.0">
                           <menus>
                               <Menu mnemonicParsing="false" text="File">
                                   <items>
@@ -39,7 +39,7 @@
                       </MenuBar>
                   <Button mnemonicParsing="false" onAction="#minimize" text="-" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0" />
                   <Button mnemonicParsing="false" onAction="#maximize" text="□" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
-                  <Button layoutX="1154.0" mnemonicParsing="false" onAction="#exit" text="x" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1176.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Button layoutX="1154.0" mnemonicParsing="false" onAction="#exit" text="x" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
                 <AnchorPane maxHeight="90.0" maxWidth="1.7976931348623157E308" minHeight="90.0" minWidth="0.0" prefHeight="90.0" prefWidth="1176.0">
