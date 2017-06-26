@@ -18,6 +18,7 @@ package storage;
 
 import battery.BatteryPacket;
 import java.io.IOException;
+import java.util.Dictionary;
 
 /**
  *
@@ -27,7 +28,7 @@ public class dbRunnable implements Runnable {
 
     private final BatteryPacket batpack;
     private final dbConnector dbcon;
-    
+
     public dbRunnable(BatteryPacket packet) throws IOException {
         this.batpack = packet;
         dbcon = new dbConnector();
@@ -39,9 +40,13 @@ public class dbRunnable implements Runnable {
     public void run() {
         System.out.println("db thread is running");
     }
-    
-    public void storeBatpack(){
+
+    public void storeBatpack() {
         dbcon.insertBatpack(batpack);
     }
-    
+
+    public Dictionary getVoltageLookupTable() {
+        return dbcon.getVoltageLookupTable();
+    }
+
 }

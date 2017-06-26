@@ -31,12 +31,19 @@ public class BatteryPacket {
     private List<BatteryModule> modules;
     private double averageTemperature;
     
+    /**
+     *
+     * @param moduleCount
+     */
     public BatteryPacket(int moduleCount) {
         this.moduleCount = moduleCount;
         this.modules = new ArrayList();
 
     }
 
+    /**
+     *
+     */
     public void updateTotalVoltage() {
         double totalVoltage = 0.0;
         for (BatteryModule module : modules) {
@@ -45,6 +52,9 @@ public class BatteryPacket {
         this.totalVoltage = totalVoltage;
     }
 
+    /**
+     *
+     */
     public void updateAvgTemp() {
         double avgTemp = 0;
         for (BatteryModule module : modules) {
@@ -54,15 +64,27 @@ public class BatteryPacket {
         this.averageTemperature = avgTemp;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getModuleCount() {
         return moduleCount;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getTotalVoltage() {
         updateTotalVoltage();
         return totalVoltage;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTotalVoltageAsString() {
         updateTotalVoltage();
         String totalVoltageAsString;
@@ -71,20 +93,36 @@ public class BatteryPacket {
         return totalVoltageAsString;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<BatteryModule> getModules() {
         return modules;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getAverageTemperature() {
         return averageTemperature;
     }
 
+    /**
+     *
+     * @param module
+     */
     public void addModule(BatteryModule module) {
         moduleCount++;
         modules.add(module);
     }
 
-     public String getAverageTemperatureAsString() {
+    /**
+     *
+     * @return
+     */
+    public String getAverageTemperatureAsString() {
         updateAvgTemp();
         String averageTemperatureAsString;
         averageTemperatureAsString = Double.toString(round(averageTemperature,2));
