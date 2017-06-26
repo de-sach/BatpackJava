@@ -383,7 +383,7 @@ public class batteryMonitorLayoutController implements Initializable {
         for (int i = 0; i < batteryModules.size(); i++) {
             if (batteryModules.get(i).getChildren().contains(event.getSource()) || batteryModules.get(i).equals(event.getSource())) {
                 setSelectedModule(i);
-            }
+            } 
         }
         updateCells(getSelectedModule());
         accordion.setExpandedPane(ModuleOverview);
@@ -391,12 +391,13 @@ public class batteryMonitorLayoutController implements Initializable {
     };
 
     private void bindUpdates() {
-        final KeyFrame oneFrame = new KeyFrame(Duration.seconds(5), (ActionEvent evt) -> {
+        final KeyFrame oneFrame = new KeyFrame(Duration.seconds(1), (ActionEvent evt) -> {
             if (this.batpack != null) {
                 this.batpack = BatteryMonitorSystem.getBatpack();
                 //System.out.println("layout: battery pack module 5 cell 5 voltage: " + batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
                 checkConnection();
                 updateModules();
+                updateTotalVoltage();
             }
 
         });

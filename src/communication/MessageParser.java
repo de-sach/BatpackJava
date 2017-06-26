@@ -20,7 +20,6 @@ import battery.BatteryCell;
 import battery.BatteryModule;
 import battery.BatteryPacket;
 import java.time.Instant;
-import java.util.Arrays;
 
 /**
  *
@@ -65,13 +64,12 @@ class MessageParser {
                     }
                 } else {
                     BatteryCell cell;
-
+//                    System.out.println("crash on message "+message);
                     this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1, message.split("_")[0].length())) - 1;
                     int cellInModule = this.cellIndex % 16;
                     this.moduleIndex = this.cellIndex / 16;
 
 //                    System.out.println("cell, cell in module and module: " + cellIndex + "---" + cellInModule + "---" + moduleIndex);
-
                     if (moduleIndex >= this.batpack.getModuleCount()) {
                         module = new BatteryModule(moduleIndex, 0);
                         batpack.addModule(module);
@@ -88,7 +86,7 @@ class MessageParser {
                         }
                     }
                     cell.setLastMeasurement(Instant.now());
-                    System.out.println("last measurement set");
+//                    System.out.println("last measurement set");
                     switch (part) {
                         case "T":
                             //String[] split = message.split("_");
@@ -148,7 +146,7 @@ class MessageParser {
         } else {
             status = 1;
         }
-        System.out.println("message parsed");
+//        System.out.println("message parsed");
         return status;
     }
 
@@ -181,15 +179,51 @@ class MessageParser {
     }
 
     private boolean checkMessage(String message) {
-        if (message.split("_").length == 2 || message.split("_").length == 3) {
-            if (message.substring(0, 1).matches("[A-Z]+")) {
-                if (message.split("_")[1].matches("[0-9]+")) {
-//                    System.out.println("message accepted: " + message);
-                    return true;
+        String messageParts[] = message.split("_");
+        System.out.println("message to check:" + message);
+//        System.out.println("length = " + messageParts.length);
+        if (messageParts.length > 1 || messageParts.length <= 3) {
+//            System.out.println("length ok");
+            if (messageParts.length == 2) {
+                String prefix = messageParts[0];
+                if (prefix != null && !prefix.equals("")) {
+                    if (prefix.length() > 1) {
+                        if (prefix.substring(0, 1).matches("[A-Z]+")) {
+                            if (prefix.substring(1, prefix.length() - 1).matches("[0-9]+")) {
+                                //received message is a measurement
+                                if (messageParts[1].length() == 4) {
+                                    if (messageParts[1].matches("[0-9]+")) {
+//                                    System.out.println("message: " + message);
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (prefix.substring(0, 1).matches("[A-Z]+")) {
+                            if (messageParts[1].matches("[0-9]+")) {
+//                                System.out.println("message: " + message);
+                                return true;
+                            }
+                        }
+                    }
                 }
+            } else {
+                System.out.println("command was returned");
+                return false;
             }
         }
         return false;
+//        
+//        if (message.split("_").length == 2 || message.split("_").length == 3) {
+//            if (message.substring(0, 1).matches("[A-Z]+")) {
+//                if (message.split("_")[1].matches("[0-9]+")) {
+//                    System.out.println("message accepted: " + message);
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
     }
 
 }

@@ -43,6 +43,7 @@ public class CommPortCommunicator implements Runnable {
     private String received;
     private final ThreadEvent ready;
     private final ConcurrentLinkedQueue<String> communicationqueue;
+    private final ConcurrentLinkedQueue<String> sendQueue;
     private SerialPort sp;
     private boolean connected;
 
@@ -64,6 +65,7 @@ public class CommPortCommunicator implements Runnable {
         this.outMessage = new String();
         this.ready = ready;
         this.connected = false;
+        this.sendQueue = new ConcurrentLinkedQueue<>();
     }
 
     @Override
@@ -83,7 +85,7 @@ public class CommPortCommunicator implements Runnable {
     }
 
     void sendMessage(String message) {
-        this.outMessage = message;
+        sendQueue.add(message);
         System.out.println("message: " + message);
     }
 
@@ -151,11 +153,11 @@ public class CommPortCommunicator implements Runnable {
                                     }
 
                                     communicationqueue.add(messages[i].trim());
-                                    System.out.println("received message");
+//                                    System.out.println("received message");
                                 }
 
                                 System.out.println("message List length:" + communicationqueue.size());
-                                System.out.println("ml size" + messageList.size());
+//                                System.out.println("ml size" + messageList.size());
                                 //Notify @ messages
                                 if (messageList.size() > 0) {
                                     //new message arrived
@@ -163,17 +165,17 @@ public class CommPortCommunicator implements Runnable {
                                         messageList.remove(messageList.size() - 1);
                                         synchronized (this.ready) {
                                             this.ready.notify();
-                                            System.out.println("cpc" + messageList);
+//                                            System.out.println("cpc" + messageList);
                                         }
 
                                     }
                                 }
                                 messageList.clear();
-                                System.out.println("ml.size = " + messageList.size());
+//                                System.out.println("ml.size = " + messageList.size());
 
                             }
-                            if (!outMessage.equals(lastMessage)) {
-                                messagebuffer = outMessage.toCharArray();
+                            if (sendQueue.size() > 0) {
+                                messagebuffer = sendQueue.remove().toCharArray();
                                 for (int i = 0; i < outMessage.length(); i++) {
                                     writebuffer[i] = (byte) messagebuffer[i];
                                 }
@@ -183,14 +185,17 @@ public class CommPortCommunicator implements Runnable {
                                         System.out.println("sent message " + outMessage);
                                     }
                                 }
-                                lastMessage = outMessage;
                             }
+                            Thread.sleep(250);
                         } catch (IOException ex) {
                             this.sp = null;
                             this.connected = false;
                             break;
                             //Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
 
+                        } catch (InterruptedException ex) {
+                            System.out.println("sleep interrupted");
+                            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         if (!sp.isOpen()) {
                             connected = false;
