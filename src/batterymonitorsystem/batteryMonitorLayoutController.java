@@ -5,6 +5,11 @@
  */
 package batterymonitorsystem;
 
+/*
+temperatuur
+connected at disconnect when running
+connected kleur -__-
+*/
 import battery.BatteryCell;
 import battery.BatteryModule;
 import battery.BatteryPacket;
@@ -300,7 +305,8 @@ public class batteryMonitorLayoutController implements Initializable {
 
     private void updateTotalVoltage() {
         if (this.batpack != null) {
-            double progress = ((this.batpack.getTotalVoltage() - 432) / 600 - 432); //only real range (3V * 144 cells)
+            double progress = ((this.batpack.getTotalVoltage() - 432) / (600 - 432)); //only real range (3V * 144 cells)
+            System.out.println("progress= "+progress);
             int percentage = (int) (progress * 100);
 
             totalVoltageProgress.setProgress(progress);
@@ -335,7 +341,7 @@ public class batteryMonitorLayoutController implements Initializable {
         ProgressBar progress = (ProgressBar) group.getChildren().get(2);
         Label averageTemperature = (Label) group.getChildren().get(4);
 
-        double progressValue = (module.getVoltage() - 48 / 66.666 - 48);
+        double progressValue = ((module.getVoltage() - 48) / (66.666 - 48));
         int percentage = (int) (progressValue * 100);
 
         moduleVolt.setText(module.getVoltageAsString());

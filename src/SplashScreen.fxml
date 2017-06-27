@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="150.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="batterymonitorsystem.SplashScreenController">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+            <Text fx:id="loading" layoutX="3.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LOADING" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="20.0">
+               <font>
+                  <Font size="70.0" />
+               </font>
+            </Text>
+            <Text fx:id="bms" layoutX="443.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BMS" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="20.0">
+               <font>
+                  <Font size="70.0" />
+               </font>
+            </Text>
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>
