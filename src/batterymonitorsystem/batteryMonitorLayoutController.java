@@ -6,9 +6,9 @@
 package batterymonitorsystem;
 
 /*
-temperatuur
+
 connected at disconnect when running
-connected kleur -__-
+
 */
 import battery.BatteryCell;
 import battery.BatteryModule;
@@ -423,7 +423,7 @@ public class batteryMonitorLayoutController implements Initializable {
 
     private void checkConnection() {
         if (BatteryMonitorSystem.getConnected()) {
-            Color c = Color.DARKGREEN;
+            Color c = Color.CHARTREUSE;
             connectedIndicator.setFill(c);
         } else {
             Color c = Color.RED;
