@@ -225,30 +225,53 @@ public class PortMonitor implements Runnable {
     }
 
     public void refreshBatpack() {
-        if (connected) {
-            while (connected) {
-                try {
-                    refreshAll();
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        addAllPorts();
+        if(commPorts.length<=0){
+            try{
+                Thread.sleep(500);
+                System.out.println("trying to connect");
+            } catch (InterruptedException ex) {
+                Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
-            addAllPorts();
-            if (commPorts.length <= 0) {
-                System.out.println("no comm port found");
-                try {
-                    Thread.sleep(2000);
-                    System.out.println("trying to connect");
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            } else {
+        }else {
+            if(commPorts[0]!= null){
                 startCommportCommunicator();
+                if(cpc.isConnected()){
+                    do{
+                        refreshAll();
+                    } while(cpc.isConnected());
+                }else{
+                    System.out.println("disconnected");
+                }
+                stopCommportCommunicator();
+            } else {
+                System.out.println("commPorts[0] == null");
             }
         }
+//        if (connected) {
+//            while (connected) {
+//                try {
+//                    refreshAll();
+//                    Thread.sleep(500);
+//                } catch (InterruptedException ex) {
+//                    Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        } else {
+//            addAllPorts();
+//            if (commPorts.length <= 0) {
+//                System.out.println("no comm port found");
+//                try {
+//                    Thread.sleep(2000);
+//                    System.out.println("trying to connect");
+//                } catch (InterruptedException ex) {
+//                    Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//
+//            } else {
+//                startCommportCommunicator();
+//            }
+//        }
     }
 
     private void startCommportCommunicator() {

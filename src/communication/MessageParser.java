@@ -198,6 +198,11 @@ class MessageParser {
 //                                    System.out.println("message: " + message);
                                         return true;
                                     }
+                                } else if (messageParts[1].length() == 5) {
+                                    if (messageParts[1].matches("[0-9]+")) {
+//                                    System.out.println("message: " + message);
+                                        return true;
+                                    }
                                 }
                             }
                         }
