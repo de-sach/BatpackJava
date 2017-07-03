@@ -23,11 +23,11 @@ import java.util.logging.Logger;
 import storage.dbRunnable;
 
 /**
- * @Company: Formula Electric Belgium
- * @Author: sach
- * @Project: Umicore Nova
- * @Part: BMS pc
- * @Created: Januari 2017
+ * Company: Formula Electric Belgium
+ * Author: sach
+ * Project: Umicore Nova
+ * Part: BMS pc
+ * Created: Januari 2017
  */
 public class BatteryMonitorSystem implements Runnable {
 
@@ -95,7 +95,7 @@ public class BatteryMonitorSystem implements Runnable {
                 connected = portMonitor.isConnected();
                 Thread.sleep(100);
                 batpack = portMonitor.getBatteryPack();
-                System.out.println("BMS: battery pack module 5 cell 5 voltage: " + batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
+                //System.out.println("BMS: battery pack module 5 cell 5 voltage: " + batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
                 //storage
                 database.storeBatpack();
 
