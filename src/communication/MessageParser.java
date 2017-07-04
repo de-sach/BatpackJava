@@ -92,6 +92,7 @@ class MessageParser {
                             //String[] split = message.split("_");
                             if (message.split("_").length == 2) {
                                 double temp = Double.parseDouble(message.split("_")[1]) / 1000;
+                                System.out.println("temp : "+temp+" @cell "+cell.getId());
                                 cell.setTemperature(temp);
                                 break;
                             }
@@ -180,7 +181,7 @@ class MessageParser {
 
     private boolean checkMessage(String message) {
         String messageParts[] = message.split("_");
-        System.out.println("message to check:" + message);
+//        System.out.println("message to check:" + message);
 //        System.out.println("length = " + messageParts.length);
         if (messageParts.length > 1 || messageParts.length <= 3) {
 //            System.out.println("length ok");
@@ -196,6 +197,10 @@ class MessageParser {
 //                                    System.out.println("message: " + message);
                                         return true;
                                     }
+                                } else if(messageParts[1].length()==5){
+                                    if(messageParts[1].matches("[0-9]+")){
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -209,7 +214,7 @@ class MessageParser {
                     }
                 }
             } else {
-                System.out.println("command was returned");
+//                System.out.println("command was returned");
                 return false;
             }
         }

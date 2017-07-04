@@ -56,6 +56,9 @@ public class BatteryCell {
     public void setTemperature(double temperature) {
         this.temperature = temperature;
         this.temperatureProgress.add(temperature);
+//        if(this.id==1){
+//            System.out.println("temperature progress: " + temperatureProgress);
+//        }
         this.lastMeasurement = Instant.now();
     }
 
