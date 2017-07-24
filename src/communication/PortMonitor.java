@@ -99,7 +99,7 @@ public class PortMonitor implements Runnable {
                     } else {
                         System.out.println("cpc disconnected");
                     }
-                    stopCommportCommunicator();
+//                    stopCommportCommunicator();
                 } else {
                     System.out.println("commPorts[0] == null");
                 }
@@ -235,14 +235,15 @@ public class PortMonitor implements Runnable {
             }
         } else {
             if (commPorts[0] != null) {
-                cpc.updateCommPort(commPorts[0]);
-                startCommportCommunicator();
-
+                if (!cpc.isConnected()) {
+                    cpc.updateCommPort(commPorts[0]);
+                    startCommportCommunicator();
+                }
                 do {
                     refreshAll();
                 } while (cpc.isConnected());
 
-                stopCommportCommunicator();
+//                stopCommportCommunicator();
             } else {
                 System.out.println("commPorts[0] == null");
             }

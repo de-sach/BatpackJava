@@ -150,11 +150,11 @@ public class CommPortCommunicator implements Runnable {
                                     }
                                     count++;
                                 }
-                                System.out.println("ml size" + messageList.size());
                                 //Notify @ messages
                                 synchronized (this.ready) {
                                     this.ready.notify();
                                 }
+                               //System.out.println("messageList: " + messageList);
                                 messageList.clear();
                             }
                             if (sendQueue.size() > 0) {
@@ -186,6 +186,8 @@ public class CommPortCommunicator implements Runnable {
             }
             System.out.println("\n\n\ncommunication done\n\n\n");
         }
-        connected = false;
+        this.connected = false;
+        this.sp = null;
+        System.out.println("communication finished");
     }
 }
