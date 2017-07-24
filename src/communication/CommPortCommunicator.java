@@ -71,11 +71,10 @@ public class CommPortCommunicator implements Runnable {
     @Override
     public void run() {
         try {
-            //try {
             this.connected = true;
             while (this.sp == null) {
                 System.out.println("serial port not connected");
-                Thread.sleep(200);
+                Thread.sleep(500);
             }
             startCommLoop();
         } catch (InterruptedException ex) {
@@ -86,7 +85,7 @@ public class CommPortCommunicator implements Runnable {
 
     void sendMessage(String message) {
         sendQueue.add(message);
-        System.out.println("message: " + message);
+        //System.out.println("message: " + message);
     }
 
     void resendMessage() {
@@ -118,17 +117,19 @@ public class CommPortCommunicator implements Runnable {
         byte[] readbuffer = new byte[5000];
         byte[] writebuffer = new byte[5000];
         char[] messagebuffer;
-        int len = -5;
+        int len;
         if (sp != null) {
             while (!Thread.interrupted() && this.connected) {
+                len = 0;
                 sp.setComPortParameters(br, db, stb, par);
                 sp.openPort();
-                //System.out.println("sp:" + sp);
+                //check inputstream and break out of loop when none available
                 if (sp.getInputStream() == null) {
                     System.out.println("inputstream is NULL");
                     sp.closePort();
                     this.connected = false;
                 } else {
+                    //we are sure it's connected
                     this.connected = true;
                     try (InputStream in = sp.getInputStream()) {
                         OutputStream out = sp.getOutputStream();
@@ -139,39 +140,22 @@ public class CommPortCommunicator implements Runnable {
                             if (len > 0) {
                                 received = new String(readbuffer);
                                 received = received.trim();
-                                System.out.println(received);
                                 String[] messages = received.split("\r\n");
-                                for (int i = 0; i < messages.length; i++) {
-                                    //assure that messages sent out by me aren't returned to me
-                                    if (i > 1) {
-                                        messageList.remove(messages[0]);
+                                int count = 0;
+                                while (count < messages.length && !messages[count].trim().equals("End")) {
+                                    //check if the message is at least of plausible length
+                                    if (messages[count].trim().length() > 2) {
+                                        messageList.add(messages[count].trim());
+                                        communicationqueue.add(messages[count].trim());
                                     }
-                                    //remove spaces
-                                    if (messages[i].trim().length() > 2) {
-                                        messageList.add(messages[i].trim());
-                                    }
-
-                                    communicationqueue.add(messages[i].trim());
-//                                    System.out.println("received message");
+                                    count++;
                                 }
-
-                                System.out.println("message List length:" + communicationqueue.size());
-//                                System.out.println("ml size" + messageList.size());
+                                System.out.println("ml size" + messageList.size());
                                 //Notify @ messages
-                                if (messageList.size() > 0) {
-                                    //new message arrived
-                                    if (messageList.get(messageList.size() - 1).equals("End")) {
-                                        messageList.remove(messageList.size() - 1);
-                                        synchronized (this.ready) {
-                                            this.ready.notify();
-//                                            System.out.println("cpc" + messageList);
-                                        }
-
-                                    }
+                                synchronized (this.ready) {
+                                    this.ready.notify();
                                 }
                                 messageList.clear();
-//                                System.out.println("ml.size = " + messageList.size());
-
                             }
                             if (sendQueue.size() > 0) {
                                 messagebuffer = sendQueue.remove().toCharArray();
@@ -181,23 +165,18 @@ public class CommPortCommunicator implements Runnable {
                                 if (connected) {
                                     if (sp.isOpen() && sp.getOutputStream() != null && sp.getInputStream() != null) {
                                         out.write(writebuffer, 0, messagebuffer.length);
-                                        System.out.println("sent message " + outMessage);
                                     }
                                 }
                             }
-                            Thread.sleep(250);
-                        } catch (IOException ex) {
+                            Thread.sleep(50);
+                        } catch (IOException | InterruptedException ex) {
                             this.sp = null;
                             this.connected = false;
                             break;
-                            //Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
-
-                        } catch (InterruptedException ex) {
-                            System.out.println("sleep interrupted");
-                            Logger.getLogger(CommPortCommunicator.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         if (!sp.isOpen()) {
-                            connected = false;
+                            this.connected = false;
+                            this.sp = null;
                             System.out.println("sp closed in loop");
                         }
                     } catch (IOException ex) {

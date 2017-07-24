@@ -182,7 +182,7 @@ class MessageParser {
 
     private boolean checkMessage(String message) {
         String messageParts[] = message.split("_");
-        System.out.println("message to check:" + message);
+//        System.out.println("message to check:" + message);
 //        System.out.println("length = " + messageParts.length);
         if (messageParts.length > 1 || messageParts.length <= 3) {
 //            System.out.println("length ok");
@@ -216,7 +216,7 @@ class MessageParser {
                     }
                 }
             } else {
-                System.out.println("command was returned");
+//                System.out.println("command was returned");
                 return false;
             }
         }
