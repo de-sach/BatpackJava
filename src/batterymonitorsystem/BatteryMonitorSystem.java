@@ -23,11 +23,11 @@ import java.util.logging.Logger;
 import storage.dbRunnable;
 
 /**
- * @Company: Formula Electric Belgium
- * @Author: sach
- * @Project: Umicore Nova
- * @Part: BMS pc
- * @Created: Januari 2017
+ * Company: Formula Electric Belgium
+ * Author: sach
+ * Project: Umicore Nova
+ * Part: BMS pc
+ * Created: Januari 2017
  */
 public class BatteryMonitorSystem implements Runnable {
 
