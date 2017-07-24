@@ -6,10 +6,10 @@
 package batterymonitorsystem;
 
 /*
-
+temperatuur
 connected at disconnect when running
-
-*/
+connected kleur -__-
+ */
 import battery.BatteryCell;
 import battery.BatteryModule;
 import battery.BatteryPacket;
@@ -306,7 +306,7 @@ public class batteryMonitorLayoutController implements Initializable {
     private void updateTotalVoltage() {
         if (this.batpack != null) {
             double progress = ((this.batpack.getTotalVoltage() - 432) / (600 - 432)); //only real range (3V * 144 cells)
-            System.out.println("progress= "+progress);
+            System.out.println("progress= " + progress);
             int percentage = (int) (progress * 100);
 
             totalVoltageProgress.setProgress(progress);
@@ -322,7 +322,7 @@ public class batteryMonitorLayoutController implements Initializable {
         //System.out.println("updating modules");
         if (this.batpack != null) {
             if (this.batpack.getModuleCount() > 9) {
-                System.out.println("batpack not compatible with 2017 layout");
+                System.out.println("batpack not compatible with 2017 layout, "+this.batpack.getModuleCount()+" modules found");
             } else {
                 for (int i = 0; i < this.batteryModules.size() && i < this.batpack.getModuleCount(); i++) {
                     updateModule(this.batteryModules.get(i), this.batpack.getModules().get(i));
@@ -347,6 +347,9 @@ public class batteryMonitorLayoutController implements Initializable {
         moduleVolt.setText(module.getVoltageAsString());
         modulePercent.setText(percentage + " %");
         progress.setProgress(progressValue);
+        if(module.getId()==1){
+            System.out.println("module 1 average temp: "+module.getAverageTemperatureAsString());
+        }
         averageTemperature.setText(module.getAverageTemperatureAsString());
     }
 
@@ -399,7 +402,7 @@ public class batteryMonitorLayoutController implements Initializable {
         for (int i = 0; i < batteryModules.size(); i++) {
             if (batteryModules.get(i).getChildren().contains(event.getSource()) || batteryModules.get(i).equals(event.getSource())) {
                 setSelectedModule(i);
-            } 
+            }
         }
         updateCells(getSelectedModule());
         accordion.setExpandedPane(ModuleOverview);
@@ -414,6 +417,7 @@ public class batteryMonitorLayoutController implements Initializable {
                 checkConnection();
                 updateModules();
                 updateTotalVoltage();
+                updateTotalTemperature();
             }
 
         });
@@ -456,6 +460,12 @@ public class batteryMonitorLayoutController implements Initializable {
 
     private void setIcon() {
 
+    }
+
+    private void updateTotalTemperature() {
+        if (this.batpack != null) {
+            totalTemperature.setText(batpack.getAverageTemperatureAsString());
+        }
     }
 
 }

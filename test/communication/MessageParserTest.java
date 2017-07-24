@@ -56,6 +56,7 @@ public class MessageParserTest {
     /**
      * Test of parseMessage method, of class MessageParser.
      */
+<<<<<<< HEAD
 //    @Test
 //    public void testParseMessage() {
 //        System.out.println("parseMessage");
@@ -65,6 +66,17 @@ public class MessageParserTest {
 //        int result = instance.parseMessage(message);
 //        assertEquals(expResult, result);
 //    }
+=======
+    @Test
+    public void testParseMessage() {
+        System.out.println("parseMessage");
+        String message = "M_0_0\r\n";
+        MessageParser instance = parser;
+        int expResult = 1;//0 is succes, message is one sent out, not supposed to receive
+        int result = instance.parseMessage(message);
+        assertEquals(expResult, result);
+    }
+>>>>>>> Refactorring_arraylist
 
     /**
      * Test of getBatpack method, of class MessageParser.
