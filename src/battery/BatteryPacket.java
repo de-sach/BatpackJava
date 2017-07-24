@@ -18,6 +18,8 @@ package battery;
 
 import static battery.doubleHelper.round;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -30,7 +32,7 @@ public class BatteryPacket {
     private double totalVoltage;
     private List<BatteryModule> modules;
     private double averageTemperature;
-    
+
     /**
      *
      * @param moduleCount
@@ -46,8 +48,13 @@ public class BatteryPacket {
      */
     public void updateTotalVoltage() {
         double totalVoltage = 0.0;
-        for (BatteryModule module : modules) {
-            totalVoltage += module.getVoltage();
+        List synchronizedBatpack = Collections.synchronizedList(modules);
+        synchronized (synchronizedBatpack) {
+            Iterator i = synchronizedBatpack.iterator();
+            while (i.hasNext()) {
+                BatteryModule module = (BatteryModule) i.next();
+                totalVoltage += module.getVoltage();
+            }
         }
         this.totalVoltage = totalVoltage;
     }
@@ -57,8 +64,13 @@ public class BatteryPacket {
      */
     public void updateAvgTemp() {
         double avgTemp = 0;
-        for (BatteryModule module : modules) {
-            avgTemp += module.getAverageTemperature();
+        List synchronizedBatpack = Collections.synchronizedList(modules);
+        synchronized (synchronizedBatpack) {
+            Iterator i = synchronizedBatpack.iterator();
+            while (i.hasNext()) {
+                BatteryModule module = (BatteryModule) i.next();
+                avgTemp += module.getAverageTemperature();
+            }
         }
         avgTemp = avgTemp / (modules.size());
         this.averageTemperature = avgTemp;
@@ -88,7 +100,7 @@ public class BatteryPacket {
     public String getTotalVoltageAsString() {
         updateTotalVoltage();
         String totalVoltageAsString;
-        totalVoltageAsString = Double.toString(round(totalVoltage,2));
+        totalVoltageAsString = Double.toString(round(totalVoltage, 2));
         totalVoltageAsString += " V";
         return totalVoltageAsString;
     }
@@ -125,12 +137,9 @@ public class BatteryPacket {
     public String getAverageTemperatureAsString() {
         updateAvgTemp();
         String averageTemperatureAsString;
-        averageTemperatureAsString = Double.toString(round(averageTemperature,2));
-        averageTemperatureAsString+= " °C";
+        averageTemperatureAsString = Double.toString(round(averageTemperature, 2));
+        averageTemperatureAsString += " °C";
         return averageTemperatureAsString;
     }
-    
-   
 
-   
 }

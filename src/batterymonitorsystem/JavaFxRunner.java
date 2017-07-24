@@ -80,4 +80,7 @@ public class JavaFxRunner extends Application {
             Logger.getLogger(JavaFxRunner.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public static void main(String args[]){
+        launch(args);
+    }
 }

@@ -7,14 +7,17 @@ package battery;
 
 import static battery.doubleHelper.round;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
-
 
 /**
  * A class to show the battery modules.
+ *
  * @author sach
  */
 public class BatteryModule {
+
     private List<BatteryCell> module;
     private int id;
     private int nrOfCells;
@@ -25,59 +28,75 @@ public class BatteryModule {
 
     /**
      * get the balancing situation of the batterymodule
+     *
      * @return boolean with balancing state
      */
     public boolean isBalance() {
         return balance;
     }
-    
+
     /**
      * constructor of Battery Module
-     * @param id            id of the module
-     * @param cellCount     count of cells
-     * initial value of a cell is 20°C, 3.5V, id, and a health of 10
+     *
+     * @param id id of the module
+     * @param cellCount count of cells initial value of a cell is 20°C, 3.5V,
+     * id, and a health of 10
      */
-    public BatteryModule(int id, int cellCount){
+    public BatteryModule(int id, int cellCount) {
         this.id = id;
         this.nrOfCells = cellCount;
         module = new ArrayList();
-        for (int i=0; i<this.nrOfCells;i++){
+        for (int i = 0; i < this.nrOfCells; i++) {
             //cells are loaded with given base characteristics
             BatteryCell currentCell = new BatteryCell(20.0, 3.5, i, 10);
             module.add(currentCell);
         }
-    }   
-    
+    }
+
     /**
      * update the health status of the cells
      */
-    public void updateStatus(){
+    public void updateStatus() {
         int status = 10;
-        for (BatteryCell cell:module){
-            if (cell.getHealth()<status){
+        for (BatteryCell cell : module) {
+            if (cell.getHealth() < status) {
                 status = cell.getHealth();
             }
         }
         this.status = status;
     }
-    
+
     /**
      * update the voltage of the cells
      */
-    public void updateVoltage(){
+    public void updateVoltage() {
         double voltage = 0.0;
-        voltage = module.stream().map((cell) -> cell.getVoltage()).reduce(voltage, (accumulator, _item) -> accumulator + _item);
-        this.voltage=voltage;
+        List synchronizedModule = Collections.synchronizedList(module);
+        synchronized (synchronizedModule) {
+            Iterator i = synchronizedModule.iterator();
+            while (i.hasNext()) {
+                BatteryCell cell = (BatteryCell) i.next();
+                voltage += cell.getVoltage();
+            }
+        }
+        this.voltage = voltage;
     }
-    
+
     /**
      * update the temperature of the cells
      */
-    public void updateTemperature(){
-        double avgTemp=0.0;
-        avgTemp = module.stream().map((cell) -> cell.getTemperature()).reduce(avgTemp, (accumulator, _item) -> accumulator + _item);
-        avgTemp = avgTemp/this.getNrOfCells();
-        this.averageTemperature=avgTemp;
+    public void updateTemperature() {
+        double avgTemp = 0.0;
+        List synchronizedModule = Collections.synchronizedList(module);
+        synchronized (synchronizedModule) {
+            Iterator i = synchronizedModule.iterator();
+            while (i.hasNext()) {
+                BatteryCell cell = (BatteryCell) i.next();
+                avgTemp += cell.getTemperature();
+            }
+        }
+        avgTemp = avgTemp / this.getNrOfCells();
+        this.averageTemperature = avgTemp;
     }
 
     /**
@@ -121,12 +140,12 @@ public class BatteryModule {
         updateTemperature();
         return averageTemperature;
     }
-    
+
     /**
      *
      * @return
      */
-    public List<BatteryCell> getBatteryCells(){
+    public List<BatteryCell> getBatteryCells() {
         return this.module;
     }
 
@@ -137,11 +156,11 @@ public class BatteryModule {
     public String getVoltageAsString() {
         updateVoltage();
         String totalVoltageAsString;
-        totalVoltageAsString = Double.toString(round(this.voltage,2));
+        totalVoltageAsString = Double.toString(round(this.voltage, 2));
         totalVoltageAsString += " V";
         return totalVoltageAsString;
     }
-    
+
     /**
      *
      * @return
@@ -149,8 +168,8 @@ public class BatteryModule {
     public String getAverageTemperatureAsString() {
         updateTemperature();
         String averageTemperatureAsString;
-        averageTemperatureAsString = Double.toString(round(averageTemperature,2));
-        averageTemperatureAsString+= " °C";
+        averageTemperatureAsString = Double.toString(round(averageTemperature, 2));
+        averageTemperatureAsString += " °C";
         return averageTemperatureAsString;
     }
 
