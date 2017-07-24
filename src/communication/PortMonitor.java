@@ -226,23 +226,22 @@ public class PortMonitor implements Runnable {
 
     public void refreshBatpack() {
         addAllPorts();
-        if(commPorts.length<=0){
-            try{
+        if (commPorts.length <= 0) {
+            try {
                 Thread.sleep(500);
                 System.out.println("trying to connect");
             } catch (InterruptedException ex) {
                 Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }else {
-            if(commPorts[0]!= null){
+        } else {
+            if (commPorts[0] != null) {
+                cpc.updateCommPort(commPorts[0]);
                 startCommportCommunicator();
-                if(cpc.isConnected()){
-                    do{
-                        refreshAll();
-                    } while(cpc.isConnected());
-                }else{
-                    System.out.println("disconnected");
-                }
+
+                do {
+                    refreshAll();
+                } while (cpc.isConnected());
+
                 stopCommportCommunicator();
             } else {
                 System.out.println("commPorts[0] == null");
