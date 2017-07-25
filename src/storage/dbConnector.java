@@ -121,7 +121,7 @@ public class dbConnector {
             for (BatteryModule module : packet.getModules()) {
                 for (BatteryCell cell : module.getBatteryCells()) {
                     PreparedStatement setCell = connection.prepareStatement("insert into cells (id,voltage,temperature,health) values (?,?,?,?);");
-                    setCell.setInt(1, cell.getId());
+                    setCell.setInt(1, (cell.getId()+16*module.getId()));
                     setCell.setInt(4, cell.getHealth());
                     setCell.setDouble(2, cell.getVoltage());
                     setCell.setDouble(3, cell.getTemperature());

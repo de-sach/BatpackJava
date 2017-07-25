@@ -76,66 +76,70 @@ class MessageParser {
                         this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1, message.split("_")[0].length())) - 1;
                         if (!(cellIndex > maxNrOfCells)) {
                             int cellInModule = this.cellIndex % 16;
-                            this.moduleIndex = this.cellIndex / 16;
-
-//                            System.out.println("cell, cell in module and module: " + cellIndex + "---" + cellInModule + "---" + moduleIndex);
-                            if (moduleIndex >= this.batpack.getModuleCount()) {
-                                module = new BatteryModule(moduleIndex, 0);
-                                batpack.addModule(module);
-//                        System.out.println("added module");
-                                cell = new BatteryCell(0, 0, cellInModule, 0);
-                                module.addCell(cell);
+                            if (cellInModule > 15 && cellInModule < 0) {
+                                System.out.println("cell in module wrong");
                             } else {
-                                module = this.batpack.getModules().get(moduleIndex);
-                                if (cellInModule >= module.getNrOfCells()) {
+                                this.moduleIndex = this.cellIndex / 16;
+                                if (moduleIndex >= this.batpack.getModuleCount()) {
+                                    module = new BatteryModule(moduleIndex, 0);
+                                    batpack.addModule(module);
+//                        System.out.println("added module");
                                     cell = new BatteryCell(0, 0, cellInModule, 0);
                                     module.addCell(cell);
                                 } else {
-                                    cell = module.getBatteryCells().get(cellInModule);
+                                    module = this.batpack.getModules().get(moduleIndex);
+                                    if (cellInModule >= module.getNrOfCells()) {
+                                        cell = new BatteryCell(0, 0, cellInModule, 0);
+                                        module.addCell(cell);
+                                    } else {
+                                        System.out.println("cell, cell in module and module: " + cellIndex + "---" + cellInModule + "---" + moduleIndex);
+                                        cell = module.getBatteryCells().get(cellInModule);
+
+                                    }
                                 }
-                            }
-                            cell.setLastMeasurement(Instant.now());
+                                cell.setLastMeasurement(Instant.now());
 //                    System.out.println("last measurement set");
-                            switch (part) {
-                                case "T":
-                                    //String[] split = message.split("_");
-                                    if (message.split("_").length == 2) {
-                                        double temp = Double.parseDouble(message.split("_")[1]) / 1000;
-                                        cell.setTemperature(temp);
-                                        break;
-                                    }
-                                case "M":
-                                    if (message.split("_").length == 2) {
-                                        //System.out.println("parsing M");
-                                        String[] split = message.split("_");
-                                        this.nrOfModules = Integer.parseInt(split[split.length - 1]);
-                                        break;
-                                    }
-                                case "V":
-                                    if (message.split("_").length == 2) {
-                                        //System.out.println("parsing V");
-                                        double voltage = Double.parseDouble(message.split("_")[1]) / 1000;
-                                        //System.out.println("cellindex: "+cellIndex);
-                                        this.moduleIndex = this.cellIndex / 16;
-                                        //System.out.println("moduleIndex: "+moduleIndex);
+                                switch (part) {
+                                    case "T":
+                                        //String[] split = message.split("_");
+                                        if (message.split("_").length == 2) {
+                                            double temp = Double.parseDouble(message.split("_")[1]) / 1000;
+                                            cell.setTemperature(temp);
+                                            break;
+                                        }
+                                    case "M":
+                                        if (message.split("_").length == 2) {
+                                            //System.out.println("parsing M");
+                                            String[] split = message.split("_");
+                                            this.nrOfModules = Integer.parseInt(split[split.length - 1]);
+                                            break;
+                                        }
+                                    case "V":
+                                        if (message.split("_").length == 2) {
+                                            //System.out.println("parsing V");
+                                            double voltage = Double.parseDouble(message.split("_")[1]) / 1000;
+                                            //System.out.println("cellindex: "+cellIndex);
+                                            this.moduleIndex = this.cellIndex / 16;
+                                            //System.out.println("moduleIndex: "+moduleIndex);
 //                            assert (this.batpack != null);
 //                            assert (this.batpack.getModuleCount() != 0 && !this.batpack.getModules().isEmpty());
 //                            assert (this.batpack.getModules().get(moduleIndex) != null && this.batpack.getModules().get(cellIndex % 16) != null);
-                                        cell.setVoltage(voltage);
-                                        break;
-                                    }
-                                case "B":
-                                    if (message.split("_").length == 2) {
-
-                                        boolean balance = false;
-                                        if (Integer.parseInt(message.split("_")[1]) == 1) {
-                                            balance = true;
+                                            cell.setVoltage(voltage);
+                                            break;
                                         }
-                                        this.batpack.getModules().get(moduleIndex).setBalancing(balance);
-                                    }
-                                default:
-                                    System.out.println("unnknown command");
-                                    status = 1;
+                                    case "B":
+                                        if (message.split("_").length == 2) {
+
+                                            boolean balance = false;
+                                            if (Integer.parseInt(message.split("_")[1]) == 1) {
+                                                balance = true;
+                                            }
+                                            this.batpack.getModules().get(moduleIndex).setBalancing(balance);
+                                        }
+                                    default:
+                                        System.out.println("unnknown command");
+                                        status = 1;
+                                }
                             }
                         }
 

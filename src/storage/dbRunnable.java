@@ -19,6 +19,8 @@ package storage;
 import battery.BatteryPacket;
 import java.io.IOException;
 import java.util.Dictionary;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,17 +30,27 @@ public class dbRunnable implements Runnable {
 
     private final BatteryPacket batpack;
     private final dbConnector dbcon;
+    private int timeout = 30000; //save batpack 2* per minute
 
     public dbRunnable(BatteryPacket packet) throws IOException {
         this.batpack = packet;
         dbcon = new dbConnector();
-        dbcon.createTable(false);
+        dbcon.createTable(true);
         System.out.println("size: " + packet.getModuleCount());
     }
 
     @Override
     public void run() {
-        System.out.println("db thread is running");
+        while (true) {
+            System.out.println("db thread is running");
+            storeBatpack();
+            try {
+                Thread.sleep(timeout);
+            } catch (InterruptedException ex) {
+                System.out.println("sleep db runnable interrupted");
+                Logger.getLogger(dbRunnable.class.getName()).log(Level.WARNING, null, ex);
+            }
+        }
     }
 
     public void storeBatpack() {
