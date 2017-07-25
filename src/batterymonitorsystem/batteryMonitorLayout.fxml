@@ -12,7 +12,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="batterymonitorsystem.batteryMonitorLayoutController">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1350.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="batterymonitorsystem.batteryMonitorLayoutController">
     <children>
         <SplitPane dividerPositions="0.5, 0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
@@ -52,7 +52,7 @@
                                 <Font size="54.0" />
                             </font>
                         </Label>
-                        <Label fx:id="totalTemperature" layoutX="774.0" layoutY="6.0" text="35.0 °C" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="225.0" AnchorPane.topAnchor="3.0">
+                        <Label fx:id="totalTemperature" layoutX="774.0" layoutY="6.0" text="35.0 °C" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="275.0" AnchorPane.topAnchor="3.0">
                             <font>
                                 <Font size="54.0" />
                             </font>
@@ -67,389 +67,470 @@
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <Accordion fx:id="accordion" prefHeight="771.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <panes>
-                                <TitledPane fx:id="batpackOverview" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="1200.0" text="Overview" textFill="WHITE">
-                                    <content>
-                                        <AnchorPane>
-                                            <children>
-                                                <VBox fx:id="batpackVbox" layoutX="10.399999618530273" layoutY="10.399999618530273" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                    <children>
-                                                        <HBox fx:id="batpackHbox1" prefHeight="100.0" prefWidth="200.0" spacing="270.0">
-                                                            <children>
-                                                                <Group fx:id="Module1">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
-                                                                        <Label layoutX="22.0" text="Module 1">
-                                                                            <font>
-                                                                                <Font size="30.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="Module2">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
-                                                                        <Label layoutX="22.0" text="Module 2">
-                                                                            <font>
-                                                                                <Font size="30.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="Module3">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
-                                                                        <Label layoutX="22.0" text="Module 3">
-                                                                            <font>
-                                                                                <Font size="30.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                            </children>
-                                                        </HBox>
-                                                        <HBox fx:id="batpackHbox2" prefHeight="100.0" prefWidth="200.0" spacing="270.0">
-                                                            <children>
-                                                                <Group fx:id="Module4">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
-                                                                        <Label layoutX="22.0" text="Module 4">
-                                                                            <font>
-                                                                                <Font size="30.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="Module5">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" />
-                                                                        <Label layoutX="22.0" text="Module 5">
-                                                                            <font>
-                                                                                <Font size="30.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="Module6">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" />
-                                                                        <Label layoutX="22.0" text="Module 6">
-                                                                            <font>
-                                                                                <Font size="30.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                            </children>
-                                                        </HBox>
-                                                        <HBox fx:id="batpackHbox3" prefHeight="100.0" prefWidth="200.0" spacing="270.0">
-                                                            <children>
-                                                                <Group fx:id="Module7">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
-                                                                        <Label layoutX="22.0" text="Module 7">
-                                                                            <font>
-                                                                                <Font size="30.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="Module8">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" />
-                                                                        <Label layoutX="22.0" text="Module 8">
-                                                                            <font>
-                                                                                <Font size="30.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="Module9">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" />
-                                                                        <Label layoutX="22.0" text="Module 9">
-                                                                            <font>
-                                                                                <Font size="30.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                            </children>
-                                                        </HBox>
-                                                    </children>
-                                                </VBox>
-                                            </children>
-                                        </AnchorPane>
-                                    </content>
-                                    <font>
-                                        <Font size="15.0" />
-                                    </font>
-                                </TitledPane>
-                                <TitledPane fx:id="ModuleOverview" animated="false" text="Cells" textFill="WHITE">
-                                    <content>
-                                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                                            <children>
-                                                <MenuButton fx:id="moduleChooser" layoutY="-1.0" mnemonicParsing="false" text="select module" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                <VBox prefHeight="200.0" prefWidth="100.0" spacing="55.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
-                                                    <children>
-                                                        <HBox nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
-                                                            <children>
-                                                                <Group fx:id="cell1">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 1" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell2">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 2" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell3">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 3" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell4">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 4" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell5">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 5" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell6">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 6" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell7">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 7" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell8">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 8" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                            </children>
-                                                        </HBox>
-                                                        <HBox nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
-                                                            <children>
-                                                                <Group fx:id="cell9">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 9" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell10">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 10" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell11">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 11" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell12">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 12" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell13">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 13" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell14">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 14" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell15">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 15" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                                <Group fx:id="cell16">
-                                                                    <children>
-                                                                        <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
-                                                                        <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
-                                                                        <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
-                                                                        <Label layoutX="22.0" layoutY="20.0" text="Cell 16" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
-                                                                            <font>
-                                                                                <Font size="24.0" />
-                                                                            </font>
-                                                                        </Label>
-                                                                        <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
-                                                                    </children>
-                                                                </Group>
-                                                            </children>
-                                                        </HBox>
-                                                    </children>
-                                                </VBox>
-                                            </children>
-                                        </AnchorPane>
-                                    </content>
-                                    <font>
-                                        <Font size="15.0" />
-                                    </font>
-                                </TitledPane>
-                            </panes>
-                     <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                     </cursor>
-                        </Accordion>
+                  <SplitPane dividerPositions="0.8469539375928677" prefHeight="463.0" prefWidth="1348.0">
+                    <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0">
+                           <children>
+                                    <Accordion fx:id="accordion" prefHeight="771.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <panes>
+                                            <TitledPane fx:id="batpackOverview" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="1200.0" text="Overview" textFill="WHITE">
+                                                <content>
+                                                    <AnchorPane>
+                                                        <children>
+                                                            <VBox fx:id="batpackVbox" layoutX="10.399999618530273" layoutY="10.399999618530273" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                <children>
+                                                                    <HBox fx:id="batpackHbox1" prefHeight="100.0" prefWidth="200.0" spacing="270.0">
+                                                                        <children>
+                                                                            <Group fx:id="Module1">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
+                                                                                    <Label layoutX="22.0" text="Module 1">
+                                                                                        <font>
+                                                                                            <Font size="30.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="Module2">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
+                                                                                    <Label layoutX="22.0" text="Module 2">
+                                                                                        <font>
+                                                                                            <Font size="30.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="Module3">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
+                                                                                    <Label layoutX="22.0" text="Module 3">
+                                                                                        <font>
+                                                                                            <Font size="30.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                        </children>
+                                                                    </HBox>
+                                                                    <HBox fx:id="batpackHbox2" prefHeight="100.0" prefWidth="200.0" spacing="270.0">
+                                                                        <children>
+                                                                            <Group fx:id="Module4">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
+                                                                                    <Label layoutX="22.0" text="Module 4">
+                                                                                        <font>
+                                                                                            <Font size="30.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="Module5">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" />
+                                                                                    <Label layoutX="22.0" text="Module 5">
+                                                                                        <font>
+                                                                                            <Font size="30.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="Module6">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" />
+                                                                                    <Label layoutX="22.0" text="Module 6">
+                                                                                        <font>
+                                                                                            <Font size="30.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                        </children>
+                                                                    </HBox>
+                                                                    <HBox fx:id="batpackHbox3" prefHeight="100.0" prefWidth="200.0" spacing="270.0">
+                                                                        <children>
+                                                                            <Group fx:id="Module7">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
+                                                                                    <Label layoutX="22.0" text="Module 7">
+                                                                                        <font>
+                                                                                            <Font size="30.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="Module8">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" />
+                                                                                    <Label layoutX="22.0" text="Module 8">
+                                                                                        <font>
+                                                                                            <Font size="30.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="Module9">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="200.0" progress="0.0" />
+                                                                                    <Label layoutX="22.0" text="Module 9">
+                                                                                        <font>
+                                                                                            <Font size="30.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="160.0" layoutY="85.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                        </children>
+                                                                    </HBox>
+                                                                </children>
+                                                            </VBox>
+                                                        </children>
+                                                    </AnchorPane>
+                                                </content>
+                                                <font>
+                                                    <Font size="15.0" />
+                                                </font>
+                                            </TitledPane>
+                                            <TitledPane fx:id="ModuleOverview" animated="false" text="Cells" textFill="WHITE">
+                                                <content>
+                                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                        <children>
+                                                            <MenuButton fx:id="moduleChooser" layoutY="-1.0" mnemonicParsing="false" text="select module" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                            <VBox prefHeight="200.0" prefWidth="100.0" spacing="55.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+                                                                <children>
+                                                                    <HBox nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+                                                                        <children>
+                                                                            <Group fx:id="cell1">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 1" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell2">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 2" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell3">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 3" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell4">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 4" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell5">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 5" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell6">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="45.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 6" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell7">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 7" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell8">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 8" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                        </children>
+                                                                    </HBox>
+                                                                    <HBox nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+                                                                        <children>
+                                                                            <Group fx:id="cell9">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 9" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell10">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 10" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell11">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 11" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell12">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 12" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell13">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 13" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell14">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 14" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell15">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 15" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                            <Group fx:id="cell16">
+                                                                                <children>
+                                                                                    <Label layoutX="22.0" layoutY="85.0" text="0.000 V" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="85.0" />
+                                                                                    <Label layoutX="22.0" layoutY="70.0" text="00 %" AnchorPane.topAnchor="73.0" />
+                                                                                    <ProgressBar layoutX="20.0" layoutY="48.0" prefHeight="20.0" prefWidth="100.0" progress="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                                                                                    <Label layoutX="22.0" layoutY="20.0" text="Cell 16" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="20.0">
+                                                                                        <font>
+                                                                                            <Font size="24.0" />
+                                                                                        </font>
+                                                                                    </Label>
+                                                                                    <Label layoutX="22.0" layoutY="100.0" text="0.00°C" />
+                                                                                </children>
+                                                                            </Group>
+                                                                        </children>
+                                                                    </HBox>
+                                                                </children>
+                                                            </VBox>
+                                                        </children>
+                                                    </AnchorPane>
+                                                </content>
+                                                <font>
+                                                    <Font size="15.0" />
+                                                </font>
+                                            </TitledPane>
+                                        </panes>
+                                 <cursor>
+                                    <Cursor fx:constant="DEFAULT" />
+                                 </cursor>
+                                    </Accordion>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane>
+                           <children>
+                              <TitledPane animated="false" layoutX="-19.0" layoutY="55.0" text="Criticals" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox spacing="75.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Group fx:id="highVoltage">
+                                                   <children>
+                                                      <Label text="Highest Voltage">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutY="22.0" prefHeight="31.0" prefWidth="131.0" text="Cell 144">
+                                                         <font>
+                                                            <Font size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutY="55.0" text="4.2315 V">
+                                                         <font>
+                                                            <Font size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </Group>
+                                                <Group fx:id="lowVoltage">
+                                                   <children>
+                                                      <Label text="Lowest Voltage">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutY="22.0" prefHeight="31.0" prefWidth="131.0" text="Cell 144">
+                                                         <font>
+                                                            <Font size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutY="55.0" text="4.2315 V">
+                                                         <font>
+                                                            <Font size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </Group>
+                                                <Group fx:id="highTemp">
+                                                   <children>
+                                                      <Label text="Highest Temp">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutY="22.0" prefHeight="31.0" prefWidth="131.0" text="Cell 144">
+                                                         <font>
+                                                            <Font size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutY="55.0" text="56.125°C">
+                                                         <font>
+                                                            <Font size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </Group>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </TitledPane>
+                           </children>
+                        </AnchorPane>
+                    </items>
+                  </SplitPane>
                     </children>
                 </AnchorPane>
             </items>
