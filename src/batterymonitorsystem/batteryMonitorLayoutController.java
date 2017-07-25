@@ -249,8 +249,6 @@ public class batteryMonitorLayoutController implements Initializable {
     @FXML
     private Group highTemp;
 
-
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.batpack = BatteryMonitorSystem.getBatpack();
@@ -391,10 +389,10 @@ public class batteryMonitorLayoutController implements Initializable {
             BatteryModule module = this.batpack.getModules().get(id);
             synchronized (module) {
                 Iterator i = module.getBatteryCells().iterator();
-                while(i.hasNext()){
+                while (i.hasNext()) {
                     BatteryCell cell = (BatteryCell) i.next();
                     int cellNr = cell.getId();
-                    updateCell(this.batteryCells.get(cellNr),cell);
+                    updateCell(this.batteryCells.get(cellNr), cell);
                 }
 //                for (int i = 0; i < module.getNrOfCells(); i++) {
 //                    System.out.println("this cells:" + this.batteryCells.get(i).toString());
@@ -492,41 +490,42 @@ public class batteryMonitorLayoutController implements Initializable {
         }
     }
 
-    private void updateCriticalValues(){
-      if(this.batpack!=null){
-        synchronized(this.batpack){
-          BatteryCell maxVoltageCell = new BatteryCell(00.00, 3.00, 0 , 0);//0°C, 3V
-          BatteryCell maxTemperatureCell = new BatteryCell(00.00,0.00,0,0);
-          BattertCell minVoltageCell = new BatteryCell(00.00,50.00,0,0);
-          for(BatteryModule module : this.batpack.getModules()){
-            for(BatteryCell cell: module.getBatteryCells()){
-              if(cell.getVoltage()>maxCell){
-                maxCell = cell;
-              }
-              if(cell.getVoltage()<minVoltageCell){
-                minVoltageCell = cell;
-              }
-              if(cell.getTemperature() > maxTemperatureCell){
-                maxTemperatureCell = cell;
-              }
+    private void updateCriticalValues() {
+        if (this.batpack != null) {
+            synchronized (this.batpack) {
+                BatteryCell maxVoltageCell = new BatteryCell(00.00, 3.00, 0, 0);//0°C, 3V
+                BatteryCell maxTemperatureCell = new BatteryCell(00.00, 0.00, 0, 0);
+                BatteryCell minVoltageCell = new BatteryCell(00.00, 50.00, 0, 0);
+                for (BatteryModule module : this.batpack.getModules()) {
+                    for (BatteryCell cell : module.getBatteryCells()) {
+                        if (cell.getVoltage() > maxVoltageCell.getVoltage()) {
+                            maxVoltageCell = cell;
+                        }
+                        if (cell.getVoltage() < minVoltageCell.getVoltage()) {
+                            minVoltageCell = cell;
+                        }
+                        if (cell.getTemperature() > maxTemperatureCell.getTemperature()) {
+                            maxTemperatureCell = cell;
+                        }
+                    }
+                }
+
+                Label highVoltageIdLabel = (Label) highVoltage.getChildren().get(1);
+                Label highVoltageVoltageLabel = (Label) highVoltage.getChildren().get(2);
+                highVoltageIdLabel.setText("Cell id: "+maxVoltageCell.getId());
+                highVoltageVoltageLabel.setText(maxVoltageCell.getVoltageAsString());
+
+                Label lowVoltageIdLabel = (Label) lowVoltage.getChildren().get(1);
+                Label lowVoltageVoltageLabel = (Label) lowVoltage.getChildren().get(2);
+                lowVoltageIdLabel.setText("Cell id: "+maxVoltageCell.getId());
+                lowVoltageVoltageLabel.setText(minVoltageCell.getVoltageAsString());
+
+                Label maxTempIdLabel = (Label) highTemp.getChildren().get(1);
+                Label maxTempTempLabel = (Label) highTemp.getChildren().get(2);
+                maxTempIdLabel.setText("Cell id: "+maxVoltageCell.getId());
+                maxTempTempLabel.setText(maxTemperatureCell.getTemperatureAsString());
             }
-          }
         }
-        Label highVoltageIdLabel = (Label) highVoltage.getChildren().get(1);
-        Label highVoltageVoltageLabel = (Label) highVoltage.getChildren().get(2);
-        highVoltageIdLabel.setText(maxVoltageCell.getId().toString());
-        highVoltageVoltageLabel.setText(maxVoltageCell.getVoltageAsString());
-
-        Label lowVoltageIdLabel = (Label) lowVoltage.getChildren().get(1);
-        Label lowVoltageVoltageLabel = (Label) lowVoltage.getChildren().get(2);
-        lowVoltageIdLabel.setText(minVoltageCell.getId().toString());
-        lowVoltageVoltageLabel.setText(minVoltageCell.getVoltageAsString());
-
-        Label maxTempIdLabel = (Label) highTemp.getChildren().get(1);
-        Label maxTempTempLabel = (Label) highTemp.getChildren().get(2);
-        maxTempIdLabel.setText(maxTemperatureCell.getId().toString());
-        maxTempTempLabel.setText(maxTemperatureCell.getTemperatureAsString());
-      }
     }
 
 }
