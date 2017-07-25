@@ -239,6 +239,18 @@ public class batteryMonitorLayoutController implements Initializable {
     @FXML
     private Circle connectedIndicator;
 
+    //Critical information
+    @FXML
+    private Group highVoltage;
+
+    @FXML
+    private Group lowVoltage;
+
+    @FXML
+    private Group highTemp;
+
+
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.batpack = BatteryMonitorSystem.getBatpack();
@@ -478,6 +490,43 @@ public class batteryMonitorLayoutController implements Initializable {
         if (this.batpack != null) {
             totalTemperature.setText(batpack.getAverageTemperatureAsString());
         }
+    }
+
+    private void updateCriticalValues(){
+      if(this.batpack!=null){
+        synchronized(this.batpack){
+          BatteryCell maxVoltageCell = new BatteryCell(00.00, 3.00, 0 , 0);//0°C, 3V
+          BatteryCell maxTemperatureCell = new BatteryCell(00.00,0.00,0,0);
+          BattertCell minVoltageCell = new BatteryCell(00.00,50.00,0,0);
+          for(BatteryModule module : this.batpack.getModules()){
+            for(BatteryCell cell: module.getBatteryCells()){
+              if(cell.getVoltage()>maxCell){
+                maxCell = cell;
+              }
+              if(cell.getVoltage()<minVoltageCell){
+                minVoltageCell = cell;
+              }
+              if(cell.getTemperature() > maxTemperatureCell){
+                maxTemperatureCell = cell;
+              }
+            }
+          }
+        }
+        Label highVoltageIdLabel = (Label) highVoltage.getChildren().get(1);
+        Label highVoltageVoltageLabel = (Label) highVoltage.getChildren().get(2);
+        highVoltageIdLabel.setText(maxVoltageCell.getId().toString());
+        highVoltageVoltageLabel.setText(maxVoltageCell.getVoltageAsString());
+
+        Label lowVoltageIdLabel = (Label) lowVoltage.getChildren().get(1);
+        Label lowVoltageVoltageLabel = (Label) lowVoltage.getChildren().get(2);
+        lowVoltageIdLabel.setText(minVoltageCell.getId().toString());
+        lowVoltageVoltageLabel.setText(minVoltageCell.getVoltageAsString());
+
+        Label maxTempIdLabel = (Label) highTemp.getChildren().get(1);
+        Label maxTempTempLabel = (Label) highTemp.getChildren().get(2);
+        maxTempIdLabel.setText(maxTemperatureCell.getId().toString());
+        maxTempTempLabel.setText(maxTemperatureCell.getTemperatureAsString());
+      }
     }
 
 }
