@@ -20,6 +20,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -306,7 +307,7 @@ public class batteryMonitorLayoutController implements Initializable {
     private void updateTotalVoltage() {
         if (this.batpack != null) {
             double progress = ((this.batpack.getTotalVoltage() - 432) / (600 - 432)); //only real range (3V * 144 cells)
-            System.out.println("progress= " + progress);
+//            System.out.println("progress= " + progress);
             int percentage = (int) (progress * 100);
 
             totalVoltageProgress.setProgress(progress);
@@ -322,7 +323,7 @@ public class batteryMonitorLayoutController implements Initializable {
         //System.out.println("updating modules");
         if (this.batpack != null) {
             if (this.batpack.getModuleCount() > 9) {
-                System.out.println("batpack not compatible with 2017 layout, "+this.batpack.getModuleCount()+" modules found");
+                System.out.println("batpack not compatible with 2017 layout, " + this.batpack.getModuleCount() + " modules found");
             } else {
                 for (int i = 0; i < this.batteryModules.size() && i < this.batpack.getModuleCount(); i++) {
                     updateModule(this.batteryModules.get(i), this.batpack.getModules().get(i));
@@ -347,9 +348,9 @@ public class batteryMonitorLayoutController implements Initializable {
         moduleVolt.setText(module.getVoltageAsString());
         modulePercent.setText(percentage + " %");
         progress.setProgress(progressValue);
-        if(module.getId()==1){
-            System.out.println("module 1 average temp: "+module.getAverageTemperatureAsString());
-        }
+//        if(module.getId()==1){
+//            System.out.println("module 1 average temp: "+module.getAverageTemperatureAsString());
+//        }
         averageTemperature.setText(module.getAverageTemperatureAsString());
     }
 
@@ -376,8 +377,18 @@ public class batteryMonitorLayoutController implements Initializable {
     private void updateCells(int id) {
         if (this.batpack != null) {
             BatteryModule module = this.batpack.getModules().get(id);
-            for (int i = 0; i < module.getNrOfCells(); i++) {
-                updateCell(this.batteryCells.get(i), module.getBatteryCells().get(i));
+            synchronized (module) {
+                Iterator i = module.getBatteryCells().iterator();
+                while(i.hasNext()){
+                    BatteryCell cell = (BatteryCell) i.next();
+                    int cellNr = cell.getId();
+                    updateCell(this.batteryCells.get(cellNr),cell);
+                }
+//                for (int i = 0; i < module.getNrOfCells(); i++) {
+//                    System.out.println("this cells:" + this.batteryCells.get(i).toString());
+//                    System.out.println("module cells:" + module.getBatteryCells().get(i).getId());
+//                    updateCell(this.batteryCells.get(i), module.getBatteryCells().get(i));
+//                }
             }
         }
     }
@@ -395,6 +406,7 @@ public class batteryMonitorLayoutController implements Initializable {
         voltage.setText(cell.getVoltageAsString());
         percentage.setText(percent + " %");
         progressBar.setProgress(progress / 100);
+//        System.out.println("cell id: " + cell.getId());
         temperature.setText(cell.getTemperatureAsString());
     }
 

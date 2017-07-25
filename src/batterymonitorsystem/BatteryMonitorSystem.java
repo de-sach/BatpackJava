@@ -12,6 +12,7 @@ Documentation
  */
 package batterymonitorsystem;
 
+import battery.BatteryCell;
 import battery.BatteryPacket;
 import communication.MessageBuilder;
 import communication.PortMonitor;
@@ -70,7 +71,7 @@ public class BatteryMonitorSystem implements Runnable {
     public void run() {
         try {
             MessageBuilder test = new MessageBuilder();
-            System.out.println(test.buildVoltageMessage(0, 0));
+//            System.out.println(test.buildVoltageMessage(0, 0));
             //SETUP communication
             BatteryMonitorSystem.portMonitor = new PortMonitor(latch);
             portMonitor.setBaudrate(500000);
@@ -95,7 +96,6 @@ public class BatteryMonitorSystem implements Runnable {
                 connected = portMonitor.isConnected();
                 Thread.sleep(2500);
                 batpack = portMonitor.getBatteryPack();
-                //System.out.println("BMS: battery pack module 5 cell 5 voltage: " + batpack.getModules().get(4).getBatteryCells().get(4).getVoltageAsString());
                 //storage
                 database.storeBatpack();
 

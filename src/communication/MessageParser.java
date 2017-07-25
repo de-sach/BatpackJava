@@ -28,7 +28,7 @@ import java.time.Instant;
 class MessageParser {
 
     private BatteryPacket batpack;
-    private int nrOfModules = 0;
+    private int nrOfModules = 9;
     private int cellIndex;
     private int moduleIndex;
     private int maxNrOfCells;
@@ -78,7 +78,7 @@ class MessageParser {
                             int cellInModule = this.cellIndex % 16;
                             this.moduleIndex = this.cellIndex / 16;
 
-//                    System.out.println("cell, cell in module and module: " + cellIndex + "---" + cellInModule + "---" + moduleIndex);
+//                            System.out.println("cell, cell in module and module: " + cellIndex + "---" + cellInModule + "---" + moduleIndex);
                             if (moduleIndex >= this.batpack.getModuleCount()) {
                                 module = new BatteryModule(moduleIndex, 0);
                                 batpack.addModule(module);
@@ -179,6 +179,9 @@ class MessageParser {
                     ready = true;
                     for (BatteryModule module : this.batpack.getModules()) {
                         for (BatteryCell cell : module.getBatteryCells()) {
+//                            if(module.getId()==1){
+//                                System.out.println("cell id: "+cell.getId());
+//                            }
                             if (cell.getVoltage() == 0) {
                                 ready = false;
                             }
@@ -201,7 +204,8 @@ class MessageParser {
                 if (prefix != null && !prefix.equals("")) {
                     if (prefix.length() > 1) {
                         if (prefix.substring(0, 1).matches("[A-Z]+")) {
-                            if (prefix.substring(1, prefix.length() - 1).matches("[0-9]+")) {
+//                            if (prefix.substring(1, prefix.length() - 1).matches("[0-9]+")) {
+                            if (prefix.substring(1, prefix.length()).matches("[0-9]+")) {
                                 //received message is a measurement
                                 if (messageParts[1].length() == 4) {
                                     if (messageParts[1].matches("[0-9]+")) {
