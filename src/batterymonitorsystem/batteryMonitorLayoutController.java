@@ -520,19 +520,22 @@ public class batteryMonitorLayoutController implements Initializable {
                 System.out.println("maxVoltageCell, minVoltageCell, maxTempCell: - " + maxVoltageCell.getId() + " - " + minVoltageCell.getId() + " - "+ maxTemperatureCell.getId());
                 System.out.println("highVoltage children "+lowVoltage.getChildren());
                 Label highVoltageIdLabel = (Label) highVoltage.getChildren().get(1);
-                Label highVoltageVoltageLabel = (Label) highVoltage.getChildren().get(2);
+                Label highVoltageVoltageLabel = (Label) highVoltage.getChildren().get(3);
+                Label highVoltageModuleLabel = (Label) highVoltage.getChildren().get(2);
                 highVoltageIdLabel.setText("Cell id: "+maxVoltageCell.getId());
                 highVoltageModuleLabel.setText("Module id: "+ maxVoltModule);
                 highVoltageVoltageLabel.setText(maxVoltageCell.getVoltageAsString());
 
                 Label lowVoltageIdLabel = (Label) lowVoltage.getChildren().get(1);
                 Label lowVoltageVoltageLabel = (Label) lowVoltage.getChildren().get(2);
+                Label lowVoltageModuleLabel = (Label) lowVoltage.getChildren().get(3);
                 lowVoltageIdLabel.setText("Cell id: "+minVoltageCell.getId());
                 lowVoltageModuleLabel.setText("Module id: "+ minVoltModule);
                 lowVoltageVoltageLabel.setText(minVoltageCell.getVoltageAsString());
 
                 Label maxTempIdLabel = (Label) highTemp.getChildren().get(1);
                 Label maxTempTempLabel = (Label) highTemp.getChildren().get(2);
+                Label maxTempModuleLabel = (Label) highTemp.getChildren().get(3);
                 maxTempIdLabel.setText("Cell id: "+maxTemperatureCell.getId());
                 maxTempModuleLabel.setText("Module id: "+ maxTempModule);
                 maxTempTempLabel.setText(maxTemperatureCell.getTemperatureAsString());
