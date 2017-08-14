@@ -96,7 +96,7 @@ public class batteryMonitorLayoutController implements Initializable {
     private Label totalVoltage;
 
     @FXML
-    private Label totalTemperature;
+    private Label overalMaxTemperature;
 
     @FXML
     private ImageView formulaLogo;
@@ -323,7 +323,7 @@ public class batteryMonitorLayoutController implements Initializable {
             totalVoltageProgress.setProgress(progress);
             totalVoltagePercentage.setText(percentage + "%");
             totalVoltage.setText(this.batpack.getTotalVoltageAsString());
-            totalTemperature.setText(this.batpack.getAverageTemperatureAsString());
+            overalMaxTemperature.setText(this.batpack.getMaximumTemperatureAsString());
         } else {
             System.out.println("batpack is null");
         }
@@ -439,7 +439,7 @@ public class batteryMonitorLayoutController implements Initializable {
                 checkConnection();
                 updateModules();
                 updateTotalVoltage();
-                updateTotalTemperature();
+                updateMaxTemperature();
                 updateCriticalValues();
             }
 
@@ -485,9 +485,9 @@ public class batteryMonitorLayoutController implements Initializable {
 
     }
 
-    private void updateTotalTemperature() {
+    private void updateMaxTemperature() {
         if (this.batpack != null) {
-            totalTemperature.setText(batpack.getAverageTemperatureAsString());
+            overalMaxTemperature.setText(batpack.getMaximumTemperatureAsString());
         }
     }
 

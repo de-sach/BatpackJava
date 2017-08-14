@@ -17,6 +17,7 @@
 package battery;
 
 import static battery.doubleHelper.round;
+import com.sun.corba.se.spi.servicecontext.MaxStreamFormatVersionServiceContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -140,6 +141,27 @@ public class BatteryPacket {
         averageTemperatureAsString = Double.toString(round(averageTemperature, 2));
         averageTemperatureAsString += " °C";
         return averageTemperatureAsString;
+    }
+
+    public String getMaximumTemperatureAsString() {
+        double maxCellTemperature = 0.00;
+
+        synchronized (this.modules) {
+            Iterator moduleIterator = modules.iterator();
+            while (moduleIterator.hasNext()) {
+                BatteryModule module = (BatteryModule) moduleIterator.next();
+                Iterator cellIterator = module.getBatteryCells().iterator();
+                while (cellIterator.hasNext()) {
+                    BatteryCell cell = (BatteryCell) cellIterator.next();
+                    if (cell.getTemperature() > maxCellTemperature) {
+                        maxCellTemperature = cell.getTemperature();
+                    }
+                }
+            }
+        }
+        String maximumTemperatureAsString = Double.toString(round(maxCellTemperature, 2));
+        maximumTemperatureAsString += " °C";
+        return maximumTemperatureAsString;
     }
 
 }
