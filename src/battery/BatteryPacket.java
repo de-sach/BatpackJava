@@ -17,7 +17,6 @@
 package battery;
 
 import static battery.doubleHelper.round;
-import com.sun.corba.se.spi.servicecontext.MaxStreamFormatVersionServiceContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -33,6 +32,7 @@ public class BatteryPacket {
     private double totalVoltage;
     private List<BatteryModule> modules;
     private double averageTemperature;
+    private double stateOfCharge;
 
     /**
      *
@@ -163,6 +163,24 @@ public class BatteryPacket {
         maximumTemperatureAsString += " °C";
         System.out.println(maximumTemperatureAsString);
         return maximumTemperatureAsString;
+    }
+    
+    public double getStateOfCharge(){
+        this.stateOfCharge = calculateStateOfCharge();
+        return this.stateOfCharge;
+    }
+
+    private double calculateStateOfCharge() {
+        double total=0, average;
+        synchronized(modules){
+            Iterator module = modules.iterator();
+            while(module.hasNext()){
+                BatteryModule mod = (BatteryModule) module.next();
+                total += mod.getStateOfCharge();
+            }
+        }
+        average = total/this.moduleCount;
+        return average;
     }
 
 }

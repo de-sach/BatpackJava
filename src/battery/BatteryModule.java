@@ -25,6 +25,7 @@ public class BatteryModule {
     double voltage;
     double averageTemperature;
     private boolean balance;
+    private double stateOfCharge;
 
     /**
      * get the balancing situation of the batterymodule
@@ -189,4 +190,23 @@ public class BatteryModule {
     public void setBalancing(boolean balance) {
         this.balance = balance;
     }
+
+    public double getStateOfCharge() {
+        this.stateOfCharge = calculateSOC();
+        return stateOfCharge;
+    }
+
+    private double calculateSOC() {
+        double total = 0, average;
+        synchronized (module) {
+            Iterator cells = module.iterator();
+            while (cells.hasNext()) {
+                BatteryCell cell = (BatteryCell) cells.next();
+                total += cell.getStateOfCharge();
+            }
+        }
+        average = total / this.nrOfCells;
+        return average;
+    }
+
 }
