@@ -67,7 +67,7 @@
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                  <SplitPane dividerPositions="0.8469539375928677" prefHeight="463.0" prefWidth="1348.0">
+                  <SplitPane dividerPositions="0.87" prefHeight="463.0" prefWidth="1348.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0">
                            <children>
@@ -462,7 +462,7 @@
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <VBox spacing="75.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <VBox spacing="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
                                                 <Group fx:id="highVoltage">
                                                    <children>
@@ -471,12 +471,17 @@
                                                             <Font size="20.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutY="22.0" prefHeight="31.0" prefWidth="131.0" text="Cell 144">
+                                                      <Label layoutY="20.0" prefHeight="31.0" prefWidth="131.0" text="Cell 144">
                                                          <font>
                                                             <Font size="16.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutY="55.0" text="4.2315 V">
+                                                      <Label layoutY="42.0" prefHeight="26.0" prefWidth="137.0" text="Module 9">
+                                                         <font>
+                                                            <Font size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutY="64.0" text="4.2315 V">
                                                          <font>
                                                             <Font size="16.0" />
                                                          </font>
@@ -490,12 +495,17 @@
                                                             <Font size="20.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutY="22.0" prefHeight="31.0" prefWidth="131.0" text="Cell 144">
+                                                      <Label layoutY="20.0" prefHeight="31.0" prefWidth="131.0" text="Cell 144">
                                                          <font>
                                                             <Font size="16.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutY="55.0" text="4.2315 V">
+                                                      <Label layoutY="64.0" text="4.2315 V">
+                                                         <font>
+                                                            <Font size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutY="42.0" prefHeight="26.0" prefWidth="137.0" text="Module 9">
                                                          <font>
                                                             <Font size="16.0" />
                                                          </font>
@@ -509,12 +519,17 @@
                                                             <Font size="20.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutY="22.0" prefHeight="31.0" prefWidth="131.0" text="Cell 144">
+                                                      <Label layoutY="20.0" prefHeight="31.0" prefWidth="131.0" text="Cell 144">
                                                          <font>
                                                             <Font size="16.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutY="55.0" text="56.125°C">
+                                                      <Label layoutY="64.0" text="56.125°C">
+                                                         <font>
+                                                            <Font size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutY="42.0" prefHeight="26.0" prefWidth="137.0" text="Module 9">
                                                          <font>
                                                             <Font size="16.0" />
                                                          </font>
