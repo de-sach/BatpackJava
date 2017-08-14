@@ -52,7 +52,7 @@
                                 <Font size="54.0" />
                             </font>
                         </Label>
-                        <Label fx:id="totalTemperature" layoutX="774.0" layoutY="6.0" text="35.0 °C" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="275.0" AnchorPane.topAnchor="3.0">
+                        <Label fx:id="overalMaxTemperature" layoutX="774.0" layoutY="6.0" text="35.0 °C" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="275.0" AnchorPane.topAnchor="3.0">
                             <font>
                                 <Font size="54.0" />
                             </font>

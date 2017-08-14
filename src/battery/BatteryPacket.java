@@ -161,6 +161,7 @@ public class BatteryPacket {
         }
         String maximumTemperatureAsString = Double.toString(round(maxCellTemperature, 2));
         maximumTemperatureAsString += " °C";
+        System.out.println(maximumTemperatureAsString);
         return maximumTemperatureAsString;
     }
 
