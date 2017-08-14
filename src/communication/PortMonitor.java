@@ -178,6 +178,7 @@ public class PortMonitor implements Runnable {
         } catch (InterruptedException ex) {
             Logger.getLogger(PortMonitor.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.connected = cpc.isConnected();
     }
 
     public void messageLoop(String message) {
@@ -226,6 +227,7 @@ public class PortMonitor implements Runnable {
 
     public void refreshBatpack() {
         addAllPorts();
+        connected = cpc.isConnected();
         if (commPorts.length <= 0) {
             try {
                 Thread.sleep(500);
@@ -248,6 +250,7 @@ public class PortMonitor implements Runnable {
                 System.out.println("commPorts[0] == null");
             }
         }
+        connected = cpc.isConnected();
 //        if (connected) {
 //            while (connected) {
 //                try {

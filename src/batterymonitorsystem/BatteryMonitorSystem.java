@@ -24,11 +24,8 @@ import java.util.logging.Logger;
 import storage.dbRunnable;
 
 /**
- * Company: Formula Electric Belgium
- * Author: sach
- * Project: Umicore Nova
- * Part: BMS pc
- * Created: Januari 2017
+ * Company: Formula Electric Belgium Author: sach Project: Umicore Nova Part:
+ * BMS pc Created: Januari 2017
  */
 public class BatteryMonitorSystem implements Runnable {
 
@@ -94,11 +91,12 @@ public class BatteryMonitorSystem implements Runnable {
                 System.out.println("Refreshing data");
                 portMonitor.refreshBatpack();
                 connected = portMonitor.isConnected();
-                Thread.sleep(2500);
+                Thread.sleep(2000);
                 batpack = portMonitor.getBatteryPack();
                 //storage
-                database.storeBatpack();
-
+                if (connected) {
+                    database.storeBatpack();
+                }
             }
 
         } catch (InterruptedException | IOException ex) {
