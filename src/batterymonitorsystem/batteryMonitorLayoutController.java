@@ -440,6 +440,7 @@ public class batteryMonitorLayoutController implements Initializable {
                 updateModules();
                 updateTotalVoltage();
                 updateTotalTemperature();
+                updateCriticalValues();
             }
 
         });
@@ -492,24 +493,32 @@ public class batteryMonitorLayoutController implements Initializable {
 
     private void updateCriticalValues() {
         if (this.batpack != null) {
+            int maxVoltModule=0, minVoltModule = 0, maxTempModule=0;
             synchronized (this.batpack) {
-                BatteryCell maxVoltageCell = new BatteryCell(00.00, 3.00, 0, 0);//0°C, 3V
+                BatteryCell maxVoltageCell = new BatteryCell(00.00, 0.00, 0, 0);//0°C, 3V
                 BatteryCell maxTemperatureCell = new BatteryCell(00.00, 0.00, 0, 0);
                 BatteryCell minVoltageCell = new BatteryCell(00.00, 50.00, 0, 0);
-                for (BatteryModule module : this.batpack.getModules()) {
-                    for (BatteryCell cell : module.getBatteryCells()) {
+                for (int moduleCounter = 0; moduleCounter<batpack.getModuleCount(); moduleCounter++) {
+                    BatteryModule currentModule = batpack.getModules().get(moduleCounter);
+                    for (int cellCounter =0; cellCounter < currentModule.getNrOfCells(); cellCounter++){
+                    BatteryCell cell = currentModule.getBatteryCells().get(cellCounter);
                         if (cell.getVoltage() > maxVoltageCell.getVoltage()) {
                             maxVoltageCell = cell;
+                            maxVoltModule = moduleCounter;
                         }
                         if (cell.getVoltage() < minVoltageCell.getVoltage()) {
                             minVoltageCell = cell;
+                            minVoltModule = moduleCounter;
                         }
                         if (cell.getTemperature() > maxTemperatureCell.getTemperature()) {
                             maxTemperatureCell = cell;
+                            maxTempModule = moduleCounter;
                         }
                     }
                 }
-
+                System.out.println("minVoltageCell id " + minVoltageCell.getId() + " at module "+ minVoltModule);
+                
+                System.out.println("highVoltage children "+lowVoltage.getChildren());
                 Label highVoltageIdLabel = (Label) highVoltage.getChildren().get(1);
                 Label highVoltageVoltageLabel = (Label) highVoltage.getChildren().get(2);
                 highVoltageIdLabel.setText("Cell id: "+maxVoltageCell.getId());

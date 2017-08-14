@@ -76,7 +76,7 @@ class MessageParser {
                         this.cellIndex = Integer.parseInt(message.split("_")[0].substring(1, message.split("_")[0].length())) - 1;
                         if (!(cellIndex > maxNrOfCells)) {
                             int cellInModule = this.cellIndex % 16;
-                            if (cellInModule > 15 && cellInModule < 0) {
+                            if (cellInModule > 15 || cellInModule < 0) {
                                 System.out.println("cell in module wrong");
                             } else {
                                 this.moduleIndex = this.cellIndex / 16;
