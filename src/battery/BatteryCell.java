@@ -15,6 +15,7 @@ import java.util.List;
  * @author sach
  */
 public class BatteryCell {
+
     private Double temperature;
     private Double voltage;
     private int id;
@@ -24,14 +25,15 @@ public class BatteryCell {
     private final Instant creation;
     private Instant lastMeasurement;
     private int stateOfCharge;
+
     /**
      *
-     * @param temp:     temperature of the cell
-     * @param volt:     voltage of the cell
-     * @param id:       id of the cell
-     * @param health:   cell halth
+     * @param temp: temperature of the cell
+     * @param volt: voltage of the cell
+     * @param id: id of the cell
+     * @param health: cell halth
      */
-    public BatteryCell(double temp, double volt, int id, int health){
+    public BatteryCell(double temp, double volt, int id, int health) {
         this.temperature = temp;
         this.voltage = volt;
         this.id = id;
@@ -51,15 +53,18 @@ public class BatteryCell {
 
     /**
      * set the cell temperature
-     * @param temperature 
+     *
+     * @param temperature
      */
     public void setTemperature(double temperature) {
-        this.temperature = temperature;
-        this.temperatureProgress.add(temperature);
+        if (temperature > 10 && temperature < 55) {
+            this.temperature = temperature;
+            this.temperatureProgress.add(temperature);
 //        if(this.id==1){
 //            System.out.println("temperature progress: " + temperatureProgress);
 //        }
-        this.lastMeasurement = Instant.now();
+            this.lastMeasurement = Instant.now();
+        }
     }
 
     /**
@@ -72,16 +77,20 @@ public class BatteryCell {
 
     /**
      * set the cell voltage
+     *
      * @param voltage
      */
     public void setVoltage(double voltage) {
-        this.voltage = voltage;
-        this.voltageProgress.add(voltage);
-        this.lastMeasurement = Instant.now();
+        if (voltage < 4.3 && voltage > 2.9) {
+            this.voltage = voltage;
+            this.voltageProgress.add(voltage);
+            this.lastMeasurement = Instant.now();
+        }
     }
 
     /**
-     * get the cell id 
+     * get the cell id
+     *
      * @return cell id
      */
     public int getId() {
@@ -90,6 +99,7 @@ public class BatteryCell {
 
     /**
      * set the cell id
+     *
      * @param id
      */
     public void setId(int id) {
@@ -98,6 +108,7 @@ public class BatteryCell {
 
     /**
      * get the health of the cell
+     *
      * @return health
      */
     public int getHealth() {
@@ -106,6 +117,7 @@ public class BatteryCell {
 
     /**
      * set the health of the cell
+     *
      * @param health
      */
     public void setHealth(int health) {
@@ -114,45 +126,50 @@ public class BatteryCell {
 
     /**
      * get the voltage as a string with 2 decimal places
+     *
      * @return String of the voltage
      */
     public String getVoltageAsString() {
         String totalVoltageAsString;
-        totalVoltageAsString = Double.toString(round(this.voltage,4));
+        totalVoltageAsString = Double.toString(round(this.voltage, 4));
         totalVoltageAsString += " V";
         return totalVoltageAsString;
     }
 
     /**
      * get the temperature of the string with 2 decimal places
+     *
      * @return String of the temperature
      */
     public String getTemperatureAsString() {
         String tempAsString;
-        tempAsString = Double.toString(round(this.temperature,4));
+        tempAsString = Double.toString(round(this.temperature, 4));
         tempAsString += "°C";
         return tempAsString;
     }
 
     /**
      * set the measurement to a specific instant
+     *
      * @param now the instant the meaasurement took place
      */
     public void setLastMeasurement(Instant now) {
         this.lastMeasurement = now;
     }
-    
+
     /**
      * get the last measurement of this cell
+     *
      * @return the last instant measured
      */
-    public Instant getLastMeasurement(){
+    public Instant getLastMeasurement() {
         return this.lastMeasurement;
     }
-     public int getStateOfCharge() {
+
+    public int getStateOfCharge() {
         LiPoSocCalculator soc = new LiPoSocCalculator(this.voltage);
         this.stateOfCharge = soc.getSoc();
         return this.stateOfCharge;
     }
-    
+
 }

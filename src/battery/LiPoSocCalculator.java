@@ -63,7 +63,7 @@ public class LiPoSocCalculator {
         Integer nearestLowerPercent, nearestHigherPercent;
         int progress;
         nearestLowerVolt = 2800;
-        nearestHigherVolt = 4200;
+        nearestHigherVolt = 4300;
         Enumeration keys = lookupTable.keys();
         while(keys.hasMoreElements()){
             Integer key = (Integer) keys.nextElement();
