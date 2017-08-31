@@ -21,38 +21,46 @@ package communication;
  * @author sach
  */
 public class MessageBuilder {
+
     private String message;
-    
-    public MessageBuilder(){
-        
+
+    /**
+     * An object that can build correct commands to send to the battery packet
+     */
+    public MessageBuilder() {
+
     }
-    
-    public String buildBatpackMessage(){
+
+    /**
+     * A message used to get the number of modules which can be used to create a
+     * modular BatteryPacket
+     *
+     * @return the commando as String
+     */
+    public String buildBatpackMessage() {
         this.message = "M_0_0000";
         this.message = finishMessage(this.message);
         return this.message;
     }
-    
-    
-    
-    private String buildMessage(int type, int identifier){
-        switch (type){
+
+    private String buildMessage(int type, int identifier) {
+        switch (type) {
             case 0: //get all 
-                this.message+="A_0000";
+                this.message += "A_0000";
                 break;
             case 1: //get Module 
-                this.message+="M_";
+                this.message += "M_";
 //                for(int i=(int) (4-Math.floor(Math.log10(identifier)+1));i>0;i--){
 //                    this.message+="0";
 //                }
-                this.message+=identifier;
+                this.message += identifier;
                 break;
             case 2: //get cell 
-                this.message+="C_";
+                this.message += "C_";
 //                for(int i=(int) (4-Math.floor(Math.log10(identifier)+1));i>0;i--){
 //                    this.message+="0";
 //                }
-                this.message+=identifier;
+                this.message += identifier;
                 break;
             default:
                 System.out.println("error wrong message");
@@ -61,30 +69,56 @@ public class MessageBuilder {
         this.message = finishMessage(this.message);
         return this.message;
     }
-    
-    public String buildVoltageMessage(int type, int identifier){
-        this.message ="V_";
+
+    /**
+     * A method that returns a message to get the voltage of a batterypacket,
+     * module or cell
+     *
+     * @param type The type of voltage message that is sent, 0-2 for batpack,
+     * module or cell
+     * @param identifier the identifier for the module or cell
+     * @return the commando as a String
+     */
+    public String buildVoltageMessage(int type, int identifier) {
+        this.message = "V_";
         this.message = buildMessage(type, identifier);
         return this.message;
     }
-    
-    public String buildTemperatureMessage(int type, int identifier){
-        this.message ="T_";
-        this.message= buildMessage(type,identifier);
-        return this.message;
-    }
-    
-    public String buildBalancingMessage(int type, int identifier){
-        this.message ="B_";
+
+    /**
+     * A method that returns a message to get the temperature of a
+     * batterypacket, module or cell
+     *
+     * @param type The type of voltage message that is sent, 0-2 for batpack,
+     * module or cell
+     * @param identifier the identifier for the module or cell
+     * @return the commando as a String
+     */
+    public String buildTemperatureMessage(int type, int identifier) {
+        this.message = "T_";
         this.message = buildMessage(type, identifier);
         return this.message;
     }
-    
-    
-    private String finishMessage(String message){
-        message+="\r\n";
-        assert(message.length()==10);
+
+    /**
+      * A method that returns a message to get the balancing state of a
+     * batterypacket, module or cell
+     *
+     * @param type The type of voltage message that is sent, 0-2 for batpack,
+     * module or cell
+     * @param identifier the identifier for the module or cell
+     * @return the commando as a String
+     */
+    public String buildBalancingMessage(int type, int identifier) {
+        this.message = "B_";
+        this.message = buildMessage(type, identifier);
+        return this.message;
+    }
+
+    private String finishMessage(String message) {
+        message += "\r\n";
+        assert (message.length() == 10);
         return message;
     }
-    
+
 }

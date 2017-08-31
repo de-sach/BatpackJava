@@ -80,6 +80,10 @@ public class JavaFxRunner extends Application {
             Logger.getLogger(JavaFxRunner.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    /**
+     * Main function that starts everything in the program
+     * @param args command line arguments, currently not supported
+     */
     public static void main(String args[]){
         launch(args);
     }

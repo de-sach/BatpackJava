@@ -34,6 +34,11 @@ public class LiPoSocCalculator {
     private int soc;
     private final dbConnector dbcon;
 
+    /**
+     * A callculator that uses a lookup table with the characteristic voltages of a lithium-polymer accumulator cell to callculate the state of charge
+     * @param voltage the voltage of the cell
+     * 
+     */
     public LiPoSocCalculator(double voltage) {
         this.voltage = voltage;
         this.soc = 0;
@@ -41,23 +46,41 @@ public class LiPoSocCalculator {
         this.lookupTable =  dbcon.getVoltageLookupTable();
     }
 
+    /**
+     * getter for the voltage of the cell
+     * @return the voltage of the cell
+     */
     public double getVoltage() {
         return voltage;
     }
 
+    /**
+     * setter for the voltage of the cell
+     * @param voltage the voltage of the cell
+     */
     public void setVoltage(double voltage) {
         this.voltage = voltage;
     }
 
+    /**
+     * a getter for the state of charge of the cell depending on the set voltage
+     * @return the state of charge as an integer between 0 and 100
+     */
     public int getSoc() {
         return calculateSoc(voltage);
     }    
     
+    /**
+     * A getter for the state of charge of a cell with given voltage
+     * @param voltage the voltage for which the state of charge is calculated
+     * @return the state of charge of the cell as an integer between 0 and 100
+     */
     public int getSoc(double voltage){
         this.setVoltage(voltage);
         return calculateSoc(this.voltage);
     }
 
+    
     private int calculateSoc(double voltage) {
         Integer nearestLowerVolt, nearestHigherVolt;
         Integer nearestLowerPercent, nearestHigherPercent;

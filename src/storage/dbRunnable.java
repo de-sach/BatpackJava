@@ -32,6 +32,11 @@ public class dbRunnable implements Runnable {
     private final dbConnector dbcon;
     private int timeout = 30000; //save batpack 2* per minute
 
+    /**
+     * A thread runnable used to allow database access in a separate thread to avoid waiting times
+     * @param packet the BatteryPacket who's data is to be periodically stored
+     * @throws IOException An exception when database access is impossible
+     */
     public dbRunnable(BatteryPacket packet) throws IOException {
         this.batpack = packet;
         dbcon = new dbConnector();
@@ -53,10 +58,18 @@ public class dbRunnable implements Runnable {
         }
     }
 
+    /**
+     * A function used to store all celldata in the batterypack.
+     * This is done by sending the data to the database connector who stores it.
+     */
     public void storeBatpack() {
         dbcon.insertBatpack(batpack);
     }
 
+    /**
+     * A getter function for the voltage - state of charge lookup table
+     * @return the voltage - state of charge lookup table
+     */
     public Dictionary getVoltageLookupTable() {
         return dbcon.getVoltageLookupTable();
     }

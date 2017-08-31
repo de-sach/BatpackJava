@@ -44,10 +44,8 @@ public class BatteryPacket {
 
     }
 
-    /**
-     *
-     */
-    public void updateTotalVoltage() {
+  
+    private void updateTotalVoltage() {
         double totalVoltage = 0.0;
         List synchronizedBatpack = Collections.synchronizedList(modules);
         synchronized (synchronizedBatpack) {
@@ -63,7 +61,7 @@ public class BatteryPacket {
     /**
      *
      */
-    public void updateAvgTemp() {
+    private void updateAvgTemp() {
         double avgTemp = 0;
         List synchronizedBatpack = Collections.synchronizedList(modules);
         synchronized (synchronizedBatpack) {
@@ -143,6 +141,10 @@ public class BatteryPacket {
         return averageTemperatureAsString;
     }
 
+    /**
+     * A function to get the maximum temperature of the batpack as a string, usefull for interfacing with the use
+     * @return the maximum temperature as String
+     */
     public String getMaximumTemperatureAsString() {
         double maxCellTemperature = 0.00;
 
@@ -165,6 +167,10 @@ public class BatteryPacket {
         return maximumTemperatureAsString;
     }
     
+    /**
+     * A getter for the state of charge of the batterypack
+     * @return the state of charge of the batterypack
+     */
     public double getStateOfCharge(){
         this.stateOfCharge = calculateStateOfCharge();
         return this.stateOfCharge;

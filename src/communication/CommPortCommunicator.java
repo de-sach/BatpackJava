@@ -47,10 +47,20 @@ public class CommPortCommunicator implements Runnable {
     private SerialPort sp;
     private boolean connected;
 
+    /**
+     * a getter function to see if the batteryPacket is still connected
+     * @return a boolean which chose the state
+     */
     public boolean isConnected() {
         return connected;
     }
 
+    /**
+     * A queue in which the data that is send over uart is stored.
+     * This is used for communication between the threads.
+     * warning: this data is not yet filtered on validity.
+     * @return the Queue with all message data
+     */
     public ConcurrentLinkedQueue<String> getMessageQueue() {
         return communicationqueue;
     }

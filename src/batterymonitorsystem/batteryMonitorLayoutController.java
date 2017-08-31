@@ -67,11 +67,19 @@ public class batteryMonitorLayoutController implements Initializable {
     @FXML
     private MenuItem exitMenuItem;
 
-    public int getSelectedModule() {
+    /**
+     * getter for the selected module in the front end
+     * @return the id of the selected module as an integer, counted from 0
+     */
+    private int getSelectedModule() {
         return selectedModule;
     }
 
-    public void setSelectedModule(int selectedModule) {
+    /**
+     * setter for the selected module in the front end, used to set the id when changes are detected
+     * @param selectedModule the id of the selected module, counted from 0
+     */
+    private void setSelectedModule(int selectedModule) {
         this.selectedModule = selectedModule;
     }
 
@@ -307,7 +315,7 @@ public class batteryMonitorLayoutController implements Initializable {
         accordion.setExpandedPane(batpackOverview);
     }
 
-    public void bindModuleClick() {
+    private void bindModuleClick() {
         for (int i = 0; i < batteryModules.size(); i++) {
             selectedModule = i;
             batteryModules.get(i).setOnMouseClicked(openModule);

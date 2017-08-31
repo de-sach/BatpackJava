@@ -26,11 +26,18 @@ package communication;
  */
 public class ThreadEvent {
     private final Object lock = new Object();
+    /** 
+     * A function used to synchronize multithreading
+     */
     public void signal(){
         synchronized(lock){
             lock.notify();
         }
     }
+    /**
+     * A function used to synchronize multithreading
+     * @throws InterruptedException when waiting is suddenly interrupted
+     */
     public void await() throws InterruptedException{
         synchronized(lock){
             lock.wait();

@@ -27,6 +27,9 @@ public class dbConnector {
 
     private Connection connection;
 
+    /**
+     * A class used to connect to the database
+     */
     public dbConnector() {
         try {
             Class.forName("org.sqlite.JDBC");
@@ -35,7 +38,10 @@ public class dbConnector {
         }
         connection = null;
     }
-
+    /**
+     * a function used to create tables in the database
+     * @param exists a boolean that has to be set when a table already exists to avoid dropping the table
+     */
     public void createTable(boolean exists) {
         if (!exists) {
             try {
@@ -66,6 +72,10 @@ public class dbConnector {
         }
     }
 
+    /**
+     * A method used to insert all relevant values of a cell in the database
+     * @param cell a cell of the BatteryPacket
+     */
     public void insertCell(BatteryCell cell) {
         try {
             try {
@@ -87,7 +97,11 @@ public class dbConnector {
         }
 
     }
-
+    
+    /**
+     * A wrapper method to automate inserting all cells in a module
+     * @param module a BatteryPacket module consisting out of a set number of cells
+     */
     public void insertModule(BatteryModule module) {
         try {
             try {
@@ -109,7 +123,11 @@ public class dbConnector {
             Logger.getLogger(dbConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    /**
+     * A wrapper method to insert all data of all cells directly into the database
+     * @param packet The BatteryPacket who's celldata is to be inserted
+     */
     public void insertBatpack(BatteryPacket packet) {
         try {
             try {
@@ -135,6 +153,10 @@ public class dbConnector {
         }
     }
     
+    /**
+     * A lookup function for the table with the voltages and states of charge of a lithium polymer cell used for state of charge calculations
+     * @return a dictionary consisting of voltage - state of charge pairs.
+     */
     public Dictionary getVoltageLookupTable(){
         Dictionary<Integer,Integer> lookupTable;
         lookupTable = new Hashtable<>();

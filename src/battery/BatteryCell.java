@@ -166,6 +166,10 @@ public class BatteryCell {
         return this.lastMeasurement;
     }
 
+    /**
+     * get the state of charge of this cell
+     * @return the current state of charge
+     */
     public int getStateOfCharge() {
         LiPoSocCalculator soc = new LiPoSocCalculator(this.voltage);
         this.stateOfCharge = soc.getSoc();

@@ -191,6 +191,10 @@ public class BatteryModule {
         this.balance = balance;
     }
 
+     /**
+     * get the state of charge of this module
+     * @return the current state of charge
+     */
     public double getStateOfCharge() {
         this.stateOfCharge = calculateSOC();
         return stateOfCharge;

@@ -51,6 +51,10 @@ public class PortMonitor implements Runnable {
     private Thread commThread;
     private final ThreadEvent resultsReady;
 
+    /**
+     * A class used to monitor the state of the port of a pc to check if a batterypacket is connected and if all communication is running correctly
+     * @param latch The latch is unset when the batterypacket is connected for the first time to allow the front-end to load
+     */
     public PortMonitor(CountDownLatch latch) {
         this.builder = new MessageBuilder();
         this.parser = new MessageParser(batteryPack);
@@ -64,14 +68,26 @@ public class PortMonitor implements Runnable {
         this.cpc = new CommPortCommunicator(baudrate, databits, pariteit, stopbits, resultsReady);
     }
 
+    /**
+     * getter for the baudrate
+     * @return baudrate
+     */
     public int getBaudrate() {
         return baudrate;
     }
 
+    /**
+     * getter of the connection state
+     * @return connection state, true is connected
+     */
     public boolean isConnected() {
         return connected;
     }
 
+    /**
+     * setter for the baudrate
+     * @param baudrate baudrate of the uart communication
+     */
     public void setBaudrate(int baudrate) {
         this.baudrate = baudrate;
     }
@@ -117,14 +133,27 @@ public class PortMonitor implements Runnable {
         commPorts = SerialPort.getCommPorts();
     }
 
+    /**
+     * A getter for the BatteryPacket object
+     * @return the BatteryPacket Object
+     */
     public BatteryPacket getBatteryPack() {
         return batteryPack;
     }
 
+    /**
+     * a setter for the batteryPacket object, allowing for switches in batteryPacket.
+     * handle with care
+     * @param batteryPack the BatteryPacket that is to be used in communication
+     */
     public void setBatteryPack(BatteryPacket batteryPack) {
         this.batteryPack = batteryPack;
     }
 
+    /**
+     * A function used to refresh all data in a batteryPacket.
+     * This means all voltage and temperature data is refreshed.
+     */
     public void refreshAll() {
         try {
             cpc.sendMessage(builder.buildBatpackMessage());
@@ -181,6 +210,10 @@ public class PortMonitor implements Runnable {
         this.connected = cpc.isConnected();
     }
 
+    /**
+     * A loop that handles the messages and sends them to the parser, thus handling the messageQueue
+     * @param message A message from the messageQueue to be handled.
+     */
     public void messageLoop(String message) {
         if (message != null && message.length() > 0) {
             assert (message.length() == 8);
@@ -225,6 +258,10 @@ public class PortMonitor implements Runnable {
         System.out.println("done reading");
     }
 
+    /**
+     * A function used to refresh all data in the batpack
+     * This function is similar to refresh all except that all this function needs a valid batteryPacket to update all its data
+     */
     public void refreshBatpack() {
         addAllPorts();
         connected = cpc.isConnected();

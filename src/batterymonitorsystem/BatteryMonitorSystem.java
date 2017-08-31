@@ -56,10 +56,18 @@ public class BatteryMonitorSystem implements Runnable {
 
     private final CountDownLatch latch;
 
+    /**
+     * A function to get the BatteryPacket object used in the program
+     * @return the main BatteryPacket
+     */
     public static BatteryPacket getBatpack() {
         return BatteryMonitorSystem.batpack;
     }
 
+    /**
+     * The backend controller of all operations. It is used to control the state of the program and all backend threads.
+     * @param latch the latch used to start the program when communication is detected as to not crash the front end with insufficient data
+     */
     public BatteryMonitorSystem(CountDownLatch latch) {
         this.latch = latch;
     }
