@@ -45,7 +45,7 @@ public class BatteryPacket {
     }
 
   
-    private void updateTotalVoltage() {
+    void updateTotalVoltage() {
         double totalVoltage = 0.0;
         List synchronizedBatpack = Collections.synchronizedList(modules);
         synchronized (synchronizedBatpack) {
@@ -61,7 +61,7 @@ public class BatteryPacket {
     /**
      *
      */
-    private void updateAvgTemp() {
+    void updateAvgTemp() {
         double avgTemp = 0;
         List synchronizedBatpack = Collections.synchronizedList(modules);
         synchronized (synchronizedBatpack) {

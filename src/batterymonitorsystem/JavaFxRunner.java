@@ -24,7 +24,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -41,28 +44,24 @@ public class JavaFxRunner extends Application {
     @Override
     public void start(Stage stage) {
 
-        try {
-            final CountDownLatch latch = new CountDownLatch(1);
+//        try {
+
+//            stage.initStyle(StageStyle.UNDECORATED);
+//            Label loading = new Label("loading");
+//            StackPane root = new StackPane();
+//
+//            root.getChildren().add(loading);
+//            stage.show();
+
+//            final CountDownLatch latch = new CountDownLatch(1);
             boolean loaded = false;
 
-//        try {
-//            this.root = FXMLLoader.load(getClass().getResource("SplashScreen.fxml"));
-//        } catch (IOException ex) {
-//            Logger.getLogger(JavaFxRunner.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-//        Scene loading = new Scene(root);
-//        loading.getStylesheets().add(getClass().getResource("animated-gradient.css").toExternalForm());
-//        stage.setScene(loading);
-//        stage.show();
-//
-//
-            JavaFxRunner.monitorSystem = new BatteryMonitorSystem(latch);
+            JavaFxRunner.monitorSystem = new BatteryMonitorSystem(); //latch);
             Thread monitorThread = new Thread(JavaFxRunner.monitorSystem);
             monitorThread.start();
-            latch.await();
+//            latch.await();
 
-//        stage.hide();
+//            stage.hide();
             try {
                 this.root = FXMLLoader.load(getClass().getResource("batteryMonitorLayout.fxml"));
             } catch (IOException ex) {
@@ -76,15 +75,17 @@ public class JavaFxRunner extends Application {
             stage.setScene(scene);
             stage.show();
             System.out.println("bms fxml runner done");
-        } catch (InterruptedException ex) {
-            Logger.getLogger(JavaFxRunner.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(JavaFxRunner.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
+
     /**
      * Main function that starts everything in the program
+     *
      * @param args command line arguments, currently not supported
      */
-    public static void main(String args[]){
+    public static void main(String args[]) {
         launch(args);
     }
 }

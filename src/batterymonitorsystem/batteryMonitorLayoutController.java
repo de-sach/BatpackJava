@@ -40,6 +40,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -69,6 +70,7 @@ public class batteryMonitorLayoutController implements Initializable {
 
     /**
      * getter for the selected module in the front end
+     *
      * @return the id of the selected module as an integer, counted from 0
      */
     private int getSelectedModule() {
@@ -76,7 +78,9 @@ public class batteryMonitorLayoutController implements Initializable {
     }
 
     /**
-     * setter for the selected module in the front end, used to set the id when changes are detected
+     * setter for the selected module in the front end, used to set the id when
+     * changes are detected
+     *
      * @param selectedModule the id of the selected module, counted from 0
      */
     private void setSelectedModule(int selectedModule) {
@@ -108,6 +112,11 @@ public class batteryMonitorLayoutController implements Initializable {
 
     @FXML
     private ImageView formulaLogo;
+
+    //MAIN SCREEN
+    @FXML
+    private AnchorPane mainAnchorPane;
+
     //ACCORDEON
     @FXML
     private TitledPane batpackOverview;
@@ -249,6 +258,9 @@ public class batteryMonitorLayoutController implements Initializable {
 
     //Critical information
     @FXML
+    private TitledPane criticalPane;
+
+    @FXML
     private Group highVoltage;
 
     @FXML
@@ -261,58 +273,66 @@ public class batteryMonitorLayoutController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         this.batpack = BatteryMonitorSystem.getBatpack();
 
+        if (this.batpack != null) {
 //        System.out.println("batpack votlage = "+batpack.getTotalVoltageAsString());
-        batteryModules = new ArrayList<>();
-        batteryModules.add(Module1);
-        batteryModules.add(Module2);
-        batteryModules.add(Module3);
-        batteryModules.add(Module4);
-        batteryModules.add(Module5);
-        batteryModules.add(Module6);
-        batteryModules.add(Module7);
-        batteryModules.add(Module8);
-        batteryModules.add(Module9);
-        if (this.batpack != null) {
+            batteryModules = new ArrayList<>();
+            batteryModules.add(Module1);
+            batteryModules.add(Module2);
+            batteryModules.add(Module3);
+            batteryModules.add(Module4);
+            batteryModules.add(Module5);
+            batteryModules.add(Module6);
+            batteryModules.add(Module7);
+            batteryModules.add(Module8);
+            batteryModules.add(Module9);
+
             buildMenuItem();
-        }
-        batteryCells = new ArrayList<>();
-        batteryCells.add(cell1);
-        batteryCells.add(cell2);
-        batteryCells.add(cell3);
-        batteryCells.add(cell4);
-        batteryCells.add(cell5);
-        batteryCells.add(cell6);
-        batteryCells.add(cell7);
-        batteryCells.add(cell8);
-        batteryCells.add(cell9);
-        batteryCells.add(cell10);
-        batteryCells.add(cell11);
-        batteryCells.add(cell12);
-        batteryCells.add(cell13);
-        batteryCells.add(cell14);
-        batteryCells.add(cell15);
-        batteryCells.add(cell16);
-        if (this.batpack != null) {
+
+            batteryCells = new ArrayList<>();
+            batteryCells.add(cell1);
+            batteryCells.add(cell2);
+            batteryCells.add(cell3);
+            batteryCells.add(cell4);
+            batteryCells.add(cell5);
+            batteryCells.add(cell6);
+            batteryCells.add(cell7);
+            batteryCells.add(cell8);
+            batteryCells.add(cell9);
+            batteryCells.add(cell10);
+            batteryCells.add(cell11);
+            batteryCells.add(cell12);
+            batteryCells.add(cell13);
+            batteryCells.add(cell14);
+            batteryCells.add(cell15);
+            batteryCells.add(cell16);
             for (int i = batpack.getModuleCount(); i < batteryModules.size(); i++) {
                 batteryModules.get(i).setVisible(false);
             }
+
+            setIcon();
+
+            bindModuleClick();
+            checkConnection();
+
+            bindWindowDrag();
+
+            bindWebsite();
+
+            updateTotalVoltage();
+            updateModules();
+
+            bindUpdates();
+
+            accordion.setExpandedPane(batpackOverview);
+        } else {
+            System.out.println("batpack not loaded");
+            totalVoltage.setText("Loading");
+            overalMaxTemperature.setVisible(false);
+            totalVoltageProgress.setProgress(-1);
+            criticalPane.setVisible(false);
+            mainAnchorPane.setVisible(false);
         }
 
-        setIcon();
-
-        bindModuleClick();
-        checkConnection();
-
-        bindWindowDrag();
-
-        bindWebsite();
-
-        updateTotalVoltage();
-        updateModules();
-
-        bindUpdates();
-
-        accordion.setExpandedPane(batpackOverview);
     }
 
     private void bindModuleClick() {
@@ -501,15 +521,15 @@ public class batteryMonitorLayoutController implements Initializable {
 
     private void updateCriticalValues() {
         if (this.batpack != null) {
-            int maxVoltModule=0, minVoltModule = 0, maxTempModule=0;
+            int maxVoltModule = 0, minVoltModule = 0, maxTempModule = 0;
             synchronized (this.batpack) {
                 BatteryCell maxVoltageCell = new BatteryCell(00.00, 0.00, 0, 0);//0°C, 3V
                 BatteryCell maxTemperatureCell = new BatteryCell(00.00, 0.00, 0, 0);
                 BatteryCell minVoltageCell = new BatteryCell(00.00, 50.00, 0, 0);
-                for (int moduleCounter = 0; moduleCounter<batpack.getModuleCount(); moduleCounter++) {
+                for (int moduleCounter = 0; moduleCounter < batpack.getModuleCount(); moduleCounter++) {
                     BatteryModule currentModule = batpack.getModules().get(moduleCounter);
-                    for (int cellCounter =0; cellCounter < currentModule.getNrOfCells(); cellCounter++){
-                    BatteryCell cell = currentModule.getBatteryCells().get(cellCounter);
+                    for (int cellCounter = 0; cellCounter < currentModule.getNrOfCells(); cellCounter++) {
+                        BatteryCell cell = currentModule.getBatteryCells().get(cellCounter);
                         if (cell.getVoltage() > maxVoltageCell.getVoltage()) {
                             maxVoltageCell = cell;
                             maxVoltModule = moduleCounter;
@@ -524,28 +544,28 @@ public class batteryMonitorLayoutController implements Initializable {
                         }
                     }
                 }
-                System.out.println("minVoltageCell id " + minVoltageCell.getId() + " at module "+ minVoltModule);
-                System.out.println("maxVoltageCell, minVoltageCell, maxTempCell: - " + maxVoltageCell.getId() + " - " + minVoltageCell.getId() + " - "+ maxTemperatureCell.getId());
-                System.out.println("highVoltage children "+lowVoltage.getChildren());
+                System.out.println("minVoltageCell id " + minVoltageCell.getId() + " at module " + minVoltModule);
+                System.out.println("maxVoltageCell, minVoltageCell, maxTempCell: - " + maxVoltageCell.getId() + " - " + minVoltageCell.getId() + " - " + maxTemperatureCell.getId());
+                System.out.println("highVoltage children " + lowVoltage.getChildren());
                 Label highVoltageIdLabel = (Label) highVoltage.getChildren().get(1);
                 Label highVoltageVoltageLabel = (Label) highVoltage.getChildren().get(3);
                 Label highVoltageModuleLabel = (Label) highVoltage.getChildren().get(2);
-                highVoltageIdLabel.setText("Cell id: "+maxVoltageCell.getId());
-                highVoltageModuleLabel.setText("Module id: "+ maxVoltModule);
+                highVoltageIdLabel.setText("Cell id: " + maxVoltageCell.getId());
+                highVoltageModuleLabel.setText("Module id: " + maxVoltModule);
                 highVoltageVoltageLabel.setText(maxVoltageCell.getVoltageAsString());
 
                 Label lowVoltageIdLabel = (Label) lowVoltage.getChildren().get(1);
                 Label lowVoltageVoltageLabel = (Label) lowVoltage.getChildren().get(2);
                 Label lowVoltageModuleLabel = (Label) lowVoltage.getChildren().get(3);
-                lowVoltageIdLabel.setText("Cell id: "+minVoltageCell.getId());
-                lowVoltageModuleLabel.setText("Module id: "+ minVoltModule);
+                lowVoltageIdLabel.setText("Cell id: " + minVoltageCell.getId());
+                lowVoltageModuleLabel.setText("Module id: " + minVoltModule);
                 lowVoltageVoltageLabel.setText(minVoltageCell.getVoltageAsString());
 
                 Label maxTempIdLabel = (Label) highTemp.getChildren().get(1);
                 Label maxTempTempLabel = (Label) highTemp.getChildren().get(2);
                 Label maxTempModuleLabel = (Label) highTemp.getChildren().get(3);
-                maxTempIdLabel.setText("Cell id: "+maxTemperatureCell.getId());
-                maxTempModuleLabel.setText("Module id: "+ maxTempModule);
+                maxTempIdLabel.setText("Cell id: " + maxTemperatureCell.getId());
+                maxTempModuleLabel.setText("Module id: " + maxTempModule);
                 maxTempTempLabel.setText(maxTemperatureCell.getTemperatureAsString());
             }
         }

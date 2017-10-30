@@ -58,6 +58,7 @@ public class BatteryMonitorSystem implements Runnable {
 
     /**
      * A function to get the BatteryPacket object used in the program
+     *
      * @return the main BatteryPacket
      */
     public static BatteryPacket getBatpack() {
@@ -65,11 +66,18 @@ public class BatteryMonitorSystem implements Runnable {
     }
 
     /**
-     * The backend controller of all operations. It is used to control the state of the program and all backend threads.
-     * @param latch the latch used to start the program when communication is detected as to not crash the front end with insufficient data
+     * The backend controller of all operations. It is used to control the state
+     * of the program and all backend threads.
+     *
+     * @param latch the latch used to start the program when communication is
+     * detected as to not crash the front end with insufficient data
      */
     public BatteryMonitorSystem(CountDownLatch latch) {
         this.latch = latch;
+    }
+
+    public BatteryMonitorSystem() {
+        this.latch = null;
     }
 
     @Override
@@ -82,13 +90,15 @@ public class BatteryMonitorSystem implements Runnable {
             portMonitor.setBaudrate(500000);
             Thread monitorThread = new Thread(portMonitor);
             monitorThread.start();
-            try {
-                latch.await();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                latch.await();
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(BatteryMonitorSystem.class.getName()).log(Level.SEVERE, null, ex);
+//            }
             connected = true;
-            batpack = portMonitor.getBatteryPack();
+            while (this.batpack == null) {
+                batpack = portMonitor.getBatteryPack();
+            }
             //SETUP Storage
             BatteryMonitorSystem.database = new dbRunnable(batpack);
             Thread databaseThread = new Thread(BatteryMonitorSystem.database);
